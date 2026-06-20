@@ -1,211 +1,141 @@
-
-<!-- Hero Slider Section -->
-<section class="hero-slider" id="home">
-    <div class="slider-container">
-        <div class="slider-wrapper">
-            <div class="slide active">
-                <img src="/assets/images/tr2.png" alt="Program Beasiswa Prestasi">
-            </div>
-            <div class="slide">
-                <img src="/assets/images/tr1.png" alt="Program Beasiswa Akhir Studi">
-            </div>
-            <div class="slide">
-                <img src="/assets/images/tr3.png" alt="Program Beasiswa Magister">
-            </div>
-            <div class="slide">
-                <img src="/assets/images/tr4.png" alt="Program Beasiswa Hafidz Quran">
-            </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nxdom — Nusantara eXtreme Development Object Model</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
+      background-color: #ffffff;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center;
+      color: #1f2328; overflow-x: hidden;
+    }
+    .container {
+      max-width: 980px; width: 100%; padding: 2rem;
+      margin: 0 auto;
+    }
+    /* Hero */
+    .hero { text-align: center; padding: 5rem 0 2rem; }
+    .hero-brand {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.75rem; margin-bottom: 1.5rem;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      padding: 0.2rem 0.75rem;
+      border: 1px solid #d0d7de; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600;
+      color: #656d76;
+      background: #f6f8fa;
+    }
+    .badge img { flex-shrink: 0; }
+    .hero-title {
+      font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900; letter-spacing: -0.04em;
+      line-height: 1.1; margin-bottom: 0.5rem;
+      color: #1f2328;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.35rem); font-weight: 500;
+      color: #656d76; margin-bottom: 1.5rem;
+    }
+    .hero-desc {
+      font-size: clamp(0.95rem, 1.5vw, 1.1rem); font-weight: 400;
+      color: #656d76; max-width: 680px;
+      margin: 0 auto 2rem; line-height: 1.7;
+    }
+    .hero-desc strong { color: #1f2328; font-weight: 600; }
+    /* CTA */
+    .cta-group {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.625rem 1.25rem; border-radius: 6px;
+      background: #2da44e; color: #fff;
+      border: 1px solid #1a7f37;
+      font-size: 0.9rem; font-weight: 600; text-decoration: none;
+      transition: 0.2s; cursor: pointer;
+    }
+    .btn-primary:hover { background: #218838; }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.625rem 1.25rem; border-radius: 6px;
+      background: #f6f8fa; color: #1f2328;
+      border: 1px solid #d0d7de;
+      font-size: 0.9rem; font-weight: 600; text-decoration: none;
+      transition: 0.2s; cursor: pointer;
+    }
+    .btn-secondary:hover { background: #eaeef2; }
+    /* Stats / Info Cards */
+    .stats-row {
+      display: flex; gap: 2.5rem; justify-content: center;
+      margin-top: 2.5rem; padding-top: 1.5rem;
+      border-top: 1px solid #d0d7de;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-size: 1.5rem; font-weight: 700; color: #1f2328;
+    }
+    .stat-label {
+      font-size: 0.8rem; color: #656d76; margin-top: 0.2rem;
+    }
+    /* Footer */
+    .footer-note {
+      margin-top: 2.5rem; padding-top: 1.5rem;
+      border-top: 1px solid #d0d7de;
+      font-size: 0.8rem; color: #8b949e;
+      text-align: center;
+    }
+    .footer-note a { color: #0969da; text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+    /* Logo mark */
+    .logo-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 64px; height: 64px; border-radius: 50%;
+      background: #1f2328; color: #fff;
+      font-weight: 900; font-size: 2rem;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-brand">
+        <img class="logo-mark" src="assets/images/icon.png" alt="Nxdom Logo">
+        <div class="badge">
+          <img src="assets/images/icon.png" alt="" width="12" height="12" style="border-radius:50%;object-fit:cover;">
+          v1.0.1 — Framework Model
         </div>
-        
-        <!-- Navigation Arrows -->
-        <button class="slider-nav prev" onclick="changeSlide(-1)">
-            <span class="material-icons">chevron_left</span>
-        </button>
-        <button class="slider-nav next" onclick="changeSlide(1)">
-            <span class="material-icons">chevron_right</span>
-        </button>
-        
-        <!-- Dots Navigation -->
-        <div class="slider-dots">
-            <span class="dot active" onclick="currentSlide(0)"></span>
-            <span class="dot" onclick="currentSlide(1)"></span>
-            <span class="dot" onclick="currentSlide(2)"></span>
-            <span class="dot" onclick="currentSlide(3)"></span>
-        </div>
-    </div>
-</section>
- 
-<!-- Program Cards Section -->
-<section class="programs-section" id="programs">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Jenis Program Beasiswa</h2>
-            <p class="section-subtitle">Pilih program beasiswa yang sesuai dengan kebutuhan Anda</p>
-        </div>
+      </div>
+      <h1 class="hero-title">Nxdom</h1>
+      <p class="hero-sub">Nusantara eXtreme Development Object Model</p>
+      <p class="hero-desc">
+        Sebuah <strong>object model</strong> ekstrem yang lahir dari Nusantara —
+        menyatukan pendekatan <strong>komponen</strong>, <strong>data-driven</strong>,
+        dan <strong>rendering cepat</strong> dalam satu kerangka kerja
+        yang modular, ringan, dan siap produksi.
+      </p>
+      <div class="cta-group">
+        <a href="https://nxdom.org/docs" class="btn-secondary" target="_blank" rel="noopener noreferrer">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9z"/><path d="M5 12.5a1 1 0 011-1h4v3h-4a1 1 0 01-1-1v-1z"/></svg>
+          Dokumentasi
+        </a>
+      </div>
 
-        <div class="programs-grid">
-            <!-- Beasiswa S1 SIAP Prestasi -->
-            <div class="program-card" data-program="prestasi">
-                <div class="card-icon">
-                    <span class="material-icons">emoji_events</span>
-                </div>
-                <h3 class="card-title">Beasiswa S1 SIAP Prestasi</h3>
-                <p class="card-description">Untuk mahasiswa berprestasi semester III - VI dengan IPK minimal 3.00</p>
-                <button class="btn-detail" onclick="showDetail('prestasi')">
-                    Lihat Persyaratan
-                    <span class="material-icons">arrow_forward</span>
-                </button>
-            </div>
-
-            <!-- Beasiswa S1 SIAP Akhir Studi -->
-            <div class="program-card" data-program="akhir">
-                <div class="card-icon">
-                    <span class="material-icons">school</span>
-                </div>
-                <h3 class="card-title">Beasiswa S1 SIAP Akhir Studi</h3>
-                <p class="card-description">Untuk mahasiswa semester VII - VIII yang akan menyelesaikan studi</p>
-                <button class="btn-detail" onclick="showDetail('akhir')">
-                    Lihat Persyaratan
-                    <span class="material-icons">arrow_forward</span>
-                </button>
-            </div>
-
-            <!-- Beasiswa S1 Perguruan Tinggi Lainnya -->
-            <div class="program-card" data-program="pt-lain">
-                <div class="card-icon">
-                    <span class="material-icons">account_balance</span>
-                </div>
-                <h3 class="card-title">Beasiswa S1 Perguruan Tinggi Lainnya</h3>
-                <p class="card-description">Untuk mahasiswa di perguruan tinggi luar Pohuwato</p>
-                <button class="btn-detail" onclick="showDetail('pt-lain')">
-                    Lihat Persyaratan
-                    <span class="material-icons">arrow_forward</span>
-                </button>
-            </div>
-
-            <!-- Beasiswa S2 Magister -->
-            <div class="program-card" data-program="s2">
-                <div class="card-icon">
-                    <span class="material-icons">workspace_premium</span>
-                </div>
-                <h3 class="card-title">Beasiswa S2 Magister</h3>
-                <p class="card-description">Untuk mahasiswa pascasarjana semester I - IV dengan IPK minimal 3.00</p>
-                <button class="btn-detail" onclick="showDetail('s2')">
-                    Lihat Persyaratan
-                    <span class="material-icons">arrow_forward</span>
-                </button>
-            </div>
-
-            <!-- Beasiswa SIAP Hafalan Quran -->
-            <div class="program-card" data-program="quran">
-                <div class="card-icon">
-                    <span class="material-icons">menu_book</span>
-                </div>
-                <h3 class="card-title">Beasiswa SIAP Hafalan Quran</h3>
-                <p class="card-description">Untuk penghafal Al-Quran dari 1 Juz sampai 30 Juz</p>
-                <button class="btn-detail" onclick="showDetail('quran')">
-                    Lihat Persyaratan
-                    <span class="material-icons">arrow_forward</span>
-                </button>
-            </div>
-
-            <!-- Beasiswa S1 SIAP Atlet -->
-<!--             <div class="program-card" data-program="atlet">
-                <div class="card-icon">
-                    <span class="material-icons">sports</span>
-                </div>
-                <h3 class="card-title">Beasiswa S1 SIAP Atlet</h3>
-                <p class="card-description">Untuk atlet berprestasi yang aktif kuliah di perguruan tinggi</p>
-                <button class="btn-detail" onclick="showDetail('atlet')">
-                    Lihat Persyaratan
-                    <span class="material-icons">arrow_forward</span>
-                </button>
-            </div> -->
-        </div>
-    </div>
-</section>
-
-<!-- Detail Modal -->
-<div id="detailModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="modalTitle"></h3>
-            <button class="modal-close" onclick="closeModal()">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="requirements-list" id="modalRequirements"></div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-primary" onclick="applyScholarship()">
-                Ajukan Beasiswa
-                <span class="material-icons">send</span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Info Section -->
-<section class="info-section" id="requirements">
-    <div class="container">
-        <div class="info-header">
-            <h2 class="info-title">Kenapa Memilih Program Beasiswa SIAP?</h2>
-            <p class="info-subtitle">Kemudahan dan keuntungan yang Anda dapatkan</p>
-        </div>
-        
-        <div class="info-grid">
-            <div class="info-card card-1">
-                <div class="info-card-inner">
-                    <div class="info-icon-wrapper">
-                        <span class="material-icons info-icon">description</span>
-                    </div>
-                    <div class="info-number">01</div>
-                    <h4>Dokumen Lengkap</h4>
-                    <p>Pastikan semua dokumen persyaratan sudah disiapkan dalam format digital</p>
-                    <div class="info-card-bg"></div>
-                </div>
-            </div>
-            
-            <div class="info-card card-2">
-                <div class="info-card-inner">
-                    <div class="info-icon-wrapper">
-                        <span class="material-icons info-icon">verified</span>
-                    </div>
-                    <div class="info-number">02</div>
-                    <h4>Verifikasi Cepat</h4>
-                    <p>Proses verifikasi dokumen dilakukan secara online dan transparan</p>
-                    <div class="info-card-bg"></div>
-                </div>
-            </div>
-            
-            <div class="info-card card-3">
-                <div class="info-card-inner">
-                    <div class="info-icon-wrapper">
-                        <span class="material-icons info-icon">support_agent</span>
-                    </div>
-                    <div class="info-number">03</div>
-                    <h4>Bantuan 24/7</h4>
-                    <p>Tim kami siap membantu Anda dalam proses pengajuan beasiswa</p>
-                    <div class="info-card-bg"></div>
-                </div>
-            </div>
-            
-            <div class="info-card card-4">
-                <div class="info-card-inner">
-                    <div class="info-icon-wrapper">
-                        <span class="material-icons info-icon">payments</span>
-                    </div>
-                    <div class="info-number">04</div>
-                    <h4>Tanpa Biaya</h4>
-                    <p>Proses pendaftaran dan pengajuan beasiswa 100% gratis tanpa dipungut biaya</p>
-                    <div class="info-card-bg"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- External JavaScript -->
-<script src="/assets/js/app.js"></script>
-
+  
+   <p class="footer-note">
+        &copy; 2025 Nxdom &mdash; 
+        <a href="https://nxdom.org/docs">Terms</a> &middot; 
+        <a href="#">Privacy</a> &middot; 
+        <a href="https://github.com/Nxadom" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </p>
+    </section>
+  </div>
+</body>
+</html>
