@@ -7,5 +7,5 @@
   "icon": "package_2",
   "iconClass": "icon-folder-src",
   "viewId": "example",
-  "place": "edge"
+  "place": "edge-left"
 }

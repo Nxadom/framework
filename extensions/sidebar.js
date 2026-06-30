@@ -14,6 +14,14 @@ export function renderSidebar(container) {
           </span>
         </button>
 
+        <button type="button" class="beranda-packages-installed__item" data-action="buckets">
+          <span class="icon icon-folder-database beranda-packages-installed__icon" aria-hidden="true"></span>
+          <span class="beranda-packages-installed__meta">
+            <span class="beranda-packages-installed__title">Buckets</span>
+            <span class="beranda-packages-installed__desc">Contoh penyimpanan data extension</span>
+          </span>
+        </button>
+
         <button type="button" class="beranda-packages-installed__item" data-action="settings">
           <span class="icon icon-settings beranda-packages-installed__icon" aria-hidden="true"></span>
           <span class="beranda-packages-installed__meta">
