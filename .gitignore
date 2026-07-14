@@ -6,6 +6,7 @@ command.md
 # Dependencies
 node_modules/
 vendor/
+backend/.local-domain.json
 
 # Logs & cache
 *.log
