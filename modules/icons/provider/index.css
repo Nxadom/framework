@@ -1,0 +1,69 @@
+/* ============================================================
+   Provider Icons — ikon brand penyedia AI (Claude, DeepSeek, dst.)
+   Dipakai di daftar provider chat settings & model picker.
+
+   Catatan penting: SVG di ./svg/ adalah ikon BERWARNA ASLI (mis. Claude
+   fill=#D97757). Karena itu dipakai lewat `background-image` (bukan
+   `mask-image`) supaya warna brand tetap tampil — beda dari ikon monokrom.
+   ============================================================ */
+
+/* Wadah ikon — ukuran & perilaku dasar. Pakai .nx-provider-ico + modifier
+   per-provider (.nx-provider-ico--claude, dst). */
+.nx-provider-ico {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  vertical-align: middle;
+}
+
+/* Ukuran varian */
+.nx-provider-ico--sm { width: 16px; height: 16px; }
+.nx-provider-ico--lg { width: 24px; height: 24px; }
+
+/* ── Per-provider (id preset → file svg) ─────────────────────────────
+   Hanya provider yang PUNYA svg. openai/openrouter belum ada svg-nya →
+   pakai fallback generik (.nx-provider-ico--fallback) di sisi pemanggil. */
+.nx-provider-ico--openai     { background-image: url("./svg/openai.svg"); }
+.nx-provider-ico--openrouter { background-image: url("./svg/openrouter.svg"); }
+.nx-provider-ico--claude     { background-image: url("./svg/claude-color.svg"); }
+.nx-provider-ico--claudecode { background-image: url("./svg/claudecode-color.svg"); }
+.nx-provider-ico--deepseek   { background-image: url("./svg/deepseek-color.svg"); }
+.nx-provider-ico--groq       { background-image: url("./svg/groq.svg"); }
+.nx-provider-ico--ollama     { background-image: url("./svg/ollama.svg"); }
+.nx-provider-ico--lmstudio   { background-image: url("./svg/lmstudio.svg"); }
+.nx-provider-ico--nemotron,
+.nx-provider-ico--nvidia     { background-image: url("./svg/nvidia-color.svg"); }
+.nx-provider-ico--gemini     { background-image: url("./svg/gemini-color.svg"); }
+.nx-provider-ico--grok       { background-image: url("./svg/grok.svg"); }
+.nx-provider-ico--qwen       { background-image: url("./svg/qwen-color.svg"); }
+.nx-provider-ico--mistral    { background-image: url("./svg/mistral-color.svg"); }
+.nx-provider-ico--meta       { background-image: url("./svg/meta-color.svg"); }
+.nx-provider-ico--cursor     { background-image: url("./svg/cursor.svg"); }
+.nx-provider-ico--github     { background-image: url("./svg/github.svg"); }
+.nx-provider-ico--githubcopilot { background-image: url("./svg/githubcopilot.svg"); }
+.nx-provider-ico--aws        { background-image: url("./svg/aws-color.svg"); }
+.nx-provider-ico--cerebras   { background-image: url("./svg/cerebras-color.svg"); }
+.nx-provider-ico--microsoft  { background-image: url("./svg/microsoft-color.svg"); }
+.nx-provider-ico--eyeglasses { background-image: url("./svg/eyeglasses.svg"); }
+
+/* ── Fallback: provider tanpa svg (openai, openrouter, custom) ────────
+   Bulatan dengan inisial huruf pertama. Warna netral, ikut tema. Huruf
+   diisi pemanggil via ::before content atau data-attr di sisi HTML. */
+.nx-provider-ico--fallback {
+  background-image: none;
+  border-radius: 50%;
+  background-color: var(--nx-provider-fallback-bg, rgba(128, 128, 128, 0.18));
+  color: var(--nx-provider-fallback-fg, currentColor);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.nx-provider-ico--lg.nx-provider-ico--fallback { font-size: 13px; }
