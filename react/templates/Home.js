@@ -6,10 +6,10 @@ import {
   Image,
   fs,
   Text,
-  Buttons,
-} from "NexaJS";
+  TouchableOpacity,
+} from "Nxdom";
 
-const screens = () => {
+function HomeScreen() {
   const navigation = useNavigation();
   const assetColor = {
     backgroundColor: "#211E1F",
@@ -31,13 +31,11 @@ const screens = () => {
           </Text>
         </View>
         <View style={styles.buttonWrap}>
-          <Buttons 
-            label="Screen Halaman"
-            background={assetColor.buttonColor}
-            txColor={assetColor.buttonTextColor}
-            border={8}
-            padding={100}
-            vertical={6}
+          <TouchableOpacity
+            style={[
+              styles.button,
+              { backgroundColor: assetColor.buttonColor },
+            ]}
             onPress={() =>
               navigation.navigate("halaman", {
                 type: "halaman",
@@ -45,12 +43,16 @@ const screens = () => {
                 messages: ["Pesan 1", "Pesan 2", "Pesan 3"],
               })
             }
-          />
+          >
+            <Text style={[fs.semibold, { color: assetColor.buttonTextColor }]}>
+              Screen Halaman
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -93,6 +95,13 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
+  button: {
+    borderRadius: 8,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    minWidth: 180,
+    alignItems: "center",
+  },
 });
 
-export default screens;
+export default HomeScreen;

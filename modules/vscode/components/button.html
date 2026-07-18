@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button — VS Code UI Toolkit</title>
+    <link rel="stylesheet" href="vs.css">
+    <style>
+        h2 { color: #007acc; font-size: 18px; margin-bottom: 20px; }
+        .section { margin-bottom: 16px; }
+        .section-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px; }
+        .demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; background: #252526; border: 1px solid #3c3c3c; border-radius: 6px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <h2>vscode-button</h2>
+    <div class="section"><div class="section-label">primary</div>
+        <div class="demo">
+            <button class="vsc-btn primary"><span class="control"><span class="content">Simpan</span></span></button>
+            <button class="vsc-btn primary"><span class="control"><span class="content">OK</span></span></button>
+            <button class="vsc-btn primary" disabled><span class="control"><span class="content">Disabled</span></span></button>
+        </div>
+    </div>
+    <div class="section"><div class="section-label">secondary</div>
+        <div class="demo">
+            <button class="vsc-btn secondary"><span class="control"><span class="content">Batal</span></span></button>
+            <button class="vsc-btn secondary" disabled><span class="control"><span class="content">Disabled</span></span></button>
+        </div>
+    </div>
+    <div class="section"><div class="section-label">icon</div>
+        <div class="demo">
+            <button class="vsc-btn icon"><span class="control"><span class="content">🔍</span></span></button>
+            <button class="vsc-btn icon"><span class="control"><span class="content">⚙️</span></span></button>
+            <button class="vsc-btn icon" disabled><span class="control"><span class="content">✕</span></span></button>
+        </div>
+    </div>
+    <div class="section"><div class="section-label">dengan icon</div>
+        <div class="demo">
+            <button class="vsc-btn primary"><span class="control"><span class="start">📁</span><span class="content">Open File</span></span></button>
+            <button class="vsc-btn secondary"><span class="control"><span class="start">🗑️</span><span class="content">Hapus</span></span></button>
+        </div>
+    </div>
+</body>
+</html>

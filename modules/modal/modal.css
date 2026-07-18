@@ -25,6 +25,8 @@
   opacity: 1 !important;
   visibility: visible !important;
   backdrop-filter: blur(0px);
+  background-color: var(--nx-modal-overlay, rgba(0, 0, 0, 0.45));
+  pointer-events: auto;
 }
 
 .nx-modal-dialog {
@@ -124,12 +126,19 @@
   width: 100%;
   max-height: calc(100vh - 4rem);
   pointer-events: auto;
-  background-color: #ffffff;
-  border: 1px solid #d0d7de;
+  --nx-modal-bg: #ffffff;
+  --nx-modal-header-bg: #f6f8fa;
+  --nx-modal-footer-bg: #f6f8fa;
+  --nx-modal-border: #d0d7de;
+  --nx-modal-text: #24292f;
+  --nx-modal-text-muted: #656d76;
+  --nx-modal-shadow: 0 16px 48px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --nx-modal-overlay: rgba(0, 0, 0, 0.45);
+  background-color: var(--nx-modal-bg);
+  border: 1px solid var(--nx-modal-border);
   border-radius: 12px;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--nx-modal-shadow);
   outline: 0;
-  /* Mencegah layout shift dan double scrollbar */
   overflow: hidden;
 }
 
@@ -137,18 +146,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-   padding: 5px 15px;
-  border-bottom: 1px solid #d0d7de;
+   padding: 0px 15px;
+  border-bottom: 1px solid var(--nx-modal-border);
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  background-color: #f6f8fa;
+  background-color: var(--nx-modal-header-bg);
 }
 
 .nx-modal-title {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #24292f;
+  color: var(--nx-modal-text);
 }
 
 .nx-modal-close {
@@ -162,7 +171,7 @@
   background: transparent;
   border: 0;
   border-radius: 6px;
-  color: #656d76;
+  color: var(--nx-modal-text-muted);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -185,7 +194,8 @@
 .nx-modal-body {
   padding: 24px;
   flex: 1 1 auto;
-  background-color: #ffffff;
+  background-color: var(--nx-modal-bg);
+  color: var(--nx-modal-text);
   max-height: calc(100vh - 180px);
   overflow-y: auto;
   /* Ensure only modal body scrolls when content exceeds viewport */
@@ -301,11 +311,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 16px 20px;
-  border-top: 1px solid #d0d7de;
+  padding:10px 15px;
+  border-top: 1px solid var(--nx-modal-border);
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
-  background-color: #f6f8fa;
+  background-color: var(--nx-modal-footer-bg);
 }
 
 /* Custom footer content container */
@@ -3843,7 +3853,75 @@
 }
 
 
-/* Catatan: blok dark-mode untuk modal sebelumnya berada di sini sudah
-   dipindahkan & disempurnakan di `assets/modules/Mode/index.css`
-   (Section 18 + Section 38 lanjutan). File ini hanya berisi struktur
-   layout & animasi modal — bukan tema. */
+/* Catatan: tema gelap modal — token di .nx-modal-content, override di bawah.
+   Mode/index.css Section 18 hanya menyentuh tombol/scrollbar, bukan kartu. */
+body.dark-mode-grid .nx-modal-content {
+  --nx-modal-bg: #2f343d;
+  --nx-modal-header-bg: #383e48;
+  --nx-modal-footer-bg: #383e48;
+  --nx-modal-border: rgba(255, 255, 255, 0.14);
+  --nx-modal-text: #e6edf3;
+  --nx-modal-text-muted: #9aa4b2;
+  --nx-modal-shadow: 0 20px 56px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --nx-modal-overlay: rgba(0, 0, 0, 0.68);
+}
+
+/* Light mode: nonaktifkan backdrop modal */
+body:not(.dark-mode-grid) .nx-modal.show {
+  background-color: transparent !important;
+}
+
+body.dark-mode-grid .nx-modal.show {
+  background-color: var(--nx-modal-overlay) !important;
+}
+
+body.dark-mode-grid .nx-modal-content {
+  background-color: var(--nx-modal-bg) !important;
+  border-color: var(--nx-modal-border) !important;
+  box-shadow: var(--nx-modal-shadow) !important;
+  color: var(--nx-modal-text) !important;
+}
+
+body.dark-mode-grid .nx-modal-header,
+body.dark-mode-grid .nx-modal-footer {
+  background-color: var(--nx-modal-header-bg) !important;
+  border-color: var(--nx-modal-border) !important;
+  color: var(--nx-modal-text) !important;
+}
+
+body.dark-mode-grid .nx-modal-body {
+  background-color: var(--nx-modal-bg) !important;
+  color: var(--nx-modal-text) !important;
+}
+
+body.dark-mode-grid .nx-modal-title {
+  color: var(--nx-modal-text) !important;
+}
+
+body.dark-mode-grid .nx-modal-close,
+body.dark-mode-grid .nx-modal-minimize {
+  color: var(--nx-modal-text-muted) !important;
+}
+
+body.dark-mode-grid .nx-modal-close:hover,
+body.dark-mode-grid .nx-modal-minimize:hover {
+  color: var(--nx-modal-text) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode-grid .nx-modal-close:active,
+body.dark-mode-grid .nx-modal-minimize:active {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+body.dark-mode-grid .nx-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+body.dark-mode-grid .nx-modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+body.dark-mode-grid .nx-modal-body {
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}

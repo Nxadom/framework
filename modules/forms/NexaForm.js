@@ -384,7 +384,7 @@ async function NexaForm(data) {
   let floatingInstance = null;
   if (data.floating) {
     const rid = data?.setDataBy?.recordId;
-    console.log('rid:', rid);
+   
     if (rid) {
       NXUI.Rid=Number(rid);
     } else {

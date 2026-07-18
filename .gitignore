@@ -1,17 +1,27 @@
 # Environment & secrets
 .env
 **/.env
+.env.*
+**/.env.*
 !**/.env.example
+!**/.env.*.example
 command.md
+
 # Dependencies
 node_modules/
 vendor/
+.npm/
+.pnpm-store/
+.yarn/cache/
 backend/.local-domain.json
 
 # Logs & cache
 *.log
+*.pid
 logs/
 .cache/
+coverage/
+.nyc_output/
 
 # OS / IDE
 .DS_Store
@@ -22,3 +32,13 @@ Thumbs.db
 # Build
 dist/
 build/
+.next/
+.nuxt/
+.output/
+out/
+
+# Nxdom registration scripts
+/modules/nxdom-register.ps1
+/modules/nxdom-register.md
+/modules/Mobile/components.ps1
+/modules/Mobile/nxdom-register.ps1

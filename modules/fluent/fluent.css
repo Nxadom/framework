@@ -1,0 +1,20 @@
+/*
+ * Penyesuaian ringan Fluent UI Web Components v2 agar berdampingan mulus dengan
+ * style.css proyek (font, radius) — palet warna & elevation bawaan Fluent (design
+ * tokens internal komponen) SENGAJA tidak di-override karena itu yang membuatnya
+ * mirip Windows 11 (Mica/Acrylic-adjacent, accent color system).
+ */
+fluent-button,
+fluent-card,
+fluent-text-field,
+fluent-dialog,
+fluent-checkbox,
+fluent-switch,
+fluent-select,
+fluent-tabs {
+  font-family: 'Segoe UI Variable', 'Segoe UI', 'Source Sans 3', system-ui, sans-serif;
+}
+
+fluent-card {
+  border-radius: 8px;
+}

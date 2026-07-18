@@ -58,6 +58,7 @@
 @import url("./icons/file.css");
 @import url("./icons/material-icons/material-icons.css");
 @import url("./icons/awesome/css/all.min.css");
+@import url("./icons/ubuntu.css");
 /* modal */
 @import url("./modal/index.css");
 @import url("./modal/modal.css");
@@ -73,7 +74,10 @@
 @import url("./tree/index.css");
 @import url("./Mode/index.css");
 @import url("./wizard/index.css");
-@import url("./docs-layout/index.css");
+@import url("./vscode/index.css");
+@import url("./Reactive/NexaReactive.css");
+
+
 
 /*@import url("./grid/grid.css")*/
 .bold{

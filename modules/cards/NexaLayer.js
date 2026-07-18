@@ -316,13 +316,42 @@ export class NexaLayer {
         forcePlaceholderSize: true,
         scroll: false,
         handle: dragHandle,
-        cancel: ".nx-card-controls button", // Prevent dragging from buttons
+        // Prevent dragging from buttons dan area scroll content
+        cancel: ".nx-card-controls button, .nx-card-body, .nx-scroll, .nx-card-body *",
         update: () => { this._saveState(); },
       });
+
+      // FIX: Pastikan scroll bekerja di dalam card body dengan mencegah sortable intercept wheel events
+      this._enableScrollInCardBodies(container);
 
       // Hapus CSS hide — container sekarang tampil dalam posisi yang sudah benar
       removeHide();
     }, 100);
+  }
+
+  // Metode baru untuk memastikan scroll bekerja di card body
+  _enableScrollInCardBodies(container) {
+    const scrollBodies = container.querySelectorAll('.nx-card-body.nx-scroll');
+    scrollBodies.forEach((body) => {
+      // Pastikan overflow-y aktif
+      body.style.overflowY = 'auto';
+      
+      // Cegah event propagation ke sortable saat scroll
+      body.addEventListener('wheel', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
+      
+      body.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+      }, { passive: true });
+      
+      body.addEventListener('mousedown', (e) => {
+        // Hanya stop propagation jika bukan di title/header
+        if (!e.target.closest('.nx-card-title')) {
+          e.stopPropagation();
+        }
+      });
+    });
   }
 
   // Setup event handlers for existing minimize and close buttons
@@ -346,7 +375,9 @@ export class NexaLayer {
       const cardBodyClass = scrollType
         ? `nx-card-body ${scrollType}`
         : "nx-card-body";
-      const cardBodyStyle = scrollHeight
+      const cardBodyStyle = scrollHeight && scrollType
+        ? `padding:3px; height:${scrollHeight}; overflow-y:auto;`
+        : scrollHeight
         ? `padding:3px; height:${scrollHeight}`
         : "padding:3px";
 

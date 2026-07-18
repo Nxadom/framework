@@ -17,6 +17,11 @@ export const IndexedDBManager = {
   fieldsToSkip: new Set(["id", "createdAt", "updatedAt"]), // Fields that won't be encrypted
   encryptionInitialized: false, // Flag untuk track initialization
 
+  // Store yang datanya bukan data sensitif (mis. struktur folder/nama file) dan bisa
+  // berukuran sangat besar (puluhan ribu node) — enkripsi/dekripsi + deep-clone JSON
+  // pada seluruh record ini per mutasi kecil sangat mahal (bisa >1 detik). Skip saja.
+  storesToSkipEncryption: new Set(["discovery"]),
+
   /**
    * Auto-initialize encryption (called automatically)
    * User tidak perlu memanggil ini, akan otomatis dipanggil saat pertama kali digunakan
@@ -128,7 +133,10 @@ export const IndexedDBManager = {
   /**
    * Encrypt data fields (kecuali metadata)
    */
-  encryptDataFields: async function (data) {
+  encryptDataFields: async function (data, storeName = null) {
+    if (storeName && this.storesToSkipEncryption.has(storeName)) {
+      return data;
+    }
     // Auto-initialize encryption jika belum
     if (!this.encryptionInitialized) {
       await this._autoInitEncryption();
@@ -170,7 +178,10 @@ export const IndexedDBManager = {
   /**
    * Decrypt data fields
    */
-  decryptDataFields: async function (data) {
+  decryptDataFields: async function (data, storeName = null) {
+    if (storeName && this.storesToSkipEncryption.has(storeName)) {
+      return data;
+    }
     // Auto-initialize encryption jika belum
     if (!this.encryptionInitialized) {
       await this._autoInitEncryption();
@@ -1169,7 +1180,7 @@ export const IndexedDBManager = {
       };
 
       // 🔐 Encrypt data jika encryption enabled (OTOMATIS)
-      this.encryptDataFields(dataWithTimestamp)
+      this.encryptDataFields(dataWithTimestamp, storeName)
         .then((dataToSave) => {
           const transaction = this.db.transaction([storeName], "readwrite");
           const store = transaction.objectStore(storeName);
@@ -1178,7 +1189,7 @@ export const IndexedDBManager = {
           request.onerror = () => reject(request.error);
           request.onsuccess = async () => {
             // Notify observers dengan data yang sudah di-decrypt untuk observer
-            const decryptedData = await this.decryptDataFields(dataToSave);
+            const decryptedData = await this.decryptDataFields(dataToSave, storeName);
             this.notifyObservers(storeName, decryptedData, "update");
             resolve(request.result);
           };
@@ -1236,7 +1247,7 @@ export const IndexedDBManager = {
           const encryptedData = request.result;
           if (encryptedData) {
             try {
-              const decryptedData = await this.decryptDataFields(encryptedData);
+              const decryptedData = await this.decryptDataFields(encryptedData, storeName);
               resolve(decryptedData);
             } catch (decryptError) {
               console.warn(`Decryption error for store "${storeName}", returning encrypted data:`, decryptError);
@@ -1280,7 +1291,7 @@ export const IndexedDBManager = {
         request.onsuccess = async () => {
           // 🔐 Decrypt semua data jika encryption enabled (OTOMATIS)
           const encryptedData = request.result;
-          const decryptPromises = encryptedData.map((item) => this.decryptDataFields(item));
+          const decryptPromises = encryptedData.map((item) => this.decryptDataFields(item, storeName));
           const decryptedData = await Promise.all(decryptPromises);
           resolve({ data: decryptedData });
         };
@@ -1308,6 +1319,18 @@ export const IndexedDBManager = {
       try {
         const transaction = this.db.transaction([storeName], "readwrite");
         const store = transaction.objectStore(storeName);
+
+        // Jika key tidak diberikan, hapus semua data (clear store)
+        if (key == null) {
+          const request = store.clear();
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => {
+            this.notifyObservers(storeName, null, "clear");
+            resolve(request.result);
+          };
+          return;
+        }
+
         const request = store.delete(key);
 
         request.onerror = () => reject(request.error);
@@ -2703,7 +2726,7 @@ export const IndexedDBManager = {
         };
 
         // 🔐 Encrypt data jika encryption enabled (OTOMATIS)
-        const encryptPromise = this.encryptDataFields(dataWithTimestamp);
+        const encryptPromise = this.encryptDataFields(dataWithTimestamp, storeName);
         encryptPromise.then(async (dataToSave) => {
           const transaction = this.db.transaction([storeName], "readwrite");
           const store = transaction.objectStore(storeName);
@@ -2712,7 +2735,7 @@ export const IndexedDBManager = {
           request.onerror = () => reject(request.error);
           request.onsuccess = async () => {
             // Notify observers dengan data yang sudah di-decrypt
-            const decryptedData = await this.decryptDataFields(dataToSave);
+            const decryptedData = await this.decryptDataFields(dataToSave, storeName);
             this.notifyObservers(storeName, decryptedData, "update");
             resolve(request.result);
           };
@@ -2763,7 +2786,7 @@ export const IndexedDBManager = {
           const encryptedData = request.result;
           if (encryptedData) {
             try {
-              const decryptedData = await this.decryptDataFields(encryptedData);
+              const decryptedData = await this.decryptDataFields(encryptedData, storeName);
               resolve(decryptedData);
             } catch (decryptError) {
               console.warn(`Decryption error for store "${storeName}", returning encrypted data:`, decryptError);
@@ -2795,7 +2818,7 @@ export const IndexedDBManager = {
         request.onsuccess = async () => {
           // 🔐 Decrypt semua data jika encryption enabled (OTOMATIS)
           const encryptedData = request.result;
-          const decryptPromises = encryptedData.map((item) => this.decryptDataFields(item));
+          const decryptPromises = encryptedData.map((item) => this.decryptDataFields(item, storeName));
           const decryptedData = await Promise.all(decryptPromises);
           resolve({ data: decryptedData });
         };

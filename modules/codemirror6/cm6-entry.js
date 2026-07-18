@@ -1,0 +1,37 @@
+// CM6 bundle entry point — semua export yang dibutuhkan NexaCmirror6
+export * from '@codemirror/state';
+export * from '@codemirror/view';
+export * from '@codemirror/commands';
+export * from '@codemirror/language';
+export * from '@codemirror/search';
+export { setSearchQuery, SearchQuery, findNext, findPrevious, replaceNext, replaceAll, closeSearchPanel, openSearchPanel, getSearchQuery } from '@codemirror/search';
+export * from '@codemirror/autocomplete';
+export * from '@codemirror/lint';
+export { html } from '@codemirror/lang-html';
+export { json } from '@codemirror/lang-json';
+export { javascript } from '@codemirror/lang-javascript';
+export { css } from '@codemirror/lang-css';
+export { sql, MySQL, PostgreSQL, SQLite, StandardSQL } from '@codemirror/lang-sql';
+export { markdown } from '@codemirror/lang-markdown';
+export { xml } from '@codemirror/lang-xml';
+export { php } from '@codemirror/lang-php';
+export { yaml } from '@codemirror/lang-yaml';
+export { tags } from '@lezer/highlight';
+export { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+// Legacy modes via StreamLanguage
+export { StreamLanguage } from '@codemirror/language';
+export { python } from '@codemirror/legacy-modes/mode/python';
+export { ruby } from '@codemirror/legacy-modes/mode/ruby';
+export { go } from '@codemirror/legacy-modes/mode/go';
+export { rust } from '@codemirror/legacy-modes/mode/rust';
+export { java } from '@codemirror/legacy-modes/mode/clike';
+export { kotlin } from '@codemirror/legacy-modes/mode/clike';
+export { csharp } from '@codemirror/legacy-modes/mode/clike';
+export { swift } from '@codemirror/legacy-modes/mode/swift';
+export { lua } from '@codemirror/legacy-modes/mode/lua';
+export { dart } from '@codemirror/legacy-modes/mode/clike';
+export { shell } from '@codemirror/legacy-modes/mode/shell';
+export { powerShell } from '@codemirror/legacy-modes/mode/powershell';
+export { dockerFile } from '@codemirror/legacy-modes/mode/dockerfile';
+export { toml } from '@codemirror/legacy-modes/mode/toml';
+export { perl } from '@codemirror/legacy-modes/mode/perl';

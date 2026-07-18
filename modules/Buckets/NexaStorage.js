@@ -1,10 +1,51 @@
-  // ...existing code...
 import { NexaFetch, nexaFetch } from "./NexaFetch.js";
 import NexaEncrypt from "./NexaEncrypt.js";
 import NexaModels from "./NexaModels.js";
 import { NexaFederated } from "./NexaFederated.js";
 import { IndexedDBManager } from "./IndexDB.js";
 import { LocalStorageManager } from "./localStorage.js";
+
+/**
+ * Circuit breaker untuk endpoint /outside.
+ * Jika satu request gagal (network error), semua request berikutnya langsung skip
+ * selama COOLDOWN_MS tanpa mencoba HTTP — mencegah banjir net::ERR_EMPTY_RESPONSE
+ * di DevTools saat backend offline.
+ */
+let _outsideCbUntil = 0;
+const OUTSIDE_CB_COOLDOWN = 30000;
+
+function _isOutsideCircuitOpen() {
+  return Date.now() < _outsideCbUntil;
+}
+
+function _tripOutsideCircuit() {
+  _outsideCbUntil = Date.now() + OUTSIDE_CB_COOLDOWN;
+}
+
+// Pasang interceptor global di nexaFetch — blokir request /outside SEBELUM fetch()
+// agar Chrome tidak mencetak net::ERR_EMPTY_RESPONSE ke DevTools.
+// Interceptor ini melindungi SEMUA kode (package proxy, models, get, post, dll).
+try {
+  nexaFetch.addRequestInterceptor(function _nexaOutsideCircuitBreaker(config) {
+    if (!config || typeof config.url !== 'string') return config;
+    if (config.method !== 'POST') return config;
+    if (!config.url.includes('/outside')) return config;
+    if (!_isOutsideCircuitOpen()) return config;
+    const remain = Math.round((_outsideCbUntil - Date.now()) / 1000);
+    const err = new Error(`Backend offline (circuit breaker, coba lagi ${remain}s)`);
+    err.name = 'CircuitBreakerError';
+    throw err;
+  });
+  // Trip circuit pada network error dari SEMUA jalur (package proxy, models, dll)
+  nexaFetch.onError(function _nexaOutsideCircuitTripper(err) {
+    if (!err) return;
+    if (err.name === 'TypeError' || /Failed to fetch|NetworkError|ERR_EMPTY_RESPONSE|ERR_CONNECTION/i.test(String(err?.message || err))) {
+      _tripOutsideCircuit();
+    }
+  });
+} catch (_) {
+  /* abaikan jika nexaFetch belum siap */
+}
 
 // Helper function to normalize URL paths and avoid double slashes
 function normalizeUrl(...parts) {
@@ -179,16 +220,18 @@ export function Storage() {
     return url;
   };
 
-  // Normalize apiBase before using it
+  // getBaseURL() re-evaluasi NEXA.apiBase tiap call — hindari race condition saat Storage()
+  // dipanggil sebelum NXUI.Tatiye selesai inisialisasi
+  const getBaseURL = () => normalizeUrl(normalizeUrl(NEXA.apiBase || '') + "/outside");
+  const getCURL = () => normalizeUrl(NEXA.apiBase || '');
+  const getBaseAPI = () => normalizeUrl(NEXA.apiBase || '');
   const normalizedApiBase = normalizeUrl(NEXA.apiBase || '');
-  
-  
-  const baseURL = normalizeUrl(normalizedApiBase + "/outside");
   const CURL = normalizedApiBase;
   const baseAPI = normalizedApiBase;
   const userid =NEXA.userId;
   const settext = NEXA.controllers.packages + "Controllers";
   let CapitalControllers = settext.charAt(0).toUpperCase() + settext.slice(1);
+  // console.log('getBaseURL:', CURL);
 
   // ✅ Helper: Hapus double slash kecuali setelah "http(s):"
   const cleanURL = (url) => {
@@ -386,6 +429,15 @@ export function Storage() {
   const rawWorkerFetchJson = async (url, method, bodyPayload, fetchOptions) => {
     const m = (method || "POST").toUpperCase();
     const isGet = m === "GET" || m === "HEAD" || m === "OPTIONS";
+
+    // Circuit breaker: jika /outside sedang cooldown, lempar langsung tanpa HTTP request
+    if (!isGet && url.includes('/outside') && _isOutsideCircuitOpen()) {
+      const remain = Math.round((_outsideCbUntil - Date.now()) / 1000);
+      const err = new Error(`Backend offline (circuit breaker, coba lagi ${remain}s)`);
+      err.name = 'CircuitBreakerError';
+      throw err;
+    }
+
     if (shouldUseStorageWorker()) {
       try {
         if (workerDebugEnabled()) {
@@ -404,7 +456,15 @@ export function Storage() {
     if (isGet) {
       return nexaFetch.get(url, bodyPayload || {});
     }
-    return nexaFetch.post(url, bodyPayload, fetchOptions || {});
+    try {
+      return await nexaFetch.post(url, bodyPayload, fetchOptions || {});
+    } catch (networkErr) {
+      // Trip circuit breaker untuk network errors — hindari banjir ERR_EMPTY_RESPONSE
+      if (networkErr?.name === 'TypeError' || /Failed to fetch|NetworkError|ERR_EMPTY_RESPONSE|ERR_CONNECTION/i.test(String(networkErr?.message || networkErr))) {
+        _tripOutsideCircuit();
+      }
+      throw networkErr;
+    }
   };
 
   const workerFetchJson = async (
@@ -467,7 +527,7 @@ export function Storage() {
             get: function (target, method) {
               return async function (data) {
                 try {
-                  const url = chainUrl(CURL, row, method);
+                  const url = chainUrl(getCURL(), row, method);
                   const body = addUserId(data || {});
                   const result = await workerFetchJson(
                     url,
@@ -523,7 +583,7 @@ export function Storage() {
             get: function (target, method) {
               return async function (data) {
                 try {
-                  const url = chainUrl(baseAPI, row, method);
+                  const url = chainUrl(getBaseAPI(), row, method);
                   const body = addUserId(data || {});
                   const result = await workerFetchJson(
                     url,
@@ -551,7 +611,7 @@ export function Storage() {
 
       return (async function () {
         try {
-          const url = isAbsoluteUrl(row) ? normalizeUrl(String(row).trim()) : joinURL(baseAPI, row);
+          const url = isAbsoluteUrl(row) ? normalizeUrl(String(row).trim()) : joinURL(getBaseAPI(), row);
           const payload = addUserId(options);
           const data = await workerFetchJson(url, "POST", payload, {}, {
             kind: "api_once",
@@ -571,7 +631,7 @@ export function Storage() {
       try {
         const url = isAbsoluteUrl(row)
           ? normalizeUrl(String(row).trim())
-          : joinURL(baseURL, row);
+          : joinURL(getBaseURL(), row);
         const opts = addUserId(options);
         const data = await workerFetchJson(url, "GET", opts, {}, {
           kind: "get",
@@ -588,7 +648,7 @@ export function Storage() {
 
     post: async function (row, endpoints, options = {}) {
       try {
-        const url = joinURL(baseURL, row);
+        const url = joinURL(getBaseURL(), row);
         const ep = addUserId(endpoints);
         const data = await workerFetchJson(
           url,
@@ -616,7 +676,7 @@ export function Storage() {
         packageControllers.charAt(0).toUpperCase() +
         packageControllers.slice(1);
 
-      const outsideEndpoint = baseURL;
+      const outsideEndpoint = getBaseURL();
 
       // Return a proxy object that can handle method calls directly
       return new Proxy(
@@ -712,7 +772,12 @@ export function Storage() {
 
                 return await cachedJsonFetch(cacheKeyObj, fetchImpl);
               } catch (error) {
-                console.error("POST Error:", error);
+                // Background fetch gagal (backend offline / timeout saat refresh) — jangan cemari console
+                if (error?.name === 'TypeError' && /failed to fetch|networkerror/i.test(error.message || '')) {
+                  console.warn("POST background fetch gagal:", error.message);
+                } else {
+                  console.warn("POST Error:", error);
+                }
                 throw error;
               }
             };
@@ -752,14 +817,19 @@ export function Storage() {
                 uid: userid,
               };
               return await workerFetchJson(
-                baseURL,
+                getBaseURL(),
                 "POST",
                 dataKey,
                 options,
                 cacheKeyObj
               );
             } catch (error) {
-              console.error("POST Error:", error);
+              // Background fetch gagal (backend offline / timeout saat refresh) — cukup warn
+              if (error?.name === 'TypeError' && /failed to fetch|networkerror/i.test(error.message || '')) {
+                console.warn("POST background fetch gagal:", error.message);
+              } else {
+                console.warn("POST Error:", error);
+              }
               throw error;
             }
           };
@@ -805,7 +875,7 @@ export function Storage() {
       };
 
       const data = await workerFetchJson(
-        baseURL,
+        getBaseURL(),
         "POST",
         dataKey,
         options,
@@ -943,7 +1013,7 @@ export function Storage() {
     // DELETE method
     delete: async function (row, options = {}) {
       try {
-        const url = joinURL(baseURL, row);
+        const url = joinURL(getBaseURL(), row);
         const result = await nexaFetch.delete(url, addUserId(options));
         return result;
       } catch (error) {

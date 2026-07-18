@@ -49,20 +49,20 @@ export class NexaNetwork {
         if (this.lastCheck) {
             const changes = this.compareConnections(this.lastCheck, current);
         }
-        
+
         // Simpan ke history
         this.history.push({
             timestamp: new Date(),
             ...current
         });
-        
+
         // Batasi history hanya 50 entri terakhir
         if (this.history.length > 50) {
             this.history.shift();
         }
-        
+
         this.lastCheck = current;
-        
+
         // Analisis stabilitas
         const stability = this.analyzeStability();
 

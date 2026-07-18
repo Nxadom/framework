@@ -100,15 +100,18 @@ a {
   color: #0168fa;
   text-decoration: none;
   background-color: transparent;
+  cursor: pointer;
 }
 a:hover {
   color: #0148ae;
   text-decoration: none;
+  cursor: pointer;
 }
 
 a:not([href]):not([tabindex]) {
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
 }
 a:not([href]):not([tabindex]):hover,
 a:not([href]):not([tabindex]):focus {

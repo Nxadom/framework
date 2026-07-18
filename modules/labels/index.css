@@ -25,4 +25,43 @@
   line-height: 22px;
 }
 
+.IssueLabel .material-symbols-outlined,
+.IssueLabel .material-icons {
+  font-size: 12px;
+  line-height: 1;
+  vertical-align: middle;
+  position: relative;
+  top: -0.05em;
+}
+
+.IssueLabel--big .material-symbols-outlined,
+.IssueLabel--big .material-icons {
+  font-size: 14px;
+}
+
+.IssueLabel .octicon {
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
+  position: relative;
+  top: -0.05em;
+}
+
+.IssueLabel--big .octicon {
+  width: 14px;
+  height: 14px;
+}
+
+.IssueLabel i[class*="fa-"] {
+  font-size: 11px;
+  line-height: 1;
+  vertical-align: middle;
+  position: relative;
+  top: -0.05em;
+}
+
+.IssueLabel--big i[class*="fa-"] {
+  font-size: 13px;
+}
+
 /*# sourceMappingURL=index.css.map */

@@ -207,7 +207,7 @@ export const getRoutesWithColor = (assetColor = {}, propertiData = {}) => {
     name: "Home",
     component: HomeScreen,
     options: {
-      title: "NexaJS",
+      title: "Nxdom",
       headerShown: false,
       statusBar: {
         style: "dark",

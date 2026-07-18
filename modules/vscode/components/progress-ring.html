@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Ring — VS Code UI Toolkit</title>
+    <link rel="stylesheet" href="vs.css">
+    <style>
+        h2 { color: #007acc; font-size: 18px; margin-bottom: 20px; }
+        .demo { display: flex; gap: 16px; align-items: center; background: #252526; border: 1px solid #3c3c3c; border-radius: 6px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <h2>vscode-progress-ring</h2>
+    <div class="demo">
+        <div class="vsc-progress-ring">
+            <svg viewBox="0 0 16 16">
+                <circle class="bg" cx="50%" cy="50%" r="7"/>
+                <circle class="indicator" cx="50%" cy="50%" r="7"/>
+            </svg>
+        </div>
+        <span style="color:#888;font-size:12px;">Loading...</span>
+    </div>
+</body>
+</html>

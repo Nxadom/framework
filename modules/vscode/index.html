@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS Code UI Jadi</title>
+    <style>
+        /* Opsional: Membuat latar belakang gelap seperti tema default VS Code */
+        body {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            padding: 20px;
+            font-family: sans-serif;
+        }
+        .form-group { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <h2>Formulir Pengaturan Gaya IDE</h2>
+    
+    <!-- Tombol Jadi -->
+    <div class="form-group">
+        <vscode-button appearance="primary">Simpan Perubahan</vscode-button>
+        <vscode-button appearance="secondary">Batal</vscode-button>
+    </div>
+
+    <!-- Kolom Input Teks Jadi -->
+    <div class="form-group">
+        <vscode-text-field placeholder="Masukkan nama file..."></vscode-text-field>
+    </div>
+
+    <!-- Dropdown / Select Jadi -->
+    <div class="form-group">
+        <vscode-dropdown>
+            <vscode-option>JavaScript</vscode-option>
+            <vscode-option>Python</vscode-option>
+            <vscode-option>HTML/CSS</vscode-option>
+        </vscode-dropdown>
+    </div>
+
+    <!-- Checkbox Jadi -->
+    <div class="form-group">
+        <vscode-checkbox checked>Aktifkan Auto-Save</vscode-checkbox>
+    </div>
+
+    <!-- Menghubungkan ke script pengekstrak -->
+    <script type="module" src="/main.js"></script>
+</body>
+</html>

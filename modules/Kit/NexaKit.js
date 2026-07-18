@@ -502,6 +502,9 @@ export class NexaElementBuilder {
     return _nxSourceBlock(this._root.outerHTML, innerTag, jsSource);
   }
   blockquote(c) { return this._sibling('blockquote', c); }
+  details(c)    { return this._sibling('details', c); }
+  summary(c)    { return this._sibling('summary', c); }
+  option(c)     { return this._sibling('option', c); }
   /** Buat elemen <i> sebagai sibling — opsional class icon — chainable */
   icon(classes)    { const b = this._sibling('i'); return classes ? b.class(classes) : b; }
 
@@ -719,6 +722,9 @@ export class NexaViewResult {
     return _nxSourceBlock(this._root ? this._root.outerHTML : '', innerTag, jsSource);
   }
   blockquote(c) { return this._sibling('blockquote', c); }
+  details(c)    { return this._sibling('details', c); }
+  summary(c)    { return this._sibling('summary', c); }
+  option(c)     { return this._sibling('option', c); }
   /** Buat elemen <i> sebagai sibling — opsional class icon — chainable */
   icon(classes)    { const b = this._sibling('i'); return classes ? b.class(classes) : b; }
 
@@ -893,6 +899,9 @@ export class NexaContainerBuilder {
   code(c)      { return this._child('code', c); }
   pre(c)       { return this._child('pre', c); }
   blockquote(c){ return this._child('blockquote', c); }
+  details(c)   { return this._child('details', c); }
+  summary(c)   { return this._child('summary', c); }
+  option(c)    { return this._child('option', c); }
   /** Buat elemen <i> sebagai child — opsional class icon — chainable */
   icon(classes)   { const b = this._child('i'); return classes ? b.class(classes) : b; }
 
@@ -2081,6 +2090,9 @@ export class NexaKit {
   code(c)      { return this.tag('code', c); }
   pre(c)       { return this.tag('pre', c); }
   blockquote(c){ return this.tag('blockquote', c); }
+  details(c)   { return this.tag('details', c); }
+  summary(c)   { return this.tag('summary', c); }
+  option(c)    { return this.tag('option', c); }
   /** Buat elemen <i> — opsional class icon — chainable */
   icon(classes)   { const b = this.tag('i'); return classes ? b.class(classes) : b; }
 

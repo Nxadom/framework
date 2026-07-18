@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS Code Webview UI Toolkit — Semua Komponen</title>
+    <link rel="stylesheet" href="vs.css">
+    <style>
+        h1 { color: #007acc; font-size: 24px; margin-bottom: 4px; }
+        .subtitle { color: #888; font-size: 13px; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+        .card {
+            background: #252526; border: 1px solid #3c3c3c; border-radius: 6px; padding: 16px;
+            text-decoration: none; color: inherit; display: block; transition: border-color 0.2s;
+        }
+        .card:hover { border-color: #007acc; }
+        .card h3 { color: #fff; font-size: 14px; margin-bottom: 4px; }
+        .card p { color: #888; font-size: 12px; margin-bottom: 8px; }
+        .card .tag-list { display: flex; flex-wrap: wrap; gap: 4px; }
+        .card .tag-list span {
+            background: #2d2d2d; color: #aaa; font-size: 10px; padding: 2px 6px;
+            border-radius: 3px; text-transform: uppercase;
+        }
+        .footer { margin-top: 30px; padding-top: 16px; border-top: 1px solid #3c3c3c; color: #666; font-size: 12px; }
+        .footer a { color: #3794ff; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>🎨 VS Code Webview UI Toolkit</h1>
+    <p class="subtitle">Semua komponen — CSS diekstrak dari <code>src/</code> (<a href="https://github.com/microsoft/vscode-webview-ui-toolkit" style="color:#3794ff;">Microsoft</a>)</p>
+
+    <div class="grid">
+        <a class="card" href="badge.html">
+            <h3>🏷️ Badge</h3>
+            <p>&lt;vscode-badge&gt; — Menampilkan angka/status</p>
+            <div class="tag-list"><span>badge</span><span>badge.styles.ts</span></div>
+        </a>
+        <a class="card" href="button.html">
+            <h3>🔘 Button</h3>
+            <p>&lt;vscode-button&gt; — Primary, secondary, icon</p>
+            <div class="tag-list"><span>button</span><span>button.styles.ts</span></div>
+        </a>
+        <a class="card" href="checkbox.html">
+            <h3>✅ Checkbox</h3>
+            <p>&lt;vscode-checkbox&gt; — Pilihan on/off</p>
+            <div class="tag-list"><span>checkbox</span><span>checkbox.styles.ts</span></div>
+        </a>
+        <a class="card" href="radio.html">
+            <h3>🔘 Radio</h3>
+            <p>&lt;vscode-radio&gt; + &lt;vscode-radio-group&gt;</p>
+            <div class="tag-list"><span>radio</span><span>radio-group</span><span>radio.styles.ts</span></div>
+        </a>
+        <a class="card" href="dropdown.html">
+            <h3>📋 Dropdown</h3>
+            <p>&lt;vscode-dropdown&gt; + &lt;vscode-option&gt;</p>
+            <div class="tag-list"><span>dropdown</span><span>option</span><span>dropdown.styles.ts</span></div>
+        </a>
+        <a class="card" href="text-field.html">
+            <h3>✏️ Text Field</h3>
+            <p>&lt;vscode-text-field&gt; — Input teks satu baris</p>
+            <div class="tag-list"><span>text-field</span><span>text-field.styles.ts</span></div>
+        </a>
+        <a class="card" href="text-area.html">
+            <h3>📄 Text Area</h3>
+            <p>&lt;vscode-text-area&gt; — Input teks multi-baris</p>
+            <div class="tag-list"><span>text-area</span><span>text-area.styles.ts</span></div>
+        </a>
+        <a class="card" href="link.html">
+            <h3>🔗 Link</h3>
+            <p>&lt;vscode-link&gt; — Tautan navigasi</p>
+            <div class="tag-list"><span>link</span><span>link.styles.ts</span></div>
+        </a>
+        <a class="card" href="tag.html">
+            <h3>🏷️ Tag</h3>
+            <p>&lt;vscode-tag&gt; — Label teks uppercase</p>
+            <div class="tag-list"><span>tag</span><span>tag.styles.ts</span></div>
+        </a>
+        <a class="card" href="divider.html">
+            <h3>➖ Divider</h3>
+            <p>&lt;vscode-divider&gt; — Garis pemisah</p>
+            <div class="tag-list"><span>divider</span><span>divider.styles.ts</span></div>
+        </a>
+        <a class="card" href="data-grid.html">
+            <h3>📊 Data Grid</h3>
+            <p>&lt;vscode-data-grid&gt; — Tabel data (row + cell)</p>
+            <div class="tag-list"><span>data-grid</span><span>data-grid-row</span><span>data-grid-cell</span></div>
+        </a>
+        <a class="card" href="panels.html">
+            <h3>📑 Panels</h3>
+            <p>&lt;vscode-panels&gt; — Tab + panel view</p>
+            <div class="tag-list"><span>panels</span><span>panel-tab</span><span>panel-view</span></div>
+        </a>
+        <a class="card" href="progress-ring.html">
+            <h3>⏳ Progress Ring</h3>
+            <p>&lt;vscode-progress-ring&gt; — Animasi loading</p>
+            <div class="tag-list"><span>progress-ring</span><span>progress-ring.styles.ts</span></div>
+        </a>
+    </div>
+
+    <div class="footer">
+        <p>Sumber: <a href="https://github.com/microsoft/vscode-webview-ui-toolkit">microsoft/vscode-webview-ui-toolkit</a></p>
+        <p>File CSS: <code>vs.css</code> — <strong>40+ design tokens</strong> di <code>:root</code> + <strong>13 komponen</strong></p>
+        <p>Styles diekstrak dari: <code>design-tokens.ts</code>, <code>badge.styles.ts</code>, <code>button.styles.ts</code>, <code>checkbox.styles.ts</code>, <code>data-grid.styles.ts</code>, <code>divider.styles.ts</code>, <code>dropdown.styles.ts</code>, <code>link.styles.ts</code>, <code>option.styles.ts</code>, <code>panels.styles.ts</code>, <code>progress-ring.styles.ts</code>, <code>radio.styles.ts</code>, <code>radio-group.styles.ts</code>, <code>tag.styles.ts</code>, <code>text-area.styles.ts</code>, <code>text-field.styles.ts</code></p>
+    </div>
+</body>
+</html>

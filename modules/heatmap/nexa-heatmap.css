@@ -1,0 +1,504 @@
+/* NexaHeatmap — panel Usage / contribution graph (SVG native) */
+
+.nx-hm-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.nx-hm-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-hm-card {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.nx-hm-card-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.nx-hm-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: #1f2328;
+}
+
+.nx-hm-filters {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.nx-hm-filters::-webkit-scrollbar { height: 3px; }
+.nx-hm-filters::-webkit-scrollbar-track { background: transparent; }
+.nx-hm-filters::-webkit-scrollbar-thumb { background: #d0d7de; border-radius: 3px; }
+
+.nx-hm-fbtn {
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid #d0d7de;
+  background: #f6f8fa;
+  color: #57606a;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all .12s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nx-hm-fbtn.active {
+  background: #e6eaf0;
+  color: #1f2328;
+  font-weight: 600;
+  border-color: #8c959f;
+}
+
+.nx-hm-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+  padding-top: 4px;
+}
+
+.nx-hm-scroll::-webkit-scrollbar { height: 4px; }
+.nx-hm-scroll::-webkit-scrollbar-track { background: transparent; }
+.nx-hm-scroll::-webkit-scrollbar-thumb { background: #d0d7de; border-radius: 4px; }
+.nx-hm-scroll::-webkit-scrollbar-thumb:hover { background: #8c959f; }
+
+.nx-hm-chart {
+  min-height: 110px;
+  display: block;
+}
+
+/* Grid DOM */
+.nx-hm-dom {
+  display: inline-block;
+  min-width: min-content;
+}
+
+.nx-hm-months-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.nx-hm-mblock {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+
+.nx-hm-mblock-label {
+  font-size: 11px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: var(--nx-hm-label, #57606a);
+  white-space: nowrap;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.nx-hm-mblock-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2px;
+  /* 7 baris × (11px sel + 2px gap) − gap terakhir */
+  min-height: 89px;
+}
+
+.nx-hm-wcol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 89px;
+}
+
+.nx-hm-slot {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.nx-hm-slot--pad {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/*
+ * Warna ikut index.html (data-color-mode / dark-mode-grid) — CSS saja, tanpa JS observer.
+ * index.html mengatur: localStorage darkMode, prefers-color-scheme, class dark-mode-grid.
+ */
+.nx-hm-chart,
+.nx-hm-legend {
+  --nx-hm-l0: #ebedf0;
+  --nx-hm-l1: #9be9a8;
+  --nx-hm-l2: #40c463;
+  --nx-hm-l3: #30a14e;
+  --nx-hm-l4: #216e39;
+  --nx-hm-label: #57606a;
+  --nx-hm-hover-stroke: #1f2328;
+}
+
+html[data-color-mode="dark"] .nx-hm-chart,
+html[data-color-mode="dark"] .nx-hm-legend,
+html.dark-mode-grid .nx-hm-chart,
+html.dark-mode-grid .nx-hm-legend,
+body.dark-mode-grid .nx-hm-chart,
+body.dark-mode-grid .nx-hm-legend {
+  --nx-hm-l0: #3d444d;
+  --nx-hm-l1: #0e4429;
+  --nx-hm-l2: #006d32;
+  --nx-hm-l3: #26a641;
+  --nx-hm-l4: #39d353;
+  --nx-hm-label: #8b949e;
+  --nx-hm-hover-stroke: #c9d1d9;
+}
+
+.nx-hm-cell {
+  cursor: default;
+  background: var(--nx-hm-l0);
+}
+
+.nx-hm-cell.nx-hm-lv0 { background: var(--nx-hm-l0); }
+.nx-hm-cell.nx-hm-lv1 { background: var(--nx-hm-l1); }
+.nx-hm-cell.nx-hm-lv2 { background: var(--nx-hm-l2); }
+.nx-hm-cell.nx-hm-lv3 { background: var(--nx-hm-l3); }
+.nx-hm-cell.nx-hm-lv4 { background: var(--nx-hm-l4); }
+
+.nx-hm-cell:hover {
+  outline: 1px solid var(--nx-hm-hover-stroke);
+  outline-offset: -1px;
+}
+
+.nx-hm-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+  min-height: 18px;
+  color: #57606a;
+  font-size: 11px;
+}
+
+.nx-hm-legend-inner {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.nx-hm-legend-swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+}
+
+.nx-hm-legend-swatch.nx-hm-lv0 { background: var(--nx-hm-l0); }
+.nx-hm-legend-swatch.nx-hm-lv1 { background: var(--nx-hm-l1); }
+.nx-hm-legend-swatch.nx-hm-lv2 { background: var(--nx-hm-l2); }
+.nx-hm-legend-swatch.nx-hm-lv3 { background: var(--nx-hm-l3); }
+.nx-hm-legend-swatch.nx-hm-lv4 { background: var(--nx-hm-l4); }
+
+.nx-hm-legend-less,
+.nx-hm-legend-more {
+  margin: 0 4px;
+}
+
+.nx-hm-legend-steps {
+  margin-left: 8px;
+  color: #8c959f;
+  font-size: 10px;
+}
+
+.nx-hm-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #d0d7de;
+}
+
+.nx-hm-slabel {
+  font-size: 10px;
+  color: #57606a;
+  margin-bottom: 2px;
+}
+
+.nx-hm-sval {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.nx-hm-years {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex-shrink: 0;
+  width: 68px;
+  padding-top: 4px;
+}
+
+.nx-hm-year-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0969da;
+  cursor: pointer;
+  transition: background .12s;
+}
+
+.nx-hm-year-btn:hover { background: #f3f4f6; }
+.nx-hm-year-btn.active { background: #0969da; color: #fff; }
+
+.nx-hm-extra { margin-top: 20px; }
+
+/* Route activity feed (history-view) */
+.nx-hm-activity-heading {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2328;
+  margin: 0 0 16px;
+}
+
+.nx-hm-activity-empty {
+  color: #57606a;
+  font-size: 13px;
+  padding: 16px 0;
+  margin: 0;
+}
+
+.nx-hm-activity-month { margin-bottom: 20px; }
+
+.nx-hm-activity-month-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.nx-hm-activity-month-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.nx-hm-activity-month-year {
+  font-weight: 400;
+  color: #57606a;
+}
+
+.nx-hm-activity-month-line {
+  flex: 1;
+  height: 1px;
+  background: #d0d7de;
+}
+
+.nx-hm-activity-box {
+  padding: 12px 14px;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.nx-hm-activity-summary {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2328;
+  margin-bottom: 8px;
+}
+
+.nx-hm-activity-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.nx-hm-activity-route {
+  color: #0969da;
+  flex-shrink: 0;
+  min-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-hm-activity-visits {
+  color: #57606a;
+  flex-shrink: 0;
+  min-width: 58px;
+  text-align: right;
+}
+
+.nx-hm-activity-bar {
+  flex: 1;
+  background: #d0d7de;
+  border-radius: 2px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.nx-hm-activity-bar-fill {
+  height: 100%;
+  background: #26a641;
+  border-radius: 2px;
+}
+
+/* dark mode panel */
+html[data-color-mode="dark"] .nx-hm-card,
+html.dark-mode-grid .nx-hm-card,
+body.dark-mode-grid .nx-hm-card {
+  background: #1e1e1e;
+  border-color: #3d3d3d;
+}
+
+html[data-color-mode="dark"] .nx-hm-title,
+html[data-color-mode="dark"] .nx-hm-sval,
+html.dark-mode-grid .nx-hm-title,
+html.dark-mode-grid .nx-hm-sval,
+body.dark-mode-grid .nx-hm-title,
+body.dark-mode-grid .nx-hm-sval {
+  color: #e0e0e0;
+}
+
+html[data-color-mode="dark"] .nx-hm-legend,
+html[data-color-mode="dark"] .nx-hm-slabel,
+html.dark-mode-grid .nx-hm-legend,
+html.dark-mode-grid .nx-hm-slabel,
+body.dark-mode-grid .nx-hm-legend,
+body.dark-mode-grid .nx-hm-slabel {
+  color: #8b949e;
+}
+
+html[data-color-mode="dark"] .nx-hm-fbtn,
+html.dark-mode-grid .nx-hm-fbtn,
+body.dark-mode-grid .nx-hm-fbtn {
+  background: #2c2c2c;
+  border-color: #3d3d3d;
+  color: #8b949e;
+}
+
+html[data-color-mode="dark"] .nx-hm-fbtn.active,
+html.dark-mode-grid .nx-hm-fbtn.active,
+body.dark-mode-grid .nx-hm-fbtn.active {
+  background: #3d3d3d;
+  color: #e0e0e0;
+  border-color: #505050;
+}
+
+html[data-color-mode="dark"] .nx-hm-stats,
+html.dark-mode-grid .nx-hm-stats,
+body.dark-mode-grid .nx-hm-stats {
+  border-top-color: #3d3d3d;
+}
+
+html[data-color-mode="dark"] .nx-hm-year-btn,
+html.dark-mode-grid .nx-hm-year-btn,
+body.dark-mode-grid .nx-hm-year-btn {
+  color: #58a6ff;
+}
+
+html[data-color-mode="dark"] .nx-hm-year-btn:hover,
+html.dark-mode-grid .nx-hm-year-btn:hover,
+body.dark-mode-grid .nx-hm-year-btn:hover {
+  background: #2c2c2c;
+}
+
+html[data-color-mode="dark"] .nx-hm-year-btn.active,
+html.dark-mode-grid .nx-hm-year-btn.active,
+body.dark-mode-grid .nx-hm-year-btn.active {
+  background: #1f6feb;
+  color: #fff;
+}
+
+html[data-color-mode="dark"] .nx-hm-scroll::-webkit-scrollbar-thumb,
+html.dark-mode-grid .nx-hm-scroll::-webkit-scrollbar-thumb,
+body.dark-mode-grid .nx-hm-scroll::-webkit-scrollbar-thumb {
+  background: #3d3d3d;
+}
+
+html[data-color-mode="dark"] .nx-hm-scroll::-webkit-scrollbar-thumb:hover,
+html.dark-mode-grid .nx-hm-scroll::-webkit-scrollbar-thumb:hover,
+body.dark-mode-grid .nx-hm-scroll::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Route activity — dark mode */
+html[data-color-mode="dark"] .nx-hm-activity-heading,
+html[data-color-mode="dark"] .nx-hm-activity-month-title,
+html[data-color-mode="dark"] .nx-hm-activity-summary,
+html.dark-mode-grid .nx-hm-activity-heading,
+html.dark-mode-grid .nx-hm-activity-month-title,
+html.dark-mode-grid .nx-hm-activity-summary,
+body.dark-mode-grid .nx-hm-activity-heading,
+body.dark-mode-grid .nx-hm-activity-month-title,
+body.dark-mode-grid .nx-hm-activity-summary {
+  color: #e6edf3;
+}
+
+html[data-color-mode="dark"] .nx-hm-activity-month-year,
+html[data-color-mode="dark"] .nx-hm-activity-visits,
+html[data-color-mode="dark"] .nx-hm-activity-empty,
+html.dark-mode-grid .nx-hm-activity-month-year,
+html.dark-mode-grid .nx-hm-activity-visits,
+html.dark-mode-grid .nx-hm-activity-empty,
+body.dark-mode-grid .nx-hm-activity-month-year,
+body.dark-mode-grid .nx-hm-activity-visits,
+body.dark-mode-grid .nx-hm-activity-empty {
+  color: #8b949e;
+}
+
+html[data-color-mode="dark"] .nx-hm-activity-route,
+html.dark-mode-grid .nx-hm-activity-route,
+body.dark-mode-grid .nx-hm-activity-route {
+  color: #58a6ff;
+}
+
+html[data-color-mode="dark"] .nx-hm-activity-box,
+html.dark-mode-grid .nx-hm-activity-box,
+body.dark-mode-grid .nx-hm-activity-box {
+  background: #161b22;
+  border-color: #3d444d;
+}
+
+html[data-color-mode="dark"] .nx-hm-activity-month-line,
+html[data-color-mode="dark"] .nx-hm-activity-bar,
+html.dark-mode-grid .nx-hm-activity-month-line,
+html.dark-mode-grid .nx-hm-activity-bar,
+body.dark-mode-grid .nx-hm-activity-month-line,
+body.dark-mode-grid .nx-hm-activity-bar {
+  background: #3d444d;
+}
+
+html[data-color-mode="dark"] .nx-hm-activity-bar-fill,
+html.dark-mode-grid .nx-hm-activity-bar-fill,
+body.dark-mode-grid .nx-hm-activity-bar-fill {
+  background: #3fb950;
+}

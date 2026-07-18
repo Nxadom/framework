@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Field — VS Code UI Toolkit</title>
+    <link rel="stylesheet" href="vs.css">
+    <style>
+        h2 { color: #007acc; font-size: 18px; margin-bottom: 20px; }
+        .demo { display: flex; flex-direction: column; gap: 12px; background: #252526; border: 1px solid #3c3c3c; border-radius: 6px; padding: 20px; max-width: 400px; }
+    </style>
+</head>
+<body>
+    <h2>vscode-text-field</h2>
+    <div class="demo">
+        <div class="vsc-text-field">
+            <label class="label">Nama File</label>
+            <div class="root"><span class="start">📄</span><input class="control" type="text" placeholder="Masukkan nama file..." value="server.js"></div>
+        </div>
+        <div class="vsc-text-field">
+            <label class="label">Search</label>
+            <div class="root"><input class="control" type="search" placeholder="Cari sesuatu..."><span class="end">🔍</span></div>
+        </div>
+        <div class="vsc-text-field" disabled>
+            <label class="label">Disabled</label>
+            <div class="root"><input class="control" type="text" value="Tidak bisa diubah" disabled></div>
+        </div>
+    </div>
+</body>
+</html>

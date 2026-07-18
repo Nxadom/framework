@@ -23,13 +23,7 @@ body {
 .cm-s-default .CodeMirror-line .cm-keyword,
 .cm-s-default .CodeMirror-line span.cm-keyword,
 .cm-s-default span.cm-keyword,
-.cm-s-default pre span.cm-keyword,
-.CodeMirror .cm-keyword,
-.CodeMirror pre .cm-keyword,
-.CodeMirror-lines .cm-keyword,
-.CodeMirror-line .cm-keyword,
-.CodeMirror-line span.cm-keyword,
-span.cm-keyword {
+.cm-s-default pre span.cm-keyword {
   color: #990099 !important;
   font-weight: bold !important;
 }
@@ -40,12 +34,7 @@ span.cm-keyword {
 .cm-s-default .CodeMirror pre .cm-string,
 .cm-s-default .CodeMirror-lines .cm-string,
 .cm-s-default .CodeMirror-line .cm-string,
-.cm-s-default .CodeMirror-line span.cm-string,
-.CodeMirror .cm-string,
-.CodeMirror pre .cm-string,
-.CodeMirror-lines .cm-string,
-.CodeMirror-line .cm-string,
-.CodeMirror-line span.cm-string {
+.cm-s-default .CodeMirror-line span.cm-string {
   color: #008000 !important;
 }
 
@@ -55,12 +44,7 @@ span.cm-keyword {
 .cm-s-default .CodeMirror pre .cm-number,
 .cm-s-default .CodeMirror-lines .cm-number,
 .cm-s-default .CodeMirror-line .cm-number,
-.cm-s-default .CodeMirror-line span.cm-number,
-.CodeMirror .cm-number,
-.CodeMirror pre .cm-number,
-.CodeMirror-lines .cm-number,
-.CodeMirror-line .cm-number,
-.CodeMirror-line span.cm-number {
+.cm-s-default .CodeMirror-line span.cm-number {
   color: #008080 !important;
 }
 
@@ -69,12 +53,7 @@ span.cm-keyword {
 .cm-s-default .CodeMirror pre .cm-operator,
 .cm-s-default .CodeMirror-lines .cm-operator,
 .cm-s-default .CodeMirror-line .cm-operator,
-.cm-s-default .CodeMirror-line span.cm-operator,
-.CodeMirror .cm-operator,
-.CodeMirror pre .cm-operator,
-.CodeMirror-lines .cm-operator,
-.CodeMirror-line .cm-operator,
-.CodeMirror-line span.cm-operator {
+.cm-s-default .CodeMirror-line span.cm-operator {
   color: #000000 !important;
 }
 
@@ -89,17 +68,7 @@ span.cm-keyword {
 .cm-s-default .CodeMirror-line .cm-variable,
 .cm-s-default .CodeMirror-line .cm-variable-2,
 .cm-s-default .CodeMirror-line span.cm-variable,
-.cm-s-default .CodeMirror-line span.cm-variable-2,
-.CodeMirror .cm-variable,
-.CodeMirror .cm-variable-2,
-.CodeMirror pre .cm-variable,
-.CodeMirror pre .cm-variable-2,
-.CodeMirror-lines .cm-variable,
-.CodeMirror-lines .cm-variable-2,
-.CodeMirror-line .cm-variable,
-.CodeMirror-line .cm-variable-2,
-.CodeMirror-line span.cm-variable,
-.CodeMirror-line span.cm-variable-2 {
+.cm-s-default .CodeMirror-line span.cm-variable-2 {
   color: #000000 !important;
 }
 
@@ -109,12 +78,7 @@ span.cm-keyword {
 .cm-s-default .CodeMirror pre .cm-comment,
 .cm-s-default .CodeMirror-lines .cm-comment,
 .cm-s-default .CodeMirror-line .cm-comment,
-.cm-s-default .CodeMirror-line span.cm-comment,
-.CodeMirror .cm-comment,
-.CodeMirror pre .cm-comment,
-.CodeMirror-lines .cm-comment,
-.CodeMirror-line .cm-comment,
-.CodeMirror-line span.cm-comment {
+.cm-s-default .CodeMirror-line span.cm-comment {
   color: #808000 !important;
   font-style: italic !important;
 }
@@ -131,17 +95,7 @@ span.cm-keyword {
 .cm-s-default .CodeMirror-line .cm-builtin,
 .cm-s-default .CodeMirror-line .cm-def,
 .cm-s-default .CodeMirror-line span.cm-builtin,
-.cm-s-default .CodeMirror-line span.cm-def,
-.CodeMirror .cm-builtin,
-.CodeMirror .cm-def,
-.CodeMirror pre .cm-builtin,
-.CodeMirror pre .cm-def,
-.CodeMirror-lines .cm-builtin,
-.CodeMirror-lines .cm-def,
-.CodeMirror-line .cm-builtin,
-.CodeMirror-line .cm-def,
-.CodeMirror-line span.cm-builtin,
-.CodeMirror-line span.cm-def {
+.cm-s-default .CodeMirror-line span.cm-def {
   color: #FF0000 !important;
 }
 
@@ -157,17 +111,7 @@ span.cm-keyword {
 .cm-s-default .CodeMirror-line .cm-variable,
 .cm-s-default .CodeMirror-line .cm-variable-2,
 .cm-s-default .CodeMirror-line span.cm-variable,
-.cm-s-default .CodeMirror-line span.cm-variable-2,
-.CodeMirror .cm-variable,
-.CodeMirror .cm-variable-2,
-.CodeMirror pre .cm-variable,
-.CodeMirror pre .cm-variable-2,
-.CodeMirror-lines .cm-variable,
-.CodeMirror-lines .cm-variable-2,
-.CodeMirror-line .cm-variable,
-.CodeMirror-line .cm-variable-2,
-.CodeMirror-line span.cm-variable,
-.CodeMirror-line span.cm-variable-2 {
+.cm-s-default .CodeMirror-line span.cm-variable-2 {
   color: #800000 !important;
 }
 
@@ -183,17 +127,7 @@ span.cm-keyword {
 .cm-s-default .CodeMirror-line .cm-operator,
 .cm-s-default .CodeMirror-line .cm-punctuation,
 .cm-s-default .CodeMirror-line span.cm-operator,
-.cm-s-default .CodeMirror-line span.cm-punctuation,
-.CodeMirror .cm-operator,
-.CodeMirror .cm-punctuation,
-.CodeMirror pre .cm-operator,
-.CodeMirror pre .cm-punctuation,
-.CodeMirror-lines .cm-operator,
-.CodeMirror-lines .cm-punctuation,
-.CodeMirror-line .cm-operator,
-.CodeMirror-line .cm-punctuation,
-.CodeMirror-line span.cm-operator,
-.CodeMirror-line span.cm-punctuation {
+.cm-s-default .CodeMirror-line span.cm-punctuation {
   color: #FF00FF !important;
 }
 
@@ -209,56 +143,16 @@ span.cm-keyword {
 .cm-s-default .CodeMirror-line .cm-type,
 .cm-s-default .CodeMirror-line .cm-property,
 .cm-s-default .CodeMirror-line span.cm-type,
-.cm-s-default .CodeMirror-line span.cm-property,
-.CodeMirror .cm-type,
-.CodeMirror .cm-property,
-.CodeMirror pre .cm-type,
-.CodeMirror pre .cm-property,
-.CodeMirror-lines .cm-type,
-.CodeMirror-lines .cm-property,
-.CodeMirror-line .cm-type,
-.CodeMirror-line .cm-property,
-.CodeMirror-line span.cm-type,
-.CodeMirror-line span.cm-property {
+.cm-s-default .CodeMirror-line span.cm-property {
   color: #FF9900 !important;
 }
 
-/* CRITICAL: CSS untuk marks yang dibuat dengan markText */
-/* Pastikan marks dengan className cm-keyword mendapatkan styling */
-/* CodeMirror menggunakan struktur khusus untuk marks */
-/* Gunakan selector dengan specificity tinggi */
-.CodeMirror .cm-keyword,
-.CodeMirror span.cm-keyword,
-.CodeMirror-mark .cm-keyword,
-.CodeMirror-mark.cm-keyword,
-.CodeMirror-line .cm-keyword,
-.CodeMirror-line span.cm-keyword,
-.CodeMirror-line .CodeMirror-mark.cm-keyword,
-.CodeMirror-line span.CodeMirror-mark.cm-keyword,
-.cm-keyword,
-span.cm-keyword,
-.CodeMirror-lines .cm-keyword,
-.CodeMirror-lines span.cm-keyword {
-  color: #0000ff !important;
-  font-weight: bold !important;
-}
-
-/* CSS khusus untuk marks - CodeMirror menambahkan class CodeMirror-mark */
-/* Gunakan selector yang lebih spesifik dengan !important */
-.CodeMirror-mark.cm-keyword,
-.CodeMirror .CodeMirror-mark.cm-keyword,
-.CodeMirror-line .CodeMirror-mark.cm-keyword,
-.CodeMirror-line span.CodeMirror-mark.cm-keyword,
-.CodeMirror-lines .CodeMirror-mark.cm-keyword,
-.CodeMirror-lines span.CodeMirror-mark.cm-keyword,
-pre.CodeMirror-line .CodeMirror-mark.cm-keyword,
-pre.CodeMirror-line span.CodeMirror-mark.cm-keyword {
-  color: #0000ff !important;
-  font-weight: bold !important;
-  background: transparent !important;
-}
-
-/* CSS dengan selector paling spesifik untuk memastikan diterapkan */
+/* markText / token sql phpMyAdmin: hanya dalam .cm-s-default agar tema eclipse/dracula/monokai tidak tertimpa !important global */
+.cm-s-default.CodeMirror .CodeMirror-mark.cm-keyword,
+.cm-s-default.CodeMirror .CodeMirror-line .CodeMirror-mark.cm-keyword,
+.cm-s-default.CodeMirror .CodeMirror-line span.CodeMirror-mark.cm-keyword,
+.cm-s-default.CodeMirror-mark.cm-keyword,
+.cm-s-default span.CodeMirror-mark.cm-keyword,
 .cm-s-default .CodeMirror-mark.cm-keyword,
 .cm-s-default .CodeMirror-line .CodeMirror-mark.cm-keyword,
 .cm-s-default .CodeMirror-line span.CodeMirror-mark.cm-keyword,
@@ -269,23 +163,15 @@ pre.CodeMirror-line span.CodeMirror-mark.cm-keyword {
   background: transparent !important;
 }
 
-.CodeMirror .cm-string,
-.CodeMirror span.cm-string,
-.CodeMirror-mark .cm-string,
-.CodeMirror-mark.cm-string,
-.CodeMirror-line .cm-string,
-.CodeMirror-line span.cm-string,
-.cm-string {
+.cm-s-default.CodeMirror .cm-string,
+.cm-s-default.CodeMirror span.cm-string,
+.cm-s-default.CodeMirror .CodeMirror-line span.cm-string {
   color: #008000 !important;
 }
 
-.CodeMirror .cm-number,
-.CodeMirror span.cm-number,
-.CodeMirror-mark .cm-number,
-.CodeMirror-mark.cm-number,
-.CodeMirror-line .cm-number,
-.CodeMirror-line span.cm-number,
-.cm-number {
+.cm-s-default.CodeMirror .cm-number,
+.cm-s-default.CodeMirror span.cm-number,
+.cm-s-default.CodeMirror .CodeMirror-line span.cm-number {
   color: #0000ff !important;
 }
 .NexaCmirror-editorContainer {
@@ -412,101 +298,23 @@ pre.CodeMirror-line span.CodeMirror-mark.cm-keyword {
 
 /* Font size akan diterapkan secara dinamis melalui inline style */
 .NexaCmirror-editorContainer .CodeMirror,
+.NexaCmirror-editorContainer .CodeMirror *,
 .NexaCmirror-editorContainer .CodeMirror-lines,
-.NexaCmirror-editorContainer .CodeMirror pre {
-  font-size: inherit; /* Gunakan fontSize dari wrapper */
+.NexaCmirror-editorContainer .CodeMirror-lines *,
+.NexaCmirror-editorContainer .CodeMirror pre,
+.NexaCmirror-editorContainer .CodeMirror pre * {
+  font-size: inherit !important; /* Gunakan fontSize dari wrapper */
 }
 
-/* Garis pembatas antara nomor baris dan teks - tema default (putih) */
-.NexaCmirror-editorContainer .CodeMirror-gutters {
+/* Hanya tepi default — jangan paksa gutter terang untuk .cm-s-dracula / .cm-s-material-darker dll. */
+.NexaCmirror-editorContainer .CodeMirror.cm-s-default .CodeMirror-gutters {
   border-right: 1px solid #ddd;
   background-color: #f7f7f7;
 }
 
-.NexaCmirror-editorContainer .CodeMirror-linenumber {
+.NexaCmirror-editorContainer .CodeMirror.cm-s-default .CodeMirror-linenumber {
   color: #999;
   padding: 0 8px;
-}
-
-/* Syntax highlighting untuk SQL mode - Style PERSIS seperti phpMyAdmin */
-/* Keywords (Reserved words): Ungu #990099 seperti phpMyAdmin */
-.cm-keyword,
-.NexaCmirror-editorContainer .cm-keyword,
-.NexaCmirror-editorContainer .CodeMirror .cm-keyword,
-.NexaCmirror-editorContainer .CodeMirror pre .cm-keyword,
-.NexaCmirror-editorContainer .CodeMirror-lines .cm-keyword,
-.NexaCmirror-editorContainer .CodeMirror-lines pre .cm-keyword,
-.NexaCmirror-editorContainer .CodeMirror-line .cm-keyword,
-.NexaCmirror-editorContainer .CodeMirror-line span.cm-keyword {
-  color: #990099 !important;
-  font-weight: bold !important;
-}
-
-/* Strings: Hijau #008000 seperti phpMyAdmin */
-.cm-string,
-.NexaCmirror-editorContainer .cm-string,
-.NexaCmirror-editorContainer .CodeMirror .cm-string,
-.NexaCmirror-editorContainer .CodeMirror pre .cm-string,
-.NexaCmirror-editorContainer .CodeMirror-lines .cm-string,
-.NexaCmirror-editorContainer .CodeMirror-lines pre .cm-string,
-.NexaCmirror-editorContainer .CodeMirror-line .cm-string,
-.NexaCmirror-editorContainer .CodeMirror-line span.cm-string {
-  color: #008000 !important;
-}
-
-/* Numbers: Teal (biru kehijauan) seperti phpMyAdmin */
-.cm-number,
-.NexaCmirror-editorContainer .cm-number,
-.NexaCmirror-editorContainer .CodeMirror .cm-number,
-.NexaCmirror-editorContainer .CodeMirror pre .cm-number,
-.NexaCmirror-editorContainer .CodeMirror-lines .cm-number,
-.NexaCmirror-editorContainer .CodeMirror-lines pre .cm-number,
-.NexaCmirror-editorContainer .CodeMirror-line .cm-number,
-.NexaCmirror-editorContainer .CodeMirror-line span.cm-number {
-  color: #008080 !important;
-}
-
-.cm-operator,
-.NexaCmirror-editorContainer .cm-operator,
-.NexaCmirror-editorContainer .CodeMirror .cm-operator,
-.NexaCmirror-editorContainer .CodeMirror pre .cm-operator,
-.NexaCmirror-editorContainer .CodeMirror-lines .cm-operator,
-.NexaCmirror-editorContainer .CodeMirror-lines pre .cm-operator,
-.NexaCmirror-editorContainer .CodeMirror-line .cm-operator,
-.NexaCmirror-editorContainer .CodeMirror-line span.cm-operator {
-  color: #000000 !important;
-}
-
-.cm-variable,
-.cm-variable-2,
-.NexaCmirror-editorContainer .cm-variable,
-.NexaCmirror-editorContainer .cm-variable-2,
-.NexaCmirror-editorContainer .CodeMirror .cm-variable,
-.NexaCmirror-editorContainer .CodeMirror .cm-variable-2,
-.NexaCmirror-editorContainer .CodeMirror pre .cm-variable,
-.NexaCmirror-editorContainer .CodeMirror pre .cm-variable-2,
-.NexaCmirror-editorContainer .CodeMirror-lines .cm-variable,
-.NexaCmirror-editorContainer .CodeMirror-lines .cm-variable-2,
-.NexaCmirror-editorContainer .CodeMirror-lines pre .cm-variable,
-.NexaCmirror-editorContainer .CodeMirror-lines pre .cm-variable-2,
-.NexaCmirror-editorContainer .CodeMirror-line .cm-variable,
-.NexaCmirror-editorContainer .CodeMirror-line .cm-variable-2,
-.NexaCmirror-editorContainer .CodeMirror-line span.cm-variable,
-.NexaCmirror-editorContainer .CodeMirror-line span.cm-variable-2 {
-  color: #000000 !important;
-}
-
-/* Comments: Hijau zaitun #808000 seperti phpMyAdmin */
-.cm-comment,
-.NexaCmirror-editorContainer .cm-comment,
-.NexaCmirror-editorContainer .CodeMirror .cm-comment,
-.NexaCmirror-editorContainer .CodeMirror pre .cm-comment,
-.NexaCmirror-editorContainer .CodeMirror-lines .cm-comment,
-.NexaCmirror-editorContainer .CodeMirror-lines pre .cm-comment,
-.NexaCmirror-editorContainer .CodeMirror-line .cm-comment,
-.NexaCmirror-editorContainer .CodeMirror-line span.cm-comment {
-  color: #808000 !important;
-  font-style: italic !important;
 }
 
 /* Untuk SQL mode khusus dengan tema default - Style PERSIS seperti phpMyAdmin */
@@ -611,15 +419,46 @@ pre.CodeMirror-line span.CodeMirror-mark.cm-keyword {
 /* Styling untuk tema monokai (gelap) */
 .NexaCmirror-editorContainer .cm-s-monokai .CodeMirror {
   border: 1px solid #555;
+  background-color: #1e1e1e !important;
 }
 
 .NexaCmirror-editorContainer .cm-s-monokai .CodeMirror-gutters {
   border-right: 1px solid #555;
-  background-color: #272822;
+  background-color: #1e1e1e;
 }
 
 .NexaCmirror-editorContainer .cm-s-monokai .CodeMirror-linenumber {
+  color: #858585;
+}
+
+/* Styling untuk tema monokai-sublime (Sublime Text style) - Official CodeMirror theme */
+.NexaCmirror-editorContainer .cm-s-monokai-sublime .CodeMirror {
+  border: 1px solid #555;
+  background-color: #272822 !important;
+  background: #272822 !important;
+}
+
+.NexaCmirror-editorContainer .cm-s-monokai-sublime .CodeMirror-scroll {
+  background-color: #272822 !important;
+}
+
+.NexaCmirror-editorContainer .cm-s-monokai-sublime .CodeMirror-gutters {
+  border-right: 0px;
+  background-color: #272822 !important;
+  background: #272822 !important;
+}
+
+.NexaCmirror-editorContainer .cm-s-monokai-sublime .CodeMirror-linenumber {
   color: #75715e;
+  opacity: 0.5; /* Buat line numbers lebih subtle seperti VS Code */
+}
+
+.NexaCmirror-editorContainer .cm-s-monokai-sublime .CodeMirror-activeline .CodeMirror-linenumber {
+  opacity: 1; /* Line number pada baris aktif lebih terang */
+}
+
+.NexaCmirror-editorContainer .cm-s-monokai-sublime .CodeMirror-cursor {
+  border-left: 1px solid #f8f8f0 !important;
 }
 
 .NexaCmirror-editorContainer #codeEditor {
@@ -627,45 +466,140 @@ pre.CodeMirror-line span.CodeMirror-mark.cm-keyword {
   min-height: 300px;
 }
 
-/* Styling untuk autocomplete hint - disesuaikan dengan tema */
+/* Styling untuk autocomplete hint - Modern IDE style seperti VS Code */
 .CodeMirror-hints {
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 13px;
   z-index: 1000;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border: 1px solid #d4d4d4;
+  padding: 4px 0;
+  min-width: 200px;
+  max-width: 400px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-/* Styling untuk tema default (putih) */
+/* Custom scrollbar untuk autocomplete */
+.CodeMirror-hints::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.CodeMirror-hints::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.CodeMirror-hints::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.CodeMirror-hints::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Styling untuk tema default (putih) - VS Code Light style */
 .CodeMirror-hints {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  color: #333;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  background-color: #ffffff;
+  color: #1e1e1e;
 }
 
 .CodeMirror-hint {
-  color: #333;
-  padding: 5px 10px;
+  color: #1e1e1e;
+  padding: 6px 12px;
+  line-height: 20px;
+  border-left: 3px solid transparent;
+  transition: all 0.1s ease;
 }
 
-.CodeMirror-hint-active {
-  background-color: #e6f3ff;
-  color: #0066cc;
+.CodeMirror-hint:hover {
+  background-color: #f3f3f3;
 }
 
-/* Styling untuk tema monokai (gelap) - akan override jika tema monokai aktif */
+.CodeMirror-hint-active,
+li.CodeMirror-hint-active {
+  background-color: #0078d4 !important;
+  color: #ffffff !important;
+  border-left-color: #005a9e !important;
+}
+
+/* Styling untuk tema monokai (gelap) - VS Code Dark style */
 .cm-s-monokai .CodeMirror-hints {
-  background-color: #272822;
-  border: 1px solid #555;
-  color: #f8f8f2;
+  background-color: #252526;
+  border: 1px solid #454545;
+  color: #cccccc;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
 }
 
 .cm-s-monokai .CodeMirror-hint {
+  color: #cccccc;
+}
+
+.cm-s-monokai .CodeMirror-hint:hover {
+  background-color: #2a2d2e;
+}
+
+.cm-s-monokai .CodeMirror-hint-active,
+.cm-s-monokai li.CodeMirror-hint-active {
+  background-color: #094771 !important;
+  color: #ffffff !important;
+  border-left-color: #0078d4 !important;
+}
+
+/* Custom scrollbar untuk monokai theme */
+.cm-s-monokai .CodeMirror-hints::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.cm-s-monokai .CodeMirror-hints::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.cm-s-monokai .CodeMirror-hints::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Styling untuk tema monokai-sublime (Sublime Text style) - Modern IDE style */
+.cm-s-monokai-sublime .CodeMirror-hints {
+  background-color: #272822;
+  border: 1px solid #3e3d32;
+  color: #f8f8f2;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.cm-s-monokai-sublime .CodeMirror-hint {
   color: #f8f8f2;
 }
 
-.cm-s-monokai .CodeMirror-hint-active {
-  background-color: #49483e;
-  color: #66d9ef;
+.cm-s-monokai-sublime .CodeMirror-hint:hover {
+  background-color: #3e3d32;
+}
+
+.cm-s-monokai-sublime .CodeMirror-hint-active,
+.cm-s-monokai-sublime li.CodeMirror-hint-active {
+  background-color: #49483e !important;
+  color: #a6e22e !important;
+  border-left-color: #66d9ef !important;
+}
+
+/* Custom scrollbar untuk monokai-sublime theme */
+.cm-s-monokai-sublime .CodeMirror-hints::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.cm-s-monokai-sublime .CodeMirror-hints::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.cm-s-monokai-sublime .CodeMirror-hints::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* Loading Spinner */
@@ -712,3 +646,314 @@ pre.CodeMirror-line span.CodeMirror-mark.cm-keyword {
   100% { transform: rotate(360deg); }
 }
 
+/*
+ * Karet insert CodeMirror 5 — satu gaya untuk semua tema (garis 1px, berkedip bawaan CM).
+ * Menimpa tema neo / base16 / .cm-fat-cursor / dll.
+ */
+.CodeMirror .CodeMirror-cursor,
+.CodeMirror.cm-fat-cursor .CodeMirror-cursor {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  background: none !important;
+  background-color: transparent !important;
+  border-left: 1px solid currentColor !important;
+}
+
+.cm-animate-fat-cursor {
+  animation: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Warna karet per tema (dipaket NexaCmirror + default CM) */
+.CodeMirror.cm-s-default .CodeMirror-cursor,
+.cm-s-default.CodeMirror .CodeMirror-cursor {
+  border-left-color: #000 !important;
+}
+
+.CodeMirror.cm-s-eclipse .CodeMirror-cursor,
+.cm-s-eclipse.CodeMirror .CodeMirror-cursor {
+  border-left-color: #000 !important;
+}
+
+.CodeMirror.cm-s-idea .CodeMirror-cursor,
+.cm-s-idea.CodeMirror .CodeMirror-cursor {
+  border-left-color: #000 !important;
+}
+
+.CodeMirror.cm-s-neo .CodeMirror-cursor,
+.cm-s-neo.CodeMirror .CodeMirror-cursor {
+  border-left-color: rgba(46, 56, 60, 0.92) !important;
+}
+
+.CodeMirror.cm-s-ambiance .CodeMirror-cursor,
+.cm-s-ambiance.CodeMirror .CodeMirror-cursor {
+  border-left-color: #7991e8 !important;
+}
+
+.CodeMirror.cm-s-monokai .CodeMirror-cursor,
+.cm-s-monokai.CodeMirror .CodeMirror-cursor {
+  border-left-color: #aeafad !important;
+}
+
+.CodeMirror.cm-s-monokai-sublime .CodeMirror-cursor,
+.cm-s-monokai-sublime.CodeMirror .CodeMirror-cursor {
+  border-left-color: #f8f8f0 !important;
+  border-left-width: 2px !important;
+}
+
+.CodeMirror.cm-s-dracula .CodeMirror-cursor,
+.cm-s-dracula.CodeMirror .CodeMirror-cursor {
+  border-left-color: #f8f8f0 !important;
+}
+
+.CodeMirror.cm-s-cobalt .CodeMirror-cursor,
+.cm-s-cobalt.CodeMirror .CodeMirror-cursor {
+  border-left-color: #fff !important;
+}
+
+.CodeMirror.cm-s-material-darker .CodeMirror-cursor,
+.cm-s-material-darker.CodeMirror .CodeMirror-cursor {
+  border-left-color: #ffcc00 !important;
+}
+
+.CodeMirror.cm-s-base16-dark .CodeMirror-cursor,
+.cm-s-base16-dark.CodeMirror .CodeMirror-cursor {
+  border-left-color: #b0b0b0 !important;
+}
+
+/* Mode timpa: garis vertip (bukan blok lebar) */
+.CodeMirror-overwrite .CodeMirror-cursor {
+  width: 0 !important;
+  border: 0 !important;
+  border-left: 1px solid currentColor !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Dialog konfirmasi Replace — strip + tombol bergaya GitHub (terang) */
+.CodeMirror-dialog .nx-cm-repl-confirm-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: -0.15em -0.75em;
+  padding: 8px 10px;
+  background: #f6f8fa;
+  color: #24292f;
+  border-bottom: 1px solid #d8dee4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+
+.CodeMirror-dialog .nx-cm-repl-confirm-label {
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+.CodeMirror-dialog .nx-cm-replace-confirm {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn {
+  font-size: 12px !important;
+  line-height: 20px;
+  font-family: inherit;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d9e0;
+  background: #ffffff;
+  color: #24292f;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 1px 0 rgba(31, 35, 40, 0.04);
+  appearance: none;
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn:hover {
+  background: #f3f4f6;
+  border-color: #afb8c1;
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn:active {
+  background: #eaeef2;
+  border-color: #afb8c1;
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: 1px;
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn--primary {
+  background: #2da44e;
+  border-color: rgba(27, 31, 36, 0.15);
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn--primary:hover {
+  background: #2c9742;
+  border-color: rgba(27, 31, 36, 0.15);
+  color: #ffffff;
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn--primary:active {
+  background: #298e3d;
+  color: #ffffff;
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn--muted {
+  color: #57606a;
+}
+
+.CodeMirror-dialog .nx-cm-repl-btn--muted:hover {
+  color: #24292f;
+}
+
+/* Mode visual gelap Workspace: html/body.dark-mode-grid (sama discoveryUiIsDark() / account.js) */
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-confirm-row,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-confirm-row {
+  background: #2d2d2d;
+  color: #cccccc;
+  border-bottom-color: #3e3e42;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn {
+  background: #3c3c3c;
+  border-color: #555555;
+  color: #d4d4d4;
+  box-shadow: none;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn:hover,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn:hover {
+  background: #484848;
+  border-color: #666666;
+  color: #e8e8e8;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn:active,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn:active {
+  background: #333333;
+  border-color: #555555;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--primary,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--primary {
+  background: #0e639c;
+  border-color: #1177bb;
+  color: #ffffff;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--primary:hover,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--primary:hover {
+  background: #1177bb;
+  border-color: #1c8ad9;
+  color: #ffffff;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--primary:active,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--primary:active {
+  background: #0c5688;
+  color: #ffffff;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--muted,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--muted {
+  color: #9d9d9d;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--muted:hover,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn--muted:hover {
+  color: #d4d4d4;
+}
+
+html.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn:focus-visible,
+body.dark-mode-grid .CodeMirror-dialog .nx-cm-repl-btn:focus-visible {
+  outline-color: #0e639c;
+}
+
+/* Autocomplete hints untuk DocView / Dark Mode aplikasi */
+html.dark-mode-grid .CodeMirror-hints,
+body.dark-mode-grid .CodeMirror-hints {
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e42;
+  color: #cccccc;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+html.dark-mode-grid .CodeMirror-hint,
+body.dark-mode-grid .CodeMirror-hint {
+  color: #cccccc;
+}
+
+html.dark-mode-grid .CodeMirror-hint:hover,
+body.dark-mode-grid .CodeMirror-hint:hover {
+  background-color: #2a2d2e;
+}
+
+html.dark-mode-grid .CodeMirror-hint-active,
+html.dark-mode-grid li.CodeMirror-hint-active,
+body.dark-mode-grid .CodeMirror-hint-active,
+body.dark-mode-grid li.CodeMirror-hint-active {
+  background-color: #0e639c !important;
+  color: #ffffff !important;
+  border-left-color: #1177bb !important;
+}
+
+/* Custom scrollbar untuk dark mode */
+html.dark-mode-grid .CodeMirror-hints::-webkit-scrollbar-track,
+body.dark-mode-grid .CodeMirror-hints::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+html.dark-mode-grid .CodeMirror-hints::-webkit-scrollbar-thumb,
+body.dark-mode-grid .CodeMirror-hints::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+html.dark-mode-grid .CodeMirror-hints::-webkit-scrollbar-thumb:hover,
+body.dark-mode-grid .CodeMirror-hints::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* CodeMirror vscrollbar & hscrollbar — webkit styling dengan !important
+   agar override inline style yang di-set CM JS */
+.CodeMirror-vscrollbar {
+  max-width: 4px !important;
+}
+.CodeMirror-hscrollbar {
+  max-height: 4px !important;
+}
+.CodeMirror-vscrollbar::-webkit-scrollbar {
+  width: 4px !important;
+}
+.CodeMirror-hscrollbar::-webkit-scrollbar {
+  height: 4px !important;
+}
+.CodeMirror-vscrollbar::-webkit-scrollbar-track,
+.CodeMirror-hscrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  border-radius: 4px !important;
+}
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb,
+.CodeMirror-hscrollbar::-webkit-scrollbar-thumb {
+  background: #888 !important;
+  border-radius: 4px !important;
+}
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb:hover,
+.CodeMirror-hscrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555 !important;
+}

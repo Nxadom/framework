@@ -111,6 +111,10 @@
 .icon-pptx       { background-image: url("../icons/powerpoint.svg"); }
 .icon-tex        { background-image: url("../icons/tex.svg"); }
 .icon-latex      { background-image: url("../icons/tex.svg"); }
+.icon-nxtext     { background-image: url("../icons/document.svg"); }
+.icon-nxdocx     { background-image: url("../icons/word.svg"); }
+.icon-nxxlsx     { background-image: url("../icons/table.svg"); }
+.icon-nxpptx     { background-image: url("../icons/powerpoint.svg"); }
 
 /* ===============================
    FILE ICONS — Image

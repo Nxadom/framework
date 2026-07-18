@@ -4,14 +4,24 @@
     font-size: 14px;
     font-family: "Montserrat", Arial, sans-serif;
     width: 100%;
-    height: 400px;
+    height: 300px;
     background:#1d1d1d;
+    box-sizing: border-box;
+    padding-left: 10px;
     overflow-x: hidden;
-    overflow-y: scroll
+    overflow-y: auto
 }
 
 .command-line.light {
     background-color: #fff
+}
+
+.command-line:focus,
+.command-line:focus-visible,
+.command-line:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
 }
 
 .command-line.light .command-row {
@@ -31,28 +41,36 @@
 
 .command-line .command-row {
     position: relative;
-    margin-bottom: 5px
+    margin-bottom: 1px;
+    padding-left: 2px
 }
 
 .command-line .command-row.active {
     background: #1d1d1d
 }
 
-.command-line .command-row .command-time,
-.command-line .command-row .command-user {
-    color: #e7e7e7;
+.command-line .command-row .command-time {
+    color: #6a9955;
     display: inline-block;
-    padding-right: 5px
+    padding-right: 3px;
+    font-weight: 400;
+    font-size: 12px;
+    opacity: 0.85
 }
 
 .command-line .command-row .command-user {
-    font-weight: 700
+    color: #dcdcaa;
+    display: inline-block;
+    padding-right: 3px;
+    font-weight: 600
 }
 
 .command-line .command-row .command-entry {
-    padding-right: 5px;
-    color: #fff;
+    padding-right: 3px;
+    color: #d4d4d4;
     display: inline;
+    white-space: pre-wrap;
+    tab-size: 2;
     overflow-wrap: break-word;
     word-wrap: break-word;
     -ms-word-break: break-all;
@@ -60,6 +78,25 @@
     -ms-hyphens: auto;
     -webkit-hyphens: auto;
     hyphens: auto
+}
+
+/* Warna untuk perintah yang sudah dieksekusi */
+.command-line .command-row.command-executed .command-entry {
+    color: #9cdcfe
+}
+
+.command-line .command-row.command-executed .cmd-keyword {
+    color: #569cd6;
+    font-weight: 700
+}
+
+/* Warna prompt di baris aktif (daerah input) */
+.command-line .command-row.active .command-user {
+    color: #c586c0
+}
+
+.command-line .command-row.active .command-time {
+    color: #6a9955
 }
 
 .command-line .command-row .command-entry.command-entry-protected:empty {
@@ -82,24 +119,33 @@
     opacity: 0
 }
 
+/* Output stream (npm start, git, dll) — warna khas output aplikasi */
+.command-line .command-row:not(.active):not(.error):not(.success):not(.info):not(.warning) .command-entry {
+    color: #cec8a0
+}
+
 .command-line .command-row.error .command-entry {
     font-weight: 700;
-    color: red
+    color: #f44747
 }
 
 .command-line .command-row.success .command-entry {
     font-weight: 700;
-    color: #00c300
+    color: #4ec9b0
 }
 
 .command-line .command-row.info .command-entry {
     font-weight: 700;
-    color: #00a9ff
+    color: #569cd6
 }
 
 .command-line .command-row.warning .command-entry {
     font-weight: 700;
-    color: orange
+    color: #dcdcaa
+}
+
+.command-line .command-row.active .command-entry {
+    color: #f0f0f0
 }
 
 /* Terminal Table Styles - Isolated from external styles */
@@ -174,7 +220,7 @@
 }
 
 .command-line .command-entry .command-line-list .list-item {
-    padding: 2px 0 !important;
+    padding: 0 !important;
     margin: 0 !important;
     color: #fff !important;
     font-size: 14px !important;
@@ -231,18 +277,18 @@
 /* Grid Styles */
 .command-line .command-entry .command-line-grid {
     display: grid;
-    gap: 5px;
-    margin: 5px 0;
+    gap: 2px;
+    margin: 2px 0;
 }
 
 .command-line .command-entry .command-line-grid .grid-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
+    gap: 6px;
 }
 
 .command-line .command-entry .command-line-grid .grid-cell {
-    padding: 5px 10px;
+    padding: 3px 8px;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 3px;
     color: #fff;
@@ -259,7 +305,7 @@
     background: rgba(0, 0, 0, 0.3);
     padding: 10px;
     border-radius: 4px;
-    margin: 5px 0;
+    margin: 2px 0;
     overflow-x: auto;
     font-family: "Courier New", monospace;
     font-size: 13px;
@@ -307,6 +353,7 @@
 /* Modern Scrollbar */
 .command-line::-webkit-scrollbar {
     width: 8px;
+    height: 0;
 }
 
 .command-line::-webkit-scrollbar-track {
@@ -338,4 +385,287 @@
     50% {
         background: rgba(29, 29, 29, 0.8);
     }
+}
+
+/* Final light-mode overrides: placed last so they win over dark defaults above */
+.command-line.light {
+    background: #ffffff;
+    color: #111827;
+}
+
+.command-line.light .command-row,
+.command-line.light .command-row.active {
+    background: #ffffff;
+    color: #111827;
+    animation: none;
+}
+
+.command-line.light .command-row .command-time {
+    color: #16a34a;
+    font-weight: 400;
+    font-size: 12px;
+    opacity: 0.8
+}
+
+.command-line.light .command-row .command-user {
+    color: #b45309;
+    font-weight: 600
+}
+
+.command-line.light .command-row .command-entry {
+    color: #111827
+}
+
+.command-line.light .command-row.command-executed .command-entry {
+    color: #1e40af
+}
+
+.command-line.light .command-row.command-executed .cmd-keyword {
+    color: #2563eb;
+    font-weight: 700
+}
+
+.command-line.light .command-row.active .command-user {
+    color: #7c3aed
+}
+
+.command-line.light .command-row.active .command-time {
+    color: #16a34a
+}
+
+.command-line.light .command-row:not(.active):not(.error):not(.success):not(.info):not(.warning) .command-entry {
+    color: #6b7280
+}
+
+.command-line.light .command-row.active .command-entry {
+    color: #111827
+}
+
+.command-line.light .command-row.error .command-entry {
+    color: #dc2626
+}
+
+.command-line.light .command-row.success .command-entry {
+    color: #16a34a
+}
+
+.command-line.light .command-row.info .command-entry {
+    color: #2563eb
+}
+
+.command-line.light .command-row.warning .command-entry {
+    color: #d97706
+}
+
+.command-line.light .command-entry .command-line-table,
+.command-line.light .command-entry table.command-line-table,
+.command-line.light .command-entry .command-line-table td,
+.command-line.light .command-entry table.command-line-table td,
+.command-line.light .command-entry .command-line-table th,
+.command-line.light .command-entry table.command-line-table th,
+.command-line.light .command-entry .command-line-json,
+.command-line.light .command-entry .command-line-grid .grid-cell {
+    color: #111827;
+}
+
+.command-line.light .command-entry .command-line-table th {
+    background: rgba(15, 23, 42, 0.05);
+}
+
+.command-line.light .command-entry .command-line-table.highlight td {
+    background: rgba(37, 99, 235, 0.08);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.command-line.light .command-entry .command-line-table.highlight tr:hover td {
+    background: rgba(37, 99, 235, 0.12);
+}
+
+.command-line.light .command-entry .command-line-list .list-item {
+    color: #111827 !important;
+}
+
+.command-line.light .command-entry .command-line-list.highlight .list-item {
+    background: rgba(15, 23, 42, 0.05) !important;
+}
+
+.command-line.light .command-entry .command-line-list .list-item:hover {
+    background: rgba(15, 23, 42, 0.08) !important;
+}
+
+.command-line.light .command-entry .command-line-grid .grid-cell {
+    background: rgba(15, 23, 42, 0.04);
+}
+
+.command-line.light .command-entry .command-line-grid.highlight .grid-cell {
+    background: rgba(37, 99, 235, 0.08);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.command-line.light .command-entry .command-line-json {
+    background: rgba(15, 23, 42, 0.04);
+    border-left-color: #2563eb;
+}
+
+.command-line.light .command-entry .command-line-json .json-key {
+    color: #1d4ed8;
+}
+
+.command-line.light .command-entry .command-line-json .json-string {
+    color: #b45309;
+}
+
+.command-line.light .command-entry .command-line-json .json-number {
+    color: #15803d;
+}
+
+.command-line.light .command-entry .command-line-json .json-boolean {
+    color: #7c3aed;
+}
+
+.command-line.light::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.08);
+}
+
+.command-line.light::-webkit-scrollbar-thumb {
+    background: rgba(15, 23, 42, 0.22);
+}
+
+.command-line.light::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 23, 42, 0.32);
+}
+
+.command-line .command-row{margin-top:0!important;margin-bottom:1px!important}
+.command-line,.command-line .command-row,.command-line .command-row .command-time,.command-line .command-row .command-user,.command-line .command-row .command-entry,.command-line .command-entry .command-line-table,.command-line .command-entry table.command-line-table,.command-line .command-entry .command-line-table td,.command-line .command-entry table.command-line-table td,.command-line .command-entry .command-line-table th,.command-line .command-entry table.command-line-table th,.command-line .command-entry .command-line-list .list-item,.command-line .command-entry .command-line-grid .grid-cell,.command-line .command-entry .command-line-json{
+font-family:"Cascadia Mono","Cascadia Code",Consolas,"Courier New",monospace!important;
+font-size:13px!important;line-height:1.2!important;font-weight:400!important}
+.command-line .command-row .command-time,.command-line .command-row .command-user,.command-line .command-row .command-entry{padding-right:2px!important}
+
+.command-line .command-row.command-executed .command-entry .cmd-keyword {
+    color: #4fc1ff !important;
+    font-weight: 600 !important;
+}
+
+.command-line.light .command-row.command-executed .command-entry .cmd-keyword {
+    color: #005fb8 !important;
+}
+
+/* VS-like terminal typography overrides */
+.command-line,
+.command-line .command-row,
+.command-line .command-row .command-time,
+.command-line .command-row .command-user,
+.command-line .command-row .command-entry,
+.command-line .command-entry .command-line-table,
+.command-line .command-entry table.command-line-table,
+.command-line .command-entry .command-line-table td,
+.command-line .command-entry table.command-line-table td,
+.command-line .command-entry .command-line-table th,
+.command-line .command-entry table.command-line-table th,
+.command-line .command-entry .command-line-list .list-item,
+.command-line .command-entry .command-line-grid .grid-cell,
+.command-line .command-entry .command-line-json {
+    font-family: "Cascadia Mono", "Cascadia Code", Consolas, "Courier New", monospace !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    font-weight: 400 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+.command-line .command-row {
+    margin-top: 0 !important;
+    margin-bottom: 1px !important;
+}
+
+.command-line .command-row .command-user,
+.command-line .command-row.error .command-entry,
+.command-line .command-row.success .command-entry,
+.command-line .command-row.info .command-entry,
+.command-line .command-row.warning .command-entry,
+.command-line .command-entry .command-line-json .json-key,
+.command-line .command-entry .command-line-json .json-boolean,
+.command-line .command-entry .command-line-table th {
+    font-weight: 500 !important;
+}
+
+.command-line.light {
+    background: #ffffff;
+    color: #111827;
+}
+
+.command-line.light .command-row,
+.command-line.light .command-row.active {
+    background: #ffffff;
+    color: #111827;
+    animation: none;
+}
+
+.command-line.light .command-row .command-entry,
+.command-line.light .command-row .command-time,
+.command-line.light .command-row .command-user {
+    color: #111827;
+}
+
+.command-line.light .command-entry .command-line-table,
+.command-line.light .command-entry table.command-line-table,
+.command-line.light .command-entry .command-line-table td,
+.command-line.light .command-entry table.command-line-table td,
+.command-line.light .command-entry .command-line-table th,
+.command-line.light .command-entry table.command-line-table th {
+    color: #111827;
+}
+
+.command-line.light .command-entry .command-line-table.highlight td {
+    background: rgba(37, 99, 235, 0.08);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.command-line.light .command-entry .command-line-table.highlight tr:hover td {
+    background: rgba(37, 99, 235, 0.12);
+}
+
+.command-line.light .command-entry .command-line-table th {
+    background: rgba(15, 23, 42, 0.04);
+}
+
+.command-line.light .command-entry .command-line-list .list-item {
+    color: #111827 !important;
+}
+
+.command-line.light .command-entry .command-line-list.highlight .list-item {
+    background: rgba(15, 23, 42, 0.05) !important;
+}
+
+.command-line.light .command-entry .command-line-list .list-item:hover {
+    background: rgba(15, 23, 42, 0.08) !important;
+}
+
+.command-line.light .command-entry .command-line-grid .grid-cell {
+    background: rgba(15, 23, 42, 0.04);
+    color: #111827;
+}
+
+.command-line.light .command-entry .command-line-grid.highlight .grid-cell {
+    background: rgba(37, 99, 235, 0.08);
+    border-color: rgba(37, 99, 235, 0.2);
+}
+
+.command-line.light .command-entry .command-line-json {
+    background: rgba(15, 23, 42, 0.04);
+    color: #111827;
+    border-left-color: #2563eb;
+}
+
+.command-line.light::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.08);
+}
+
+.command-line.light::-webkit-scrollbar-thumb {
+    background: rgba(15, 23, 42, 0.22);
+}
+
+.command-line.light::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 23, 42, 0.32);
 }

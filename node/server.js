@@ -155,7 +155,7 @@ function patchReqUrlToOriginal(req, res, next) {
 }
 
 /**
- * Proxy /api, /assets/drive, /rebit ke host asli dari config.
+ * Proxy /api, /assets/drive, /nxapi (NXAPI) ke host asli dari config.
  * Hanya jika origin backend ≠ origin listener (sama logika dengan buildServerConfig + PORT).
  */
 function mountUpstreamProxies() {
@@ -213,12 +213,13 @@ function mountUpstreamProxies() {
     console.warn('⚠️ Drive proxy tidak dipasang:', e && e.message ? e.message : e);
   }
   try {
-    if (config.rebit && /^https?:\/\//i.test(config.rebit)) {
-      const r = new URL(config.rebit);
+    const nxapiUrl = config.NXAPI || config.rebit;
+    if (nxapiUrl && /^https?:\/\//i.test(nxapiUrl)) {
+      const r = new URL(nxapiUrl);
       const upstreamOrigin = r.origin;
       if (upstreamOrigin !== listenerOrigin) {
-        const basePath = r.pathname.replace(/\/$/, '') || '/rebit';
-        const rebitProxy = createProxyMiddleware({
+        const basePath = r.pathname.replace(/\/$/, '') || '/nxapi';
+        const nxapiProxy = createProxyMiddleware({
           target: upstreamOrigin,
           changeOrigin: true,
           on: {
@@ -227,12 +228,12 @@ function mountUpstreamProxies() {
             },
           },
         });
-        app.use(basePath, patchReqUrlToOriginal, rebitProxy);
-        console.log(`🔀 Rebit proxy: ${basePath} → ${config.rebit}`);
+        app.use(basePath, patchReqUrlToOriginal, nxapiProxy);
+        console.log(`🔀 NXAPI proxy: ${basePath} → ${nxapiUrl}`);
       }
     }
   } catch (e) {
-    console.warn('⚠️ Rebit proxy tidak dipasang:', e && e.message ? e.message : e);
+    console.warn('⚠️ NXAPI proxy tidak dipasang:', e && e.message ? e.message : e);
   }
 }
 
@@ -277,7 +278,7 @@ function buildClientEndpointPayload(req) {
     appOrigin = origin;
   }
   raw.url = baseUrl;
-  for (const key of ['urlApi', 'drive', 'rebit']) {
+  for (const key of ['urlApi', 'drive', 'NXAPI', 'rebit']) {
     const v = raw[key];
     if (typeof v !== 'string' || !v.startsWith('http')) continue;
     try {

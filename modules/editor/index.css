@@ -21,7 +21,7 @@ body.dark-mode-grid .nexa-editor-btn {
   align-items: center;
   gap: 2px;
   flex-wrap: wrap;
-    border-bottom: 1px solid  var(--control-borderColor-rest, var(--color-border-default));
+    /*border-bottom: 1px solid  var(--control-borderColor-rest, var(--color-border-default));*/
 /*  border-bottom: 1px solid rgba(72, 94, 144, 0.16);*/
 }
 

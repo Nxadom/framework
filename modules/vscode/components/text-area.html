@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Area — VS Code UI Toolkit</title>
+    <link rel="stylesheet" href="vs.css">
+    <style>
+        h2 { color: #007acc; font-size: 18px; margin-bottom: 20px; }
+        .demo { display: flex; flex-direction: column; gap: 12px; background: #252526; border: 1px solid #3c3c3c; border-radius: 6px; padding: 20px; max-width: 400px; }
+    </style>
+</head>
+<body>
+    <h2>vscode-text-area</h2>
+    <div class="demo">
+        <div class="vsc-text-area">
+            <label class="label">Deskripsi</label>
+            <textarea class="control" placeholder="Tulis deskripsi di sini..." rows="3"></textarea>
+        </div>
+        <div class="vsc-text-area" resize="vertical">
+            <label class="label">Resize vertikal</label>
+            <textarea class="control" placeholder="Bisa diresize..." rows="2"></textarea>
+        </div>
+    </div>
+</body>
+</html>

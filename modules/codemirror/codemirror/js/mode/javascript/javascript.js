@@ -32,13 +32,14 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     function kw(type) {return {type: type, style: "keyword"};}
     var A = kw("keyword a"), B = kw("keyword b"), C = kw("keyword c");
     var operator = kw("operator"), atom = {type: "atom", style: "atom"};
+    var varDecl = {type: "variable-2", style: "variable-2"}; // Blue color for var/const/let
 
     var jsKeywords = {
       "if": kw("if"), "while": A, "with": A, "else": B, "do": B, "try": B, "finally": B,
       "return": C, "break": C, "continue": C, "new": kw("new"), "delete": C, "throw": C, "debugger": C,
-      "var": kw("var"), "const": kw("var"), "let": kw("var"),
+      "var": varDecl, "const": varDecl, "let": varDecl,
       "function": kw("function"), "catch": kw("catch"),
-      "for": kw("for"), "switch": kw("switch"), "case": kw("case"), "default": kw("default"),
+      "for": kw("for"), "switch": kw("switch"), "case": kw("case"), "default": atom,
       "in": operator, "typeof": operator, "instanceof": operator,
       "true": atom, "false": atom, "null": atom, "undefined": atom, "NaN": atom, "Infinity": atom,
       "this": kw("this"), "class": kw("class"), "super": kw("atom"),
@@ -100,6 +101,64 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     type = tp; content = cont;
     return style;
   }
+
+  // JSX Tag tokenizer - MUST be defined before tokenBase
+  function tokenJSXTag(stream, state) {
+    // Initialize JSX state if not present
+    if (state.jsxTagName === undefined) {
+      state.jsxTagName = true; // Next word is tag name
+    }
+    
+    // Skip whitespace
+    if (stream.eatSpace()) {
+      return null;
+    }
+    
+    var ch = stream.next();
+    
+    if (ch == ">") {
+      state.tokenize = tokenBase;
+      state.jsxTagName = undefined;
+      return ret("tag", "tag");
+    }
+    
+    if (ch == "/" && stream.peek() == ">") {
+      stream.next(); // consume >
+      state.tokenize = tokenBase;
+      state.jsxTagName = undefined;
+      return ret("tag", "tag");
+    }
+    
+    if (ch == "=") {
+      return ret("operator", "operator");
+    }
+    
+    if (ch == '"' || ch == "'") {
+      state.tokenize = tokenString(ch);
+      return state.tokenize(stream, state);
+    }
+    
+    if (ch == "{") {
+      state.tokenize = tokenBase;
+      return tokenBase(stream, state);
+    }
+    
+    if (/\w/.test(ch)) {
+      // Word character - could be tag name or attribute name
+      stream.eatWhile(/[\w-]/);
+      
+      // First word after < is tag name (pink)
+      if (state.jsxTagName === true) {
+        state.jsxTagName = false; // Next words are attributes
+        return ret("tag", "tag");
+      } else {
+        // Subsequent words are attribute names (green like property)
+        return ret("attribute", "attribute");
+      }
+    }
+    
+    return ret("tag", "tag");
+  }
   function tokenBase(stream, state) {
     var ch = stream.next();
     if (ch == '"' || ch == "'") {
@@ -109,10 +168,24 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       return ret("number", "number");
     } else if (ch == "." && stream.match("..")) {
       return ret("spread", "meta");
+    } else if (ch == "?" && stream.eat(".")) {
+      // Optional chaining ?.
+      return ret("operator", "operator");
+    } else if (ch == "?" && stream.eat("?")) {
+      // Nullish coalescing ??
+      return ret("operator", "operator");
+    } else if (ch == "<") {
+      // JSX tag detection (opening or closing)
+      var next = stream.peek();
+      if (next == "/" || /\w/.test(next)) {
+        state.jsxTagName = true; // Reset: next word is tag name
+        state.tokenize = tokenJSXTag;
+        return ret("tag", "tag");
+      }
     } else if (/[\[\]{}\(\),;\:\.]/.test(ch)) {
       return ret(ch);
     } else if (ch == "=" && stream.eat(">")) {
-      return ret("=>", "operator");
+      return ret("=>", "keyword"); // Arrow function uses keyword style (pink)
     } else if (ch == "0" && stream.eat(/x/i)) {
       stream.eatWhile(/[\da-f]/i);
       return ret("number", "number");
@@ -152,6 +225,12 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     } else if (wordRE.test(ch)) {
       stream.eatWhile(wordRE);
       var word = stream.current(), known = keywords.propertyIsEnumerable(word) && keywords[word];
+      
+      // Check if this is a function call (followed by '(')
+      if (stream.peek() == "(") {
+        return ret("variable", "def", word); // Use "def" style for function calls (orange/yellow)
+      }
+      
       return (known && state.lastType != ".") ? ret(known.type, known.style, word) :
                      ret("variable", "variable", word);
     }
@@ -188,12 +267,35 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   function tokenQuasi(stream, state) {
     var escaped = false, next;
     while ((next = stream.next()) != null) {
-      if (!escaped && (next == "`" || next == "$" && stream.eat("{"))) {
+      if (!escaped && next == "`") {
         state.tokenize = tokenBase;
-        break;
+        return ret("quasi", "string-2", stream.current());
+      }
+      if (!escaped && next == "$" && stream.eat("{")) {
+        // Template interpolation ${...} - switch to base mode for JS expression
+        state.tokenize = function(stream, state) {
+          var depth = 1;
+          while (depth > 0 && stream.next() != null) {
+            var ch = stream.current().slice(-1);
+            if (ch == "{") depth++;
+            if (ch == "}") {
+              depth--;
+              if (depth == 0) {
+                // Back to template string mode
+                state.tokenize = tokenQuasi;
+                return ret("operator", "operator");
+              }
+            }
+          }
+          // Continue tokenizing the expression inside ${}
+          state.tokenize = tokenBase;
+          return tokenBase(stream, state);
+        };
+        return ret("operator", "operator");
       }
       escaped = !escaped && next == "\\";
     }
+    // If we reach here without finding closing `, continue as template string
     return ret("quasi", "string-2", stream.current());
   }
 
@@ -616,7 +718,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   }
   function afterExport(_type, value) {
     if (value == "*") { cx.marked = "keyword"; return cont(maybeFrom, expect(";")); }
-    if (value == "default") { cx.marked = "keyword"; return cont(expression, expect(";")); }
+    if (value == "default") { cx.marked = "atom"; return cont(expression, expect(";")); }
     return pass(statement);
   }
   function afterImport(type) {

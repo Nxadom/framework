@@ -1,0 +1,31 @@
+/* CodeMirror Text Spacing Fix - Load terakhir untuk override semua */
+/* Fix letter-spacing, word-spacing, dan line-height agar sama seperti VS Code/Sublime */
+
+.CodeMirror,
+.CodeMirror pre,
+.CodeMirror-line,
+.CodeMirror-lines,
+.CodeMirror-code,
+pre.CodeMirror-line,
+.cm-s-monokai-sublime,
+.cm-s-monokai,
+.NexaCmirror-editorContainer,
+.NexaCmirror-editorContainer pre,
+span[class^="cm-"],
+span[class*=" cm-"] {
+  letter-spacing: 0px !important;
+  word-spacing: 0px !important;
+  font-feature-settings: normal !important;
+  font-variant-ligatures: none !important;
+  font-kerning: none !important;
+  text-rendering: optimizeSpeed !important;
+  line-height: 1.4 !important;
+}
+
+/* Extra specific untuk text content */
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line span,
+.CodeMirror-line span {
+  letter-spacing: 0px !important;
+  word-spacing: 0px !important;
+}

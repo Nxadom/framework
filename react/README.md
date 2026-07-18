@@ -45,11 +45,11 @@ Development/React/index/          # root (nama folder bisa berbeda di mesin Anda
 ├── app.json                        # nama app, slug, plugin Expo
 ├── babel.config.js
 ├── metro.config.js
-├── package.json                    # termasuk "NexaJS": "file:./assets/modules"
+├── package.json                    # termasuk "Nxdom": "file:./assets/modules"
 ├── assets/
 │   ├── images/                     # aset gambar statis (opsional)
 │   └── modules/                    # NexaJS: paket npm lokal (barrel index.js)
-│       ├── package.json            # name: "NexaJS", main: index.js
+│       ├── package.json            # name: "Nxdom", main: index.js
 │       ├── index.js
 │       ├── Nexa.js                 # syncNexaFromConfig → global NEXA
 │       ├── navigation/             # AppNavigator, dll.
@@ -72,7 +72,7 @@ Development/React/index/          # root (nama folder bisa berbeda di mesin Anda
 |--------|--------|
 | Root (`index.js`, `App.js`) | Titik masuk Expo dan root React; tidak berisi logika bisnis besar. |
 | `config.js` | Satu tempat mengatur URL backend & Firebase untuk modul yang memakai `NEXA`. |
-| `assets/modules/` | **NexaJS**: komponen bersama, storage, Firebase, navigasi bootstrap, impor `from "NexaJS"`. |
+| `assets/modules/` | **NexaJS**: komponen bersama, storage, Firebase, navigasi bootstrap, impor `from "Nxdom"`. |
 | `templates/` | **Aplikasi Anda**: screen, route, contoh, modul oauth/application — impor NexaJS dari paket atau path relatif. |
 | `app.json` / `metro.config.js` | Konfigurasi build & bundler Expo/Metro. |
 
@@ -80,7 +80,7 @@ Folder native **`android/`** / **`ios/`** muncul setelah **`expo prebuild`** ata
 
 ## NexaJS mobile dan referensi situs
 
-**Untuk pengguna Nexa:** yang dibahas di README ini adalah **NexaJS versi mobile (React Native / Expo)** — paket npm **`NexaJS`** → folder **`assets/modules`**, impor `import { … } from "NexaJS"` (lihat [Memulai dengan impor `NexaJS`](#memulai-dengan-impor-nexajs)). Entry app: **`index.js`** (Expo) dan **`App.js`**, bukan `index.html` atau pola SPA web.
+**Untuk pengguna Nexa:** yang dibahas di README ini adalah **NexaJS versi mobile (React Native / Expo)** — paket npm **`NexaJS`** → folder **`assets/modules`**, impor `import { … } from "Nxdom"` (lihat [Memulai dengan impor `NexaJS`](#memulai-dengan-impor-nexajs)). Entry app: **`index.js`** (Expo) dan **`App.js`**, bukan `index.html` atau pola SPA web.
 
 NexaJS sebagai nama produk juga dipakai di jalur lain (web, desktop). Itu **bukan** isi dokumen ini. Jika Anda mencari panduan tambahan **selain** README ini untuk jalur yang sama, gunakan dokumentasi situs **`/docs/platform/react`**. Panduan **web** NexaJS ada di **`/docs/platform/javascript`** — stack dan entry berbeda dari app di folder ini; jangan dicampuradukkan dengan alur Expo di sini.
 
@@ -105,18 +105,18 @@ NexaJS membedakan workflow ini dari “impor React Native dan tiap komponen dari
 
 | File | Isi relevan |
 |------|----------------|
-| **`package.json`** (root proyek) | Dependensi `"NexaJS": "file:./assets/modules"` — Metro/npm mengarahkan paket **`NexaJS`** ke folder **`assets/modules`**. |
-| **`assets/modules/package.json`** | `"name": "NexaJS"`, `"main": "index.js"` — entry resmi paket adalah **`assets/modules/index.js`**. |
+| **`package.json`** (root proyek) | Dependensi `"Nxdom": "file:./assets/modules"` — Metro/npm mengarahkan paket **`NexaJS`** ke folder **`assets/modules`**. |
+| **`assets/modules/package.json`** | `"name": "Nxdom"`, `"main": "index.js"` — entry resmi paket adalah **`assets/modules/index.js`**. |
 
-Setelah `npm install`, impor `from "NexaJS"` selalu menyelesaikan ke **`assets/modules/index.js`**. Tidak perlu alias Babel tambahan untuk pola ini.
+Setelah `npm install`, impor `from "Nxdom"` selalu menyelesaikan ke **`assets/modules/index.js`**. Tidak perlu alias Babel tambahan untuk pola ini.
 
 ### Contoh (disarankan)
 
 ```js
-import { View, StyleSheet, Text, Avatar, Buttons, NexaDBLite, properti } from "NexaJS";
+import { View, StyleSheet, Text, Avatar, Buttons, NexaDBLite, properti } from "Nxdom";
 ```
 
-Ini setara secara fungsi dengan mengimpor banyak modul terpisah, tetapi **lebih singkat** dan konsisten di seluruh proyek. Contoh nyata: `templates/exsampel/Avatar.js` memakai `import { View, StyleSheet, Avatar } from "NexaJS"`.
+Ini setara secara fungsi dengan mengimpor banyak modul terpisah, tetapi **lebih singkat** dan konsisten di seluruh proyek. Contoh nyata: `templates/exsampel/Avatar.js` memakai `import { View, StyleSheet, Avatar } from "Nxdom"`.
 
 ### Matriks kelompok ekspor (cuplikan)
 
@@ -358,6 +358,6 @@ Alur end-to-end:
 
 `config.js` menyediakan URL backend dan Firebase; **`assets/modules/Nexa.js`** menyinkronkannya ke objek global **`NEXA`** untuk pemanggilan di seluruh app.
 
-Layar memakai **`import { … } from "NexaJS"`** (paket lokal `file:./assets/modules`) agar satu pernyataan mencakup RN, komponen Nexa, storage, dan `properti` — tanpa rantai impor file demi file.
+Layar memakai **`import { … } from "Nxdom"`** (paket lokal `file:./assets/modules`) agar satu pernyataan mencakup RN, komponen Nexa, storage, dan `properti` — tanpa rantai impor file demi file.
 
 `AppNavigator` mengorkestrasi font, properti (polling 3 detik), sesi (NexaDBLite + timeout/retry), pembaruan route saat app aktif kembali, dan StatusBar mengikuti route serta properti.

@@ -382,26 +382,20 @@ export class NexaNotif {
           actions.length > 0
             ? `
         <div class="nx-notif-actions">
-          ${
-            actions.includes("close")
-              ? '<button class="nx-notif-action-btn nx-notif-close-btn" onclick="window.nexaNotif.closeNotification(this)">Close</button>'
-              : ""
-          }
-          ${
-            actions.includes("snooze")
-              ? '<button class="nx-notif-action-btn nx-notif-snooze-btn" onclick="window.nexaNotif.snoozeNotification(this)">Snooze</button>'
-              : ""
-          }
-          ${
-            actions.includes("ok")
-              ? '<button class="nx-notif-action-btn nx-notif-ok-btn" onclick="window.nexaNotif.closeNotification(this)">OK</button>'
-              : ""
-          }
+          ${actions.includes("close") ? '<button class="nx-notif-action-btn nx-notif-close-btn">Close</button>' : ""}
+          ${actions.includes("snooze") ? '<button class="nx-notif-action-btn nx-notif-snooze-btn">Snooze</button>' : ""}
+          ${actions.includes("ok") ? '<button class="nx-notif-action-btn nx-notif-ok-btn">OK</button>' : ""}
         </div>
         `
             : ""
         }
       `;
+
+      // Bind action buttons ke instance ini (bukan global window.nexaNotif)
+      const closeBtn = notificationCard.querySelector('.nx-notif-close-btn, .nx-notif-ok-btn');
+      if (closeBtn) closeBtn.addEventListener('click', () => this.closeNotification(closeBtn));
+      const snoozeBtn = notificationCard.querySelector('.nx-notif-snooze-btn');
+      if (snoozeBtn) snoozeBtn.addEventListener('click', () => this.snoozeNotification(snoozeBtn));
 
       // Add to container
       this.container.appendChild(notificationCard);

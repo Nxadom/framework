@@ -22,35 +22,36 @@
 
 
 :root {
-  /* Warna Dasar Dark Mode */
-  --dm-bg-main: #121212; /* Background paling gelap (untuk body) */
-  --dm-bg-card: #1e1e1e; /* Background kartu, sidebar, dll. */
-  --dm-bg-surface: #2c2c2c; /* Background elemen di atas kartu (input, header) */
-  --dm-bg-hover: #2a2a2a; /* Background saat hover (sedikit terang dari card) */
-  --dm-bg-input: #2c2c2c; /* Alias untuk bg input field (= bg-surface) */
+  /* Dark mode — basis #2c3039 (docview / beranda / dockview) */
+  --dm-bg-main: #2c3039; /* background utama, editor */
+  --dm-bg-card: #262a32; /* sidebar / titlebar */
+  --dm-bg-surface: #32363f; /* panel, tab bar */
+  --dm-bg-hover: #383d48; /* hover baris / menu */
+  --dm-bg-input: #32363f;
+  --dm-bg-tab-active: #3a3f4c;
 
   /* Warna Teks Dark Mode */
-  --dm-text-main: #e0e0e0; /* Teks utama */
-  --dm-text-secondary: #a0a0a0; /* Teks sekunder/muted */
-  --dm-text-faint: #616161; /* Teks paling redup */
-  --dm-text-invert: #1e1e1e; /* Teks yang diletakkan di atas warna aksen terang */
+  --dm-text-main: #d4d7dc;
+  --dm-text-secondary: #9aa0a9;
+  --dm-text-faint: #6e737c;
+  --dm-text-invert: #2c3039;
 
   /* Warna Border Dark Mode */
-  --dm-border: #3d3d3d; /* Border standar */
-  --dm-border-dark: #505050; /* Border yang sedikit lebih gelap */
+  --dm-border: #404652;
+  --dm-border-dark: #4a505c;
   
-  /* Aksen & Status Warna (Sesuai dengan Light Mode) */
-  --dm-blue-accent: #3f9eff; /* Darkened Blue dari --primary */
+  /* Aksen & Status Warna */
+  --dm-blue-accent: #4d78cc; /* AI accent */
   
-  --dm-primary: #3f9eff; 
+  --dm-primary: #4d78cc;
   --dm-secondary: #a0a0a0;
   --dm-success: #38c172; /* Darkened Green */
   --dm-info: #00e5ff; /* Darkened Cyan */
   --dm-warning: #ffb74d; /* Darkened Yellow */
   --dm-danger: #ef5350; /* Darkened Red */
 
-  /* Heatmap Preferences History (Prepereces) — kontras di atas --dm-bg-card */
-  --dm-gh-cell: #30363d;
+  /* Heatmap Preferences History — kontras di atas --dm-bg-card */
+  --dm-gh-cell: #383d48;
   --dm-gh-lv1: #196c2e;
   --dm-gh-lv2: #238636;
   --dm-gh-lv3: #2ea043;
@@ -740,8 +741,8 @@ body.dark-mode-grid select {
 body.dark-mode-grid .form-control:focus,
 body.dark-mode-grid .form-select:focus,
 body.dark-mode-grid .form-nexa-control:focus,
-body.dark-mode-grid input:focus,
-body.dark-mode-grid textarea:focus,
+body.dark-mode-grid input:not(.beranda-quick-open__input):focus,
+body.dark-mode-grid textarea:not(.beranda-chat-compose-card__input):focus,
 body.dark-mode-grid select:focus {
     border-color: var(--dm-blue-accent) !important;
     box-shadow: inset 0 0 0 1px var(--dm-blue-accent) !important;
@@ -817,21 +818,10 @@ body.dark-mode-grid .nx-card-menu {
 /* ============================================================
    18. MODAL — Dark Mode
    ============================================================ */
-/* Wrapper dialog & content dibuat transparan agar tidak menimbulkan
-   "double layer" gelap di belakang modal. Yang membentuk tampilan
-   kartu modal adalah .nx-modal-header / .nx-modal-body / .nx-modal-footer
-   yang masing-masing punya background sendiri. */
-body.dark-mode-grid .nx-modal-dialog,
-body.dark-mode-grid .nx-modal-content {
-    background-color: #1e1e1e00 !important;
-    color: var(--dm-text-main) !important;
-    border-color: #3d3d3d00 !important;
-}
+/* Kartu modal: token & warna di assets/modules/modal/modal.css */
 
-body.dark-mode-grid .nx-modal-header,
-body.dark-mode-grid .nx-modal-footer {
-    background-color: var(--dm-bg-surface) !important;
-    border-color: var(--dm-border) !important;
+body.dark-mode-grid .nx-modal-dialog {
+    background-color: transparent !important;
     color: var(--dm-text-main) !important;
 }
 
@@ -862,45 +852,16 @@ body.dark-mode-grid .nx-modal-footer .btn.btn-outline {
     border-color: var(--dm-border) !important;
 }
 
-body.dark-mode-grid .nx-modal-title {
-    color: var(--dm-text-main) !important;
-}
-
-body.dark-mode-grid .nx-modal-body {
-    color: var(--dm-text-main) !important;
-    background-color: var(--dm-bg-card) !important;
-}
-
 body.dark-mode-grid .nx-modal-backdrop {
     background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
-/* PENTING: jangan beri background di .nx-modal (full-viewport container).
-   `.nx-modal` punya pseudo `::before` (position:absolute, z-index:-1,
-   background:inherit) yang akan mewarisi warna dan menjadikan kotak
-   gelap besar di belakang dialog. Cukup `.nx-modal-backdrop` untuk
-   overlay, dan `.nx-modal-content` untuk panel dialog. */
+/* Overlay & ::before — lihat modal.css (--nx-modal-overlay) */
 body.dark-mode-grid .nx-modal {
     background-color: transparent !important;
 }
 body.dark-mode-grid .nx-modal::before {
     background: transparent !important;
-}
-
-/* Tombol close & minimize di header */
-body.dark-mode-grid .nx-modal-close,
-body.dark-mode-grid .nx-modal-minimize {
-    color: var(--dm-text-secondary) !important;
-    background: transparent !important;
-}
-body.dark-mode-grid .nx-modal-close:hover,
-body.dark-mode-grid .nx-modal-minimize:hover {
-    color: var(--dm-text-main) !important;
-    background-color: rgba(255, 255, 255, 0.06) !important;
-}
-body.dark-mode-grid .nx-modal-close:active,
-body.dark-mode-grid .nx-modal-minimize:active {
-    background-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 /* Scrollbar di body modal */
@@ -1234,7 +1195,7 @@ body.dark-mode-grid .nx-scroll-rounded::-webkit-scrollbar-thumb:hover {
    ============================================================ */
 body.dark-mode-grid .nexa-editor-toolbar {
     background: var(--dm-bg-surface) !important;
-    border-bottom-color: var(--dm-border) !important;
+    /*border-bottom-color: var(--dm-border) !important;*/
 }
 
 body.dark-mode-grid .nexa-editor-btn {
@@ -1242,6 +1203,77 @@ body.dark-mode-grid .nexa-editor-btn {
     color: var(--dm-text-main) !important;
     border-color: transparent !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 body.dark-mode-grid .nexa-editor-btn:hover {
     background: var(--dm-bg-main) !important;

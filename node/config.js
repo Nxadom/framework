@@ -12,8 +12,8 @@ const config = {
   drive: "http://localhost/assets/drive",
 
 
-  // url jika menggunakan rebit backend sisipkan ke public di Framework anda folder rebit
-  rebit: `http://localhost:8006/rebit`,
+  // NXAPI (ex-rebit): urlApi + /nxapi — CLI Install Web mengisi otomatis
+  NXAPI: `http://localhost/api/nxapi`,
 
 
   // url typicode backend umum baca dokuentasi NXUI.Storage().api(row, body) 

@@ -629,6 +629,46 @@ input::-webkit-inner-spin-button {
   vertical-align: middle;
 }
 
+/* Icon overlaid inside input — flex + absolute untuk vertical centering presisi */
+.form-nexa-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.form-nexa-icon > i,
+.form-nexa-icon > span.material-symbols-outlined,
+.form-nexa-icon > span.material-icons,
+.form-nexa-icon > span.octicon {
+  position: absolute;
+  left: 0.5rem;
+  z-index: 2;
+  pointer-events: none;
+  color: currentColor;
+  font-size: 1rem;
+  line-height: 1;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.form-nexa-icon > input,
+.form-nexa-icon > textarea {
+  padding-left: 2rem !important;
+  width: 100%;
+}
+.form-nexa-icon--right > i,
+.form-nexa-icon--right > span.material-symbols-outlined,
+.form-nexa-icon--right > span.material-icons,
+.form-nexa-icon--right > span.octicon {
+  left: auto;
+  right: 0.5rem;
+  padding-left: 0;
+  padding-right: 0;
+}
+.form-nexa-icon--right > input,
+.form-nexa-icon--right > textarea {
+  padding-left: var(--control-medium-paddingInline-normal, 0.75rem) !important;
+  padding-right: 2rem !important;
+}
+
 /* Slider — selaras token aksen */
 input[type="range"].form-range {
   display: block;

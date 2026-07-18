@@ -1,7 +1,7 @@
 export class NexaDb {
   constructor() {
     this.dbName = this.dbName();
-    this.dbVersion =12; // Added: viewStore for SQL VIEW builder
+    this.dbVersion = 36; // Added: statistics store for StatisticsPanel
     this.db = null;
     this.userData = window.NEXA?.userId || 0; // Default user ID = 1 untuk backward compatibility
   }
@@ -24,22 +24,28 @@ export class NexaDb {
        "mergeTabel",
        "viewStore",
        "metadata",
-       "settings", 
-       "projects", 
-       "history",
-      // "bucketsVarData",
-      // "folderStructure",
-      // "activityLogs",
-      // "recycleBin",
-      // "fileContents",      // Semua file (xlsx, pptx, txt, dll) disimpan di sini
-      // "fileSettings",
-      // "programFiles",
-      // "presentations", // Store untuk NexaPptx presentations
-      // "xlsxViwer",
-      // "xlsxFiles", // Store untuk NexaXlsx files        // Global settings untuk print, dll
-      // "tabelStore",
-      // "createTabel",
-      // "printSettings",
+       "settings",  
+       "extensions",
+       "bucketsCli",
+       "developer",
+       "chat",
+       "chatReview",
+       "chat_review",
+       "editor",
+       "debug",
+       "discovery",
+       "browser",
+       "nexaSocialite",
+       "socialite",
+       "textsheet",
+       "docxsheet",
+       "spreadsheet",
+       "presentations", // Store untuk NexaPptx presentations
+       "diagrams",      // Store untuk DiagramsPanel (AntV X6)
+       "statistics",    // Store untuk StatisticsPanel (NxStat)
+       "printSettings",
+       "nxclouddb",
+       "oauthUbuntu",
        
     ];
   }

@@ -102,7 +102,7 @@ export class NexaFloating {
       value:  options.value ?? {},
       ...options,
     };
-  console.log('this.formData:', this.formData);
+
     this.formId    = this.formData.id        || this.formData.modalid || 'nexaForm';
     this.className = this.formData.className || 'Form';
     this.tableName = this.formData.tableName || 'Data';

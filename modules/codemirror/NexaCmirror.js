@@ -6,6 +6,8 @@ export class NexaCmirror {
   // Static flag untuk tracking apakah dependencies sudah di-load
   static _dependenciesLoaded = false;
   static _loadingPromise = null;
+  /** Promise dedupe untuk addon find/replace (dialog + search) saat deps sudah di-cache */
+  static _searchAddonsEnsuringPromise = null;
   constructor(element, options = {}) {
 
     // Validasi element
@@ -68,9 +70,20 @@ export class NexaCmirror {
       matchBrackets: true,
       autoFocus: false,
       readOnly: false,
+      /** Selalu textarea: di Electron/UA tertentu `contenteditable` memakai karet blok tebal. */
+      inputStyle: "textarea",
       cursorBlinkRate: 530,
       lineWiseCopyCut: true,
-      pasteLinesPerSelection: false // Set false untuk menghindari duplikasi saat paste
+      pasteLinesPerSelection: false, // Set false untuk menghindari duplikasi saat paste
+      /**
+       * CM5: `Infinity` = token + DOM untuk seluruh dokumen sekaligus (bagus file kecil; file besar macet).
+       * Default moderat — Discovery Editor menimpa ke Infinity hanya untuk sumber yang tidak "berat".
+       */
+      viewportMargin: 80,
+      maxHighlightLength: 500000,
+      /** Lebih banyak baris per slice worker (masih dibatasi workTime) agar file besar selesai lebih cepat. */
+      workTime: 200,
+      workDelay: 50,
     };
 
     // Merge dengan options yang diberikan user
@@ -120,6 +133,19 @@ export class NexaCmirror {
     }
 
     // Pastikan mode diterapkan dengan benar setelah editor dibuat
+    /**
+     * Hanya tema `default` yang memakai accent phpMyAdmin (kelas `.cm-s-default` manual).
+     * Jangan menumpuk `.cm-s-default` dengan `.cm-s-dracula` / lainnya — pewarnaan jadi salah.
+     * @private
+     */
+    this._stampSqlPhpMyAdminDefaultClassForWrapper = (wrapper) => {
+      const el = wrapper && wrapper.classList ? wrapper : null;
+      if (!el || !this.config) return;
+      const th = String(this.config.theme ?? 'default').toLowerCase();
+      if (th === 'default') el.classList.add('cm-s-default');
+      else el.classList.remove('cm-s-default');
+    };
+
     const applyModeWithHighlight = (mode) => {
       try {
         // Jika mode adalah 'sql', konversi ke 'text/x-sql'
@@ -128,39 +154,9 @@ export class NexaCmirror {
         }
         this.editor.setOption('mode', mode);
         this.editor.setOption('theme', this.config.theme);
-        
-        // Force re-highlight dengan cara yang lebih agresif
-        const content = this.editor.getValue();
-        if (content) {
-          // Clear dan set ulang untuk trigger re-highlight
-          this.editor.setValue('');
-          setTimeout(() => {
-            this.editor.setValue(content);
-            this.editor.refresh();
-            
-            // Force re-highlight dengan cara manual jika perlu
-            const currentMode = this.editor.getOption('mode');
-            if (currentMode === 'sql' || currentMode === 'text/x-sql') {
-              // Pastikan mode SQL benar-benar aktif
-              const wrapper = this.editor.getWrapperElement();
-              if (wrapper) {
-                // Tambahkan class untuk memastikan CSS diterapkan
-                wrapper.classList.add('cm-s-default');
-                // Force re-render
-                this.editor.operation(() => {
-                  this.editor.refresh();
-                });
-              }
-            }
-            
-            // Force re-highlight sekali lagi
-            setTimeout(() => {
-              this.editor.refresh();
-            }, 50);
-          }, 10);
-        } else {
-          this.editor.refresh();
-        }
+        /* Jangan kosongkan dokumen lalu isi ulang lewat setTimeout: jika callback gagal (token/error),
+           isi tidak kembali — editor tampak kosong (sering pada Markdown). Cukup refresh. */
+        this.editor.refresh();
       } catch (e) {
         console.warn('Error applying mode:', e);
         this.editor.refresh();
@@ -174,6 +170,8 @@ export class NexaCmirror {
           // Set mode SQL dengan MIME type yang benar untuk memastikan highlighting bekerja
           this.editor.setOption('mode', 'text/x-sql');
           this.editor.setOption('theme', this.config.theme);
+          const wrapperNow = this.editor.getWrapperElement();
+          if (wrapperNow) this._stampSqlPhpMyAdminDefaultClassForWrapper(wrapperNow);
           
           // Force re-highlight dengan cara yang lebih agresif
           const content = this.editor.getValue();
@@ -192,7 +190,7 @@ export class NexaCmirror {
             // Jika mode SQL sudah ter-apply, pastikan wrapper memiliki class yang benar
             const wrapper = this.editor.getWrapperElement();
             if (wrapper) {
-              wrapper.classList.add('cm-s-default');
+              this._stampSqlPhpMyAdminDefaultClassForWrapper(wrapper);
             }
             
             // Force re-highlight dengan cara manual
@@ -527,6 +525,26 @@ export class NexaCmirror {
   }
 
   /**
+   * Nama mode untuk cabang UI (selalu string). Menghindari `config.mode` berupa object
+   * (mis. `{ name: "markdown" }`) dipakai dengan `.includes()` — itu memicu TypeError dan merusak input.
+   * @param {*} cm instance CodeMirror
+   * @returns {string}
+   */
+  _resolveCurrentModeName(cm) {
+    try {
+      const m = cm && typeof cm.getMode === "function" ? cm.getMode() : null;
+      const n = m && m.name;
+      if (typeof n === "string" && n) return n;
+    } catch {
+      /* abaikan */
+    }
+    const c = this.config && this.config.mode;
+    if (typeof c === "string") return c;
+    if (c && typeof c === "object" && typeof c.name === "string") return c.name;
+    return "";
+  }
+
+  /**
    * Mendapatkan theme berdasarkan mode
    * @param {string} mode - Mode editor
    * @returns {string} Theme yang sesuai dengan mode
@@ -562,7 +580,7 @@ export class NexaCmirror {
       const cursor = cm.getCursor();
       const line = cm.getLine(cursor.line);
       const textBeforeCursor = line.substring(0, cursor.ch);
-      let currentMode = cm.getMode().name || (typeof mode === 'object' ? mode.name : mode);
+      let currentMode = instance._resolveCurrentModeName(cm);
       
       // Jika mode adalah JSON (object dengan json: true), set currentMode ke 'json'
       if (isJsonMode || (typeof mode === 'object' && mode.json === true)) {
@@ -890,8 +908,16 @@ export class NexaCmirror {
         }
       }
       
-      // JavaScript mode
+      // JavaScript mode (with React Native support)
       if (currentMode === 'javascript' || currentMode.includes('javascript')) {
+        // Try React hint first (includes React Native components)
+        if (CodeMirror.hint && CodeMirror.hint.react) {
+          const reactHints = CodeMirror.hint.react(cm);
+          if (reactHints && reactHints.list && reactHints.list.length > 0) {
+            return reactHints;
+          }
+        }
+        // Fallback to standard JavaScript hint
         if (CodeMirror.hint && CodeMirror.hint.javascript) {
           return CodeMirror.hint.javascript(cm);
         }
@@ -942,6 +968,12 @@ export class NexaCmirror {
       // Ctrl+Space untuk trigger autocomplete
       'Ctrl-Space': 'autocomplete',
       
+      // Find and Replace (Ctrl+F untuk Find, Ctrl+H untuk Replace)
+      'Ctrl-F': 'findPersistent',
+      'Cmd-F': 'findPersistent',
+      'Ctrl-H': 'replace',
+      'Cmd-Alt-F': 'replace',
+      
       // Format code (Ctrl+Shift+F, Alt+Shift+F, atau Ctrl+K Ctrl+F)
       'Ctrl-Shift-F': (cm) => {
         const instance = cm.nexaInstance;
@@ -976,7 +1008,7 @@ export class NexaCmirror {
       
       // Enter untuk auto-close tag (HTML mode)
       'Enter': (cm) => {
-        const currentMode = cm.getMode().name || this.config.mode;
+        const currentMode = this._resolveCurrentModeName(cm);
         
         // Hanya untuk HTML/XML mode
         if (currentMode === 'htmlmixed' || currentMode === 'xml' || currentMode.includes('html')) {
@@ -1031,7 +1063,7 @@ export class NexaCmirror {
       const cursor = cm.getCursor();
       const line = cm.getLine(cursor.line);
       const textBeforeCursor = line.substring(0, cursor.ch);
-      const currentMode = cm.getMode().name || this.config.mode;
+      const currentMode = this._resolveCurrentModeName(cm);
       
       // Trigger autocomplete untuk HTML/XML mode
       if (currentMode === 'htmlmixed' || currentMode === 'xml' || currentMode.includes('html')) {
@@ -1097,7 +1129,7 @@ export class NexaCmirror {
       const cursor = cm.getCursor();
       const line = cm.getLine(cursor.line);
       const textBeforeCursor = line.substring(0, cursor.ch);
-      const currentMode = cm.getMode().name || this.config.mode;
+      const currentMode = this._resolveCurrentModeName(cm);
       
       // Untuk HTML/XML mode
       if (currentMode === 'htmlmixed' || currentMode === 'xml' || currentMode.includes('html')) {
@@ -1128,7 +1160,7 @@ export class NexaCmirror {
     this.editor.on('beforeChange', (cm, change) => {
       // Jika ini adalah paste operation
       if (change.origin === 'paste') {
-        const currentMode = cm.getMode().name || this.config.mode;
+        const currentMode = this._resolveCurrentModeName(cm);
         if (currentMode === 'sql' || currentMode === 'text/x-sql' || String(currentMode).includes('sql')) {
           // Dapatkan text yang akan di-paste
           const pastedText = change.text.join('\n');
@@ -1170,7 +1202,7 @@ export class NexaCmirror {
     this.editor.on('change', (cm, change) => {
       // Jika ini adalah paste operation
       if (change.origin === 'paste') {
-        const currentMode = cm.getMode().name || this.config.mode;
+        const currentMode = this._resolveCurrentModeName(cm);
         if (currentMode === 'sql' || currentMode === 'text/x-sql' || String(currentMode).includes('sql')) {
           // Tunggu sebentar untuk memastikan change sudah selesai
           setTimeout(() => {
@@ -1263,7 +1295,7 @@ export class NexaCmirror {
       const cursor = cm.getCursor();
       const line = cm.getLine(cursor.line);
       const textBeforeCursor = line.substring(0, cursor.ch);
-      const currentMode = cm.getMode().name || this.config.mode;
+      const currentMode = this._resolveCurrentModeName(cm);
       
       // Cek apakah tag dengan atribut default dipilih (seperti <img src="">)
       if (currentMode === 'htmlmixed' || currentMode === 'xml' || currentMode.includes('html')) {
@@ -2193,6 +2225,7 @@ export class NexaCmirror {
     const newTheme = this.getThemeByMode(mode);
     this.config.theme = newTheme;
     this.editor.setOption('theme', newTheme);
+    this._unlinkSqlPhpMyAdminAccentIfForeignTheme();
     // Update icon berdasarkan mode baru
     this.updateModeIcon(mode);
     return this;
@@ -2203,8 +2236,25 @@ export class NexaCmirror {
    * @param {string} theme - Theme editor (monokai, default, dll)
    */
   setTheme(theme) {
-    this.editor.setOption('theme', theme);
+    const t = String(theme ?? this.config.theme ?? 'default').trim();
+    if (this.config) this.config.theme = t;
+    this.editor.setOption('theme', t);
+    if (typeof this._unlinkSqlPhpMyAdminAccentIfForeignTheme === 'function') {
+      this._unlinkSqlPhpMyAdminAccentIfForeignTheme();
+    }
     return this;
+  }
+
+  /** Hapus `.cm-s-default` buatan phpMyAdmin-SQL bila tema bukan CodeMirror default. */
+  _unlinkSqlPhpMyAdminAccentIfForeignTheme() {
+    try {
+      if (!this.editor || typeof this.editor.getWrapperElement !== 'function' || !this.config) return;
+      const th = String(this.config.theme ?? 'default').toLowerCase();
+      if (th !== 'default') {
+        const w = this.editor.getWrapperElement();
+        if (w) w.classList.remove('cm-s-default');
+      }
+    } catch (_) { /* noop */ }
   }
 
   /**
@@ -2223,18 +2273,6 @@ export class NexaCmirror {
       const wrapper = this.editor.getWrapperElement();
       if (wrapper) {
         wrapper.style.fontSize = fontSizeStr;
-        
-        // Juga terapkan ke CodeMirror element
-        const cmElement = wrapper.querySelector('.CodeMirror');
-        if (cmElement) {
-          cmElement.style.fontSize = fontSizeStr;
-        }
-        
-        // Terapkan ke textarea/input CodeMirror
-        const cmLines = wrapper.querySelector('.CodeMirror-lines');
-        if (cmLines) {
-          cmLines.style.fontSize = fontSizeStr;
-        }
       }
     }
     
@@ -2438,17 +2476,54 @@ export class NexaCmirror {
   }
 
   /**
+   * Memuat addon dialog + search jika belum ada (mis. sesi lama yang cache deps sebelum addon ditambahkan).
+   * Urutan: dialog.css → dialog.js → searchcursor.js → search.js
+   * @returns {Promise<void>}
+   */
+  static async _ensureSearchAddonsLoaded() {
+    if (typeof CodeMirror === 'undefined') return;
+    if (CodeMirror.commands && typeof CodeMirror.commands.findPersistent === 'function') return;
+    if (typeof NXUI === 'undefined' || !NXUI.NexaStylesheet || !NXUI.NexaScript) return;
+    if (NexaCmirror._searchAddonsEnsuringPromise) return NexaCmirror._searchAddonsEnsuringPromise;
+
+    NexaCmirror._searchAddonsEnsuringPromise = (async () => {
+      try {
+        await NXUI.NexaStylesheet.Dom(['codemirror/css/addon/dialog/dialog.css'], false);
+        const searchJs = [
+          'codemirror/js/addon/dialog/dialog.js',
+          'codemirror/js/addon/search/searchcursor.js',
+          'codemirror/js/addon/search/search.js',
+        ];
+        for (const jsFile of searchJs) {
+          const identifier = jsFile.replace(/[^a-zA-Z0-9]/g, '-');
+          const script = new NXUI.NexaScript(jsFile, false, identifier);
+          if (!script.isLoaded()) await script.loadAsScript();
+        }
+      } catch (e) {
+        console.warn('CodeMirror search addons failed to load:', e);
+      }
+    })();
+
+    try {
+      await NexaCmirror._searchAddonsEnsuringPromise;
+    } finally {
+      NexaCmirror._searchAddonsEnsuringPromise = null;
+    }
+  }
+
+  /**
    * Static method untuk memuat semua dependencies CodeMirror (CSS & JS)
    * Menggunakan NexaStylesheet dan NexaScript untuk dynamic loading
    * Dengan caching untuk menghindari load berulang
    * @returns {Promise<void>}
    */
   static async loadDependencies() {
-    // Cek apakah CodeMirror sudah tersedia (sudah di-load sebelumnya)
-    if (typeof CodeMirror !== 'undefined' && NexaCmirror._dependenciesLoaded) {
-      // Dependencies sudah di-load, langsung return
-      return Promise.resolve();
-    }
+    // FORCE RELOAD: Always reload to get latest changes
+    // Comment out cache check temporarily for development
+    // if (typeof CodeMirror !== 'undefined' && NexaCmirror._dependenciesLoaded) {
+    //   await NexaCmirror._ensureSearchAddonsLoaded();
+    //   return Promise.resolve();
+    // }
 
     // Jika sedang dalam proses loading, return promise yang sama (hindari multiple loads)
     if (NexaCmirror._loadingPromise) {
@@ -2465,10 +2540,24 @@ export class NexaCmirror {
 
     // Daftar CSS dari local assets
     // Note: Theme default sudah termasuk dalam codemirror.css, tidak perlu load terpisah
+    /* Semua tema Discovery (selain default) ikut dipaket di sini agar warna token .cm-*
+       selalu tersedia; memuat tema hanya dari discovery/cmThemes gagal kalau NexaStylesheet
+       salah base path atau urutan stylesheet. Duplikasi ringan dibanding penyorotan hilang. */
     const cssFiles = [
       'codemirror/css/codemirror.css',
       'codemirror/css/theme/monokai.css',
-      'codemirror/css/addon/hint/show-hint.css'
+      'codemirror/css/theme/monokai-sublime.css', // IMPORTANT: Custom Monokai Sublime theme
+      'codemirror/css/theme/eclipse.css',
+      'codemirror/css/theme/neo.css',
+      'codemirror/css/theme/idea.css',
+      'codemirror/css/theme/ambiance.css',
+      'codemirror/css/theme/cobalt.css',
+      'codemirror/css/theme/dracula.css',
+      'codemirror/css/theme/material-darker.css',
+      'codemirror/css/theme/base16-dark.css',
+      'codemirror/css/addon/hint/show-hint.css',
+      'codemirror/css/addon/dialog/dialog.css',
+      // codemirror-fix.css di-load TERAKHIR setelah Cmirror.css
     ];
 
     // Core CodeMirror harus di-load terlebih dahulu
@@ -2481,25 +2570,43 @@ export class NexaCmirror {
       'codemirror/js/mode/css/css.js',
       'codemirror/js/mode/javascript/javascript.js',
       'codemirror/js/mode/htmlmixed/htmlmixed.js',
+      'codemirror/js/mode/meta.js',
+      'codemirror/js/mode/markdown/markdown.js',
+      'codemirror/js/mode/yaml/yaml.js',
       'codemirror/js/mode/sql/sql.js',
+      'codemirror/js/mode/clike/clike.js',
+      'codemirror/js/mode/php/php.js',
       // json.js tidak perlu di-load terpisah karena sudah termasuk dalam javascript.js
       // Mode JSON menggunakan { name: 'javascript', json: true }
       'codemirror/js/addon/edit/closetag.js',
       'codemirror/js/addon/edit/closebrackets.js',
+      'codemirror/js/addon/dialog/dialog.js',
+      'codemirror/js/addon/search/searchcursor.js',
+      'codemirror/js/addon/search/search.js',
       'codemirror/js/addon/hint/show-hint.js',
       'codemirror/js/addon/hint/xml-hint.js',
       'codemirror/js/addon/hint/html-hint.js',
       'codemirror/js/addon/hint/javascript-hint.js',
       'codemirror/js/addon/hint/css-hint.js',
-      'codemirror/js/addon/hint/sql-hint.js'
+      'codemirror/js/addon/hint/sql-hint.js',
+      'codemirror/js/addon/hint/react-hint.js' // React Native autocomplete
     ];
 
     try {
+      // FORCE RELOAD: Remove old CSS links untuk CodeMirror themes
+      const oldCssLinks = document.querySelectorAll('link[href*="monokai"]');
+      oldCssLinks.forEach(oldLink => {
+        oldLink.remove();
+      });
+      
       // Load CSS files terlebih dahulu (path lokal, jadi gunakan false)
       await NXUI.NexaStylesheet.Dom(cssFiles, false);
       
-      // Load custom CSS untuk NexaCmirror
+      // Load custom CSS untuk NexaCmirror SEBELUM codemirror-fix.css
       await NXUI.NexaStylesheet.Dom(['Cmirror.css']);
+      
+      // Load codemirror-fix.css TERAKHIR untuk override semua
+      await NXUI.NexaStylesheet.Dom(['codemirror/css/codemirror-fix.css'], false);
 
       // Load core CodeMirror terlebih dahulu (WAJIB sebelum script lainnya)
       // Gunakan identifier unik berdasarkan full path (replace / dengan - untuk identifier yang valid)
@@ -2517,28 +2624,30 @@ export class NexaCmirror {
       // Gunakan identifier unik untuk setiap script (replace karakter khusus dengan -)
       for (const jsFile of jsFiles) {
         try {
-          // Buat identifier unik dari path (replace karakter khusus dengan -)
-          const identifier = jsFile.replace(/[^a-zA-Z0-9]/g, '-');
-          const script = new NXUI.NexaScript(jsFile, false, identifier);
+          // FORCE RELOAD: Remove old script tags untuk file ini
+          const baseIdentifier = jsFile.replace(/[^a-zA-Z0-9]/g, '-');
+          const oldScripts = document.querySelectorAll(`script[data-nexa-script*="${baseIdentifier}"]`);
+          oldScripts.forEach(oldScript => {
+            oldScript.remove();
+          });
           
-          // Cek apakah script sudah di-load sebelumnya
-          if (!script.isLoaded()) {
-            await script.loadAsScript();
-            // Khusus untuk SQL mode script, verifikasi bahwa mode sudah ter-register
-            if (jsFile.includes('mode/sql/sql.js')) {
-              // Tunggu sebentar untuk memastikan mode ter-register
-              await new Promise(resolve => setTimeout(resolve, 100));
-              // Verifikasi bahwa mode SQL ter-register
-              if (CodeMirror.modes && CodeMirror.modes.sql) {
-                console.log('✅ SQL mode registered successfully');
-              } else {
-                console.warn('⚠️ SQL mode not registered, trying to register manually');
-                // Coba register mode SQL secara manual jika belum ter-register
-                if (typeof CodeMirror !== 'undefined' && CodeMirror.defineMode) {
-                  // Mode SQL seharusnya sudah ter-register oleh file sql.js
-                  console.log('CodeMirror.defineMode available, SQL mode should be registered');
-                }
-              }
+          // Buat identifier unik dari path (replace karakter khusus dengan -)
+          // Add timestamp to force reload and bypass cache
+          const identifier = baseIdentifier + '-' + Date.now();
+          
+          // Add cache-busting query parameter to force browser reload
+          const cacheBustedPath = jsFile + (jsFile.includes('?') ? '&' : '?') + '_=' + Date.now();
+          const script = new NXUI.NexaScript(cacheBustedPath, false, identifier);
+          
+          // FORCE RELOAD: Always load to get latest changes (bypass cache)
+          await script.loadAsScript();
+          
+          if (jsFile.includes('mode/sql/sql.js')) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            if (CodeMirror.modes && CodeMirror.modes.sql) {
+              // console.log('✅ SQL mode registered successfully');
+            } else {
+              console.warn('⚠️ SQL mode not registered');
             }
           }
         } catch (error) {
@@ -2556,7 +2665,9 @@ export class NexaCmirror {
       // Pastikan mode SQL sudah ter-load (jika diperlukan)
       // Tunggu sebentar untuk memastikan semua mode script sudah ter-register
       await new Promise(resolve => setTimeout(resolve, 50));
-      
+
+      await NexaCmirror._ensureSearchAddonsLoaded();
+
       // Mark dependencies sebagai sudah di-load
       NexaCmirror._dependenciesLoaded = true;
       
@@ -2581,6 +2692,7 @@ export class NexaCmirror {
   static resetDependenciesCache() {
     NexaCmirror._dependenciesLoaded = false;
     NexaCmirror._loadingPromise = null;
+    NexaCmirror._searchAddonsEnsuringPromise = null;
   }
 }
 

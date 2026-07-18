@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panels — VS Code UI Toolkit</title>
+    <link rel="stylesheet" href="vs.css">
+    <style>
+        h2 { color: #007acc; font-size: 18px; margin-bottom: 20px; }
+        .demo { background: #252526; border: 1px solid #3c3c3c; border-radius: 6px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <h2>vscode-panels / panel-tab / panel-view</h2>
+    <div class="demo">
+        <div class="vsc-panels" style="width:100%;">
+            <div class="tablist">
+                <div class="vsc-panel-tab active" onclick="document.querySelectorAll('.vsc-panel-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');document.querySelectorAll('.vsc-panel-view').forEach(v=>v.classList.add('hidden'));document.getElementById('p1').classList.remove('hidden')">Explorer</div>
+                <div class="vsc-panel-tab" onclick="document.querySelectorAll('.vsc-panel-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');document.querySelectorAll('.vsc-panel-view').forEach(v=>v.classList.add('hidden'));document.getElementById('p2').classList.remove('hidden')">Search</div>
+                <div class="vsc-panel-tab" onclick="document.querySelectorAll('.vsc-panel-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');document.querySelectorAll('.vsc-panel-view').forEach(v=>v.classList.add('hidden'));document.getElementById('p3').classList.remove('hidden')">Settings</div>
+            </div>
+            <div class="vsc-panel-view" id="p1">📁 Folder explorer dengan file project...</div>
+            <div class="vsc-panel-view hidden" id="p2">🔍 Cari file atau teks di seluruh project...</div>
+            <div class="vsc-panel-view hidden" id="p3">⚙️ Pengaturan editor, tema, dan ekstensi...</div>
+        </div>
+    </div>
+</body>
+</html>

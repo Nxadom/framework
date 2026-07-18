@@ -1,0 +1,1209 @@
+/* ================================================================
+   VS CODE WEBVIEW UI TOOLKIT — ALL COMPONENTS CSS
+   Sumber: https://github.com/microsoft/vscode-webview-ui-toolkit
+   Diekstrak dari src/design-tokens.ts + masing-masing *.styles.ts
+   ================================================================ */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #1e1e1e;
+    color: #cccccc;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol";
+    font-size: 13px;
+    line-height: normal;
+    padding: 30px;
+}
+
+
+/* ================================================================
+   DESIGN TOKENS (CSS Custom Properties)
+   Sumber: src/design-tokens.ts — semua nilai default
+   Prefix '--vscode-' = mapping ke VS Code theme variable asli
+   ================================================================ */
+:root {
+    /* --- Global Tokens --- */
+    --background: #1e1e1e;
+    --border-width: 1;
+    --contrast-active-border: #f38518;
+    --contrast-border: #6fc3df;
+    --corner-radius: 0;
+    --corner-radius-round: 2;
+    --design-unit: 4;
+    --disabled-opacity: 0.4;
+    --focus-border: #007fd4;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol";
+    --font-weight: 400;
+    --foreground: #cccccc;
+    --input-height: 26;
+    --input-min-width: 100px;
+
+    /* --- Type Ramp --- */
+    --type-ramp-base-font-size: 13px;
+    --type-ramp-base-line-height: normal;
+    --type-ramp-minus1-font-size: 11px;
+    --type-ramp-minus1-line-height: 16px;
+    --type-ramp-minus2-font-size: 9px;
+    --type-ramp-minus2-line-height: 16px;
+    --type-ramp-plus1-font-size: 16px;
+    --type-ramp-plus1-line-height: 24px;
+
+    /* --- Scrollbar --- */
+    --scrollbar-width: 10px;
+    --scrollbar-height: 10px;
+    --scrollbar-slider-background: #79797966;
+    --scrollbar-slider-hover-background: #646464b3;
+    --scrollbar-slider-active-background: #bfbfbf66;
+
+    /* --- Badge --- */
+    --badge-background: #4d4d4d;
+    --badge-foreground: #ffffff;
+
+    /* --- Button --- */
+    --button-border: transparent;
+    --button-icon-background: transparent;
+    --button-icon-corner-radius: 5px;
+    --button-icon-hover-background: rgba(90, 93, 94, 0.31);
+    --button-icon-padding: 3px;
+    --button-primary-background: #0e639c;
+    --button-primary-foreground: #ffffff;
+    --button-primary-hover-background: #1177bb;
+    --button-secondary-background: #3a3d41;
+    --button-secondary-foreground: #ffffff;
+    --button-secondary-hover-background: #45494e;
+    --button-padding-horizontal: 11px;
+    --button-padding-vertical: 4px;
+
+    /* --- Checkbox --- */
+    --checkbox-background: #3c3c3c;
+    --checkbox-border: #3c3c3c;
+    --checkbox-corner-radius: 3;
+    --checkbox-foreground: #f0f0f0;
+
+    /* --- Data Grid --- */
+    --list-active-selection-background: #094771;
+    --list-active-selection-foreground: #ffffff;
+    --list-hover-background: #2a2d2e;
+
+    /* --- Divider --- */
+    --divider-background: #454545;
+
+    /* --- Dropdown --- */
+    --dropdown-background: #3c3c3c;
+    --dropdown-border: #3c3c3c;
+    --dropdown-foreground: #f0f0f0;
+    --dropdown-list-max-height: 200px;
+
+    /* --- Text Field & Text Area --- */
+    --input-background: #3c3c3c;
+    --input-foreground: #cccccc;
+    --input-placeholder-foreground: #cccccc;
+
+    /* --- Link --- */
+    --link-active-foreground: #3794ff;
+    --link-foreground: #3794ff;
+
+    /* --- Progress Ring --- */
+    --progress-background: #0e70c0;
+
+    /* --- Panels --- */
+    --panel-tab-active-border: #e7e7e7;
+    --panel-tab-active-foreground: #e7e7e7;
+    --panel-tab-foreground: #e7e7e799;
+    --panel-view-background: #1e1e1e;
+    --panel-view-border: #80808059;
+
+    /* --- Tag --- */
+    --tag-corner-radius: 2px;
+}
+
+
+/* ================================================================
+   COMPONENT: BADGE  <vscode-badge>
+   SRC: src/badge/badge.styles.ts
+   TOKENS: badgeBackground=#4d4d4d, badgeForeground=#ffffff,
+           borderWidth=1, buttonBorder=transparent, designUnit=4,
+           fontFamily, typeRampMinus1FontSize=11px, typeRampMinus1LineHeight=16px
+   ================================================================ */
+.vsc-badge {
+    display: inline-block;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 16px;
+    text-align: center;
+}
+.vsc-badge .control {
+    align-items: center;
+    background-color: #4d4d4d;
+    border: 1px solid transparent;
+    border-radius: 11px;
+    box-sizing: border-box;
+    color: #ffffff;
+    display: flex;
+    height: 16px;
+    justify-content: center;
+    min-width: 18px;
+    min-height: 18px;
+    padding: 3px 6px;
+}
+/* ============ END BADGE ============ */
+
+
+/* ================================================================
+   COMPONENT: BUTTON  <vscode-button>
+   SRC: src/button/button.styles.ts
+   TOKENS: fontFamily, typeRampBaseFontSize=13px, cornerRadiusRound=2,
+           borderWidth=1, designUnit=4, disabledOpacity=0.4,
+           buttonPrimaryBackground=#0e639c, buttonPrimaryForeground=#ffffff,
+           buttonPrimaryHoverBackground=#1177bb,
+           buttonSecondaryBackground=#3a3d41, buttonSecondaryForeground=#ffffff,
+           buttonSecondaryHoverBackground=#45494e,
+           buttonIconBackground=transparent, buttonIconCornerRadius=5px,
+           buttonIconHoverBackground=rgba(90,93,94,0.31),
+           buttonIconPadding=3px, buttonIconFocusBorderOffset=0,
+           buttonPaddingHorizontal=11px, buttonPaddingVertical=4px,
+           foreground=#cccccc, focusBorder=#007fd4, contrastActiveBorder=#f38518
+   ================================================================ */
+.vsc-btn {
+    display: inline-flex;
+    outline: none;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: normal;
+    fill: currentColor;
+    cursor: pointer;
+    border-radius: 2px;
+    border: none;
+    background: #0e639c;
+    color: #ffffff;
+}
+.vsc-btn:hover {
+    background: #1177bb;
+}
+.vsc-btn:active {
+    background: #0e639c;
+}
+.vsc-btn .control::-moz-focus-inner {
+    border: 0;
+}
+.vsc-btn .control {
+    background: transparent;
+    height: inherit;
+    flex-grow: 1;
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 11px;
+    white-space: wrap;
+    outline: none;
+    text-decoration: none;
+    border: 1px solid transparent;
+    color: inherit;
+    border-radius: inherit;
+    fill: inherit;
+    cursor: inherit;
+    font-family: inherit;
+}
+.vsc-btn .content {
+    display: flex;
+}
+.vsc-btn .start {
+    display: flex;
+    margin-inline-end: 8px;
+}
+
+/* --- Button: Primary --- */
+.vsc-btn.primary {
+    background: #0e639c;
+    color: #ffffff;
+}
+.vsc-btn.primary:hover {
+    background: #1177bb;
+}
+.vsc-btn.primary:active {
+    background: #0e639c;
+}
+.vsc-btn.primary:active .control:active {
+    background: #0e639c;
+}
+.vsc-btn.primary[disabled] {
+    background: #0e639c;
+}
+
+/* --- Button: Secondary --- */
+.vsc-btn.secondary {
+    background: #3a3d41;
+    color: #ffffff;
+}
+.vsc-btn.secondary:hover {
+    background: #45494e;
+}
+.vsc-btn.secondary:active {
+    background: #3a3d41;
+}
+.vsc-btn.secondary:active .control:active {
+    background: #3a3d41;
+}
+.vsc-btn.secondary[disabled] {
+    background: #3a3d41;
+}
+
+/* --- Button: Icon --- */
+.vsc-btn.icon {
+    background: transparent;
+    border-radius: 5px;
+    color: #cccccc;
+}
+.vsc-btn.icon:hover {
+    background: rgba(90, 93, 94, 0.31);
+    outline: 1px dotted #f38518;
+    outline-offset: -1px;
+}
+.vsc-btn.icon:active .control:active {
+    background: rgba(90, 93, 94, 0.31);
+}
+.vsc-btn.icon .control {
+    padding: 3px;
+    border: none;
+}
+
+/* --- Button: Focus --- */
+.vsc-btn .control:focus-visible,
+.vsc-btn:focus-visible {
+    outline: 1px solid #007fd4;
+    outline-offset: 2px;
+}
+.vsc-btn.icon .control:focus-visible,
+.vsc-btn.icon:focus-visible {
+    outline: 1px solid #007fd4;
+    outline-offset: 0;
+}
+
+/* --- Button: Disabled --- */
+.vsc-btn[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    background: #0e639c;
+}
+.vsc-btn.icon[disabled] {
+    background: transparent;
+}
+
+/* --- Button: Icon sizing --- */
+.vsc-btn svg,
+.vsc-btn .icon-slot {
+    width: 16px;
+    height: 16px;
+}
+/* ============ END BUTTON ============ */
+
+
+/* ================================================================
+   COMPONENT: CHECKBOX  <vscode-checkbox>
+   SRC: src/checkbox/checkbox.styles.ts
+   TOKENS: checkboxBackground=#3c3c3c, checkboxBorder=#3c3c3c,
+           checkboxCornerRadius=3, foreground=#cccccc, designUnit=4,
+           borderWidth=1, focusBorder=#007fd4, disabledOpacity=0.4,
+           fontFamily, typeRampBaseFontSize=13px, typeRampBaseLineHeight=normal
+   ================================================================ */
+.vsc-checkbox {
+    display: inline-flex;
+    align-items: center;
+    outline: none;
+    margin: 4px 0;
+    user-select: none;
+    font-size: 13px;
+    line-height: normal;
+    cursor: pointer;
+}
+.vsc-checkbox .control {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    border-radius: 3px;
+    border: 1px solid #3c3c3c;
+    background: #3c3c3c;
+    outline: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.vsc-checkbox .label {
+    font-family: inherit;
+    color: #cccccc;
+    padding-inline-start: 10px;
+    margin-inline-end: 10px;
+    cursor: pointer;
+}
+.vsc-checkbox .label__hidden {
+    display: none;
+    visibility: hidden;
+}
+.vsc-checkbox .check-icon {
+    width: 100%;
+    height: 100%;
+    min-width: 16px;
+    min-height: 16px;
+    display: block;
+    fill: #cccccc;
+    opacity: 0;
+    pointer-events: none;
+}
+.vsc-checkbox .indeterminate {
+    border-radius: 2px;
+    background: #cccccc;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+/* --- Checkbox States --- */
+.vsc-checkbox.checked .check-icon {
+    opacity: 1;
+}
+.vsc-checkbox.indeterminate .indeterminate {
+    opacity: 1;
+}
+.vsc-checkbox:not(.disabled) .control:hover {
+    background: #3c3c3c;
+    border-color: #3c3c3c;
+}
+.vsc-checkbox:not(.disabled) .control:active {
+    background: #3c3c3c;
+    border-color: #007fd4;
+}
+.vsc-checkbox .control:focus-visible,
+.vsc-checkbox:focus-visible .control {
+    border: 1px solid #007fd4;
+}
+
+/* --- Checkbox: Disabled & Readonly --- */
+.vsc-checkbox.disabled {
+    opacity: 0.4;
+}
+.vsc-checkbox.disabled .label,
+.vsc-checkbox.disabled .control,
+.vsc-checkbox.readonly .label,
+.vsc-checkbox.readonly .control {
+    cursor: not-allowed;
+}
+/* ============ END CHECKBOX ============ */
+
+
+/* ================================================================
+   COMPONENT: RADIO / RADIO GROUP  <vscode-radio> <vscode-radio-group>
+   SRC: src/radio/radio.styles.ts + src/radio-group/radio-group.styles.ts
+   TOKENS: checkboxBackground=#3c3c3c, checkboxBorder=#3c3c3c,
+           designUnit=4, borderWidth=1, focusBorder=#007fd4,
+           foreground=#cccccc, fontFamily, typeRampBaseFontSize=13px,
+           typeRampBaseLineHeight=normal, disabledOpacity=0.4
+   ================================================================ */
+.vsc-radio-group {
+    display: flex;
+    align-items: flex-start;
+    margin: 4px 0;
+    flex-direction: column;
+}
+.vsc-radio-group .positioning-region {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.vsc-radio-group.horizontal .positioning-region {
+    flex-direction: row;
+    gap: 16px;
+}
+
+.vsc-radio {
+    display: inline-flex;
+    align-items: center;
+    flex-direction: row;
+    font-size: 13px;
+    line-height: normal;
+    margin: 4px 0;
+    outline: none;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+    user-select: none;
+    cursor: pointer;
+}
+.vsc-radio .control {
+    background: #3c3c3c;
+    border-radius: 999px;
+    border: 1px solid #3c3c3c;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 16px;
+    position: relative;
+    outline: none;
+    width: 16px;
+    flex-shrink: 0;
+}
+.vsc-radio .label {
+    color: #cccccc;
+    cursor: pointer;
+    font-family: inherit;
+    margin-inline-end: 10px;
+    padding-inline-start: 10px;
+}
+.vsc-radio .label__hidden {
+    display: none;
+    visibility: hidden;
+}
+.vsc-radio .dot {
+    background: #cccccc;
+    border-radius: 999px;
+    display: inline-block;
+    inset: 4px;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+}
+
+/* --- Radio States --- */
+.vsc-radio.checked .dot {
+    opacity: 1;
+}
+.vsc-radio:not([disabled]) .control:hover {
+    background: #3c3c3c;
+    border-color: #3c3c3c;
+}
+.vsc-radio:not([disabled]) .control:active {
+    background: #3c3c3c;
+    border-color: #007fd4;
+}
+.vsc-radio:focus-visible .control,
+.vsc-radio .control:focus-visible {
+    border: 1px solid #007fd4;
+}
+.vsc-radio.checked .control {
+    background: #3c3c3c;
+    border: 1px solid #3c3c3c;
+}
+.vsc-radio.checked:not([disabled]) .control:hover {
+    background: #3c3c3c;
+    border: 1px solid #3c3c3c;
+}
+.vsc-radio.checked:not([disabled]) .control:active {
+    background: #3c3c3c;
+    border: 1px solid #007fd4;
+}
+.vsc-radio.checked:focus-visible .control {
+    border: 1px solid #007fd4;
+}
+
+/* --- Radio: Disabled & Readonly --- */
+.vsc-radio[disabled] {
+    opacity: 0.4;
+}
+.vsc-radio[disabled] .control,
+.vsc-radio[disabled] .label,
+.vsc-radio[readonly] .control,
+.vsc-radio[readonly] .label {
+    cursor: not-allowed;
+}
+/* ============ END RADIO ============ */
+
+
+/* ================================================================
+   COMPONENT: DROPDOWN / OPTION  <vscode-dropdown> <vscode-option>
+   SRC: src/dropdown/dropdown.styles.ts + src/option/option.styles.ts
+   TOKENS: dropdownBackground=#3c3c3c, cornerRadiusRound=2,
+           foreground=#cccccc, fontFamily, inputHeight=26,
+           inputMinWidth=100px, borderWidth=1, dropdownBorder=#3c3c3c,
+           typeRampBaseFontSize=13px, focusBorder=#007fd4,
+           dropdownListMaxHeight=200px, disabledOpacity=0.4,
+           listActiveSelectionBackground=#094771,
+           listActiveSelectionForeground=#ffffff,
+           cornerRadius=0, designUnit=4
+   ================================================================ */
+.vsc-dropdown-wrapper {
+    display: inline-flex;
+    position: relative;
+    min-width: 100px;
+}
+.vsc-dropdown {
+    display: inline-flex;
+    background: #3c3c3c;
+    border-radius: 2px;
+    box-sizing: border-box;
+    color: #cccccc;
+    font-family: inherit;
+    height: 26px;
+    position: relative;
+    user-select: none;
+    min-width: 100px;
+    outline: none;
+    vertical-align: top;
+}
+.vsc-dropdown .control {
+    align-items: center;
+    box-sizing: border-box;
+    border: 1px solid #3c3c3c;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: normal;
+    min-height: 100%;
+    padding: 2px 6px 2px 8px;
+    width: 100%;
+}
+.vsc-dropdown:focus-visible .control,
+.vsc-dropdown .control:focus-visible {
+    border-color: #007fd4;
+}
+.vsc-dropdown:not([disabled]):hover {
+    background: #3c3c3c;
+    border-color: #3c3c3c;
+}
+.vsc-dropdown .arrow {
+    margin-left: auto;
+    fill: currentColor;
+}
+.vsc-dropdown[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* --- Dropdown List --- */
+.vsc-dropdown-list {
+    background: #3c3c3c;
+    border: 1px solid #007fd4;
+    border-radius: 2px;
+    box-sizing: border-box;
+    display: none;
+    flex-direction: column;
+    left: 0;
+    max-height: 200px;
+    padding: 0;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    top: 100%;
+    margin-top: 2px;
+}
+.vsc-dropdown-list.open {
+    display: inline-flex;
+}
+
+/* --- Option --- */
+.vsc-option {
+    display: inline-flex;
+    font-family: inherit;
+    border-radius: 0;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    color: #cccccc;
+    cursor: pointer;
+    fill: currentcolor;
+    font-size: 13px;
+    line-height: normal;
+    margin: 0;
+    outline: none;
+    overflow: hidden;
+    user-select: none;
+    white-space: nowrap;
+    padding: 0 2px 1px;
+}
+.vsc-option:hover,
+.vsc-option.selected {
+    background: #094771;
+    border: 1px solid transparent;
+    color: #ffffff;
+}
+.vsc-option:focus-visible {
+    border-color: #007fd4;
+    background: #094771;
+    color: #cccccc;
+}
+.vsc-option:active {
+    background: #094771;
+    color: #cccccc;
+}
+.vsc-option .content {
+    grid-column-start: 2;
+    justify-self: start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Option: Disabled --- */
+.vsc-option[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* --- Radio Group: Label slot --- */
+.vsc-radio-group .slot-label {
+    color: #cccccc;
+    font-size: 13px;
+    margin: 4px 0;
+}
+/* ============ END DROPDOWN ============ */
+
+
+/* ================================================================
+   COMPONENT: TEXT FIELD  <vscode-text-field>
+   SRC: src/text-field/text-field.styles.ts
+   TOKENS: fontFamily, inputBackground=#3c3c3c, inputForeground=#cccccc,
+           cornerRadiusRound=2, borderWidth=1, dropdownBorder=#3c3c3c,
+           inputHeight=26, inputMinWidth=100px, designUnit=4,
+           focusBorder=#007fd4, disabledOpacity=0.4, foreground=#cccccc,
+           typeRampBaseFontSize=13px, typeRampBaseLineHeight=normal
+   ================================================================ */
+.vsc-text-field {
+    display: inline-block;
+    font-family: inherit;
+    outline: none;
+    user-select: none;
+}
+.vsc-text-field .root {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    color: #cccccc;
+    background: #3c3c3c;
+    border-radius: 2px;
+    border: 1px solid #3c3c3c;
+    height: 26px;
+    min-width: 100px;
+}
+.vsc-text-field .control {
+    -webkit-appearance: none;
+    appearance: none;
+    font: inherit;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    height: calc(100% - 4px);
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    border: none;
+    padding: 0 9px;
+    font-size: 13px;
+    line-height: normal;
+    outline: none;
+}
+.vsc-text-field .control::placeholder {
+    color: #cccccc;
+}
+.vsc-text-field .label {
+    display: block;
+    color: #cccccc;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: normal;
+    margin-bottom: 2px;
+}
+.vsc-text-field .label__hidden {
+    display: none;
+    visibility: hidden;
+}
+
+/* --- Text Field States --- */
+.vsc-text-field:not([disabled]):hover .root {
+    background: #3c3c3c;
+    border-color: #3c3c3c;
+}
+.vsc-text-field:not([disabled]):active .root {
+    background: #3c3c3c;
+    border-color: #007fd4;
+}
+.vsc-text-field:focus-within:not([disabled]) .root,
+.vsc-text-field .root:focus-within {
+    border-color: #007fd4;
+}
+.vsc-text-field[disabled] {
+    opacity: 0.4;
+    pointer-events: none;
+}
+.vsc-text-field[disabled] .control {
+    border-color: #3c3c3c;
+}
+.vsc-text-field[disabled] .label,
+.vsc-text-field[disabled] .control,
+.vsc-text-field[readonly] .label,
+.vsc-text-field[readonly] .control {
+    cursor: not-allowed;
+}
+
+/* --- Text Field: Icon slots --- */
+.vsc-text-field .start,
+.vsc-text-field .end {
+    display: flex;
+    margin: auto;
+    fill: currentcolor;
+}
+.vsc-text-field .start {
+    margin-inline-start: 8px;
+}
+.vsc-text-field .end {
+    margin-inline-end: 8px;
+}
+.vsc-text-field svg,
+.vsc-text-field .icon-slot {
+    width: 16px;
+    height: 16px;
+}
+/* ============ END TEXT FIELD ============ */
+
+
+/* ================================================================
+   COMPONENT: TEXT AREA  <vscode-text-area>
+   SRC: src/text-area/text-area.styles.ts
+   TOKENS: fontFamily, inputForeground=#cccccc, inputBackground=#3c3c3c,
+           cornerRadiusRound=2, borderWidth=1, dropdownBorder=#3c3c3c,
+           typeRampBaseFontSize=13px, typeRampBaseLineHeight=normal,
+           designUnit=4, inputMinWidth=100px, focusBorder=#007fd4,
+           disabledOpacity=0.4,
+           scrollbarWidth=10px, scrollbarHeight=10px,
+           scrollbarSliderBackground=#79797966,
+           scrollbarSliderHoverBackground=#646464b3,
+           scrollbarSliderActiveBackground=#bfbfbf66
+   ================================================================ */
+.vsc-text-area {
+    display: inline-block;
+    font-family: inherit;
+    outline: none;
+    user-select: none;
+}
+.vsc-text-area .control {
+    box-sizing: border-box;
+    position: relative;
+    color: #cccccc;
+    background: #3c3c3c;
+    border-radius: 2px;
+    border: 1px solid #3c3c3c;
+    font: inherit;
+    font-size: 13px;
+    line-height: normal;
+    padding: 9px;
+    width: 100%;
+    min-width: 100px;
+    resize: none;
+    outline: none;
+    min-height: 60px;
+}
+.vsc-text-area .control::placeholder {
+    color: #cccccc;
+}
+
+/* --- Text Area States --- */
+.vsc-text-area .control:hover:enabled {
+    background: #3c3c3c;
+    border-color: #3c3c3c;
+}
+.vsc-text-area .control:active:enabled {
+    background: #3c3c3c;
+    border-color: #007fd4;
+}
+.vsc-text-area:focus-within:not([disabled]) .control,
+.vsc-text-area .control:focus-visible {
+    border-color: #007fd4;
+}
+.vsc-text-area[disabled] {
+    opacity: 0.4;
+    pointer-events: none;
+}
+.vsc-text-area[disabled] .control {
+    border-color: #3c3c3c;
+}
+.vsc-text-area[disabled] .label,
+.vsc-text-area[disabled] .control,
+.vsc-text-area[readonly] .label,
+.vsc-text-area[readonly] .control {
+    cursor: not-allowed;
+}
+
+/* --- Text Area: Label --- */
+.vsc-text-area .label {
+    display: block;
+    color: #cccccc;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: normal;
+    margin-bottom: 2px;
+}
+.vsc-text-area .label__hidden {
+    display: none;
+    visibility: hidden;
+}
+
+/* --- Text Area: Resize --- */
+.vsc-text-area[resize="both"] .control {
+    resize: both;
+}
+.vsc-text-area[resize="horizontal"] .control {
+    resize: horizontal;
+}
+.vsc-text-area[resize="vertical"] .control {
+    resize: vertical;
+}
+
+/* --- Text Area: Scrollbar --- */
+.vsc-text-area .control::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+.vsc-text-area .control::-webkit-scrollbar-corner {
+    background: #3c3c3c;
+}
+.vsc-text-area .control::-webkit-scrollbar-thumb {
+    background: #79797966;
+}
+.vsc-text-area .control::-webkit-scrollbar-thumb:hover {
+    background: #646464b3;
+}
+.vsc-text-area .control::-webkit-scrollbar-thumb:active {
+    background: #bfbfbf66;
+}
+/* ============ END TEXT AREA ============ */
+
+
+/* ================================================================
+   COMPONENT: LINK  <vscode-link>
+   SRC: src/link/link.styles.ts
+   TOKENS: linkForeground=#3794ff, fontFamily, typeRampBaseFontSize=13px,
+           typeRampBaseLineHeight=normal, borderWidth=1, cornerRadius=0,
+           linkActiveForeground=#3794ff
+   ================================================================ */
+.vsc-link {
+    display: inline-flex;
+    background: transparent;
+    box-sizing: border-box;
+    color: #3794ff;
+    cursor: pointer;
+    fill: currentcolor;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: normal;
+    outline: none;
+}
+.vsc-link:active {
+    background: transparent;
+    color: #3794ff;
+}
+.vsc-link:focus-visible .control,
+.vsc-link:focus .control {
+    border: 1px solid #007fd4;
+}
+.vsc-link:hover {
+    color: #3794ff;
+}
+.vsc-link:hover .content {
+    text-decoration: underline;
+}
+.vsc-link .control {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: inherit;
+    cursor: inherit;
+    fill: inherit;
+    font-family: inherit;
+    height: inherit;
+    padding: 0;
+    outline: none;
+    text-decoration: none;
+    word-break: break-word;
+}
+/* ============ END LINK ============ */
+
+
+/* ================================================================
+   COMPONENT: TAG  <vscode-tag>
+   SRC: src/tag/tag.styles.ts
+   TOKENS: badgeBackground=#4d4d4d, badgeForeground=#ffffff,
+           borderWidth=1, buttonBorder=transparent, designUnit=4,
+           tagCornerRadius=2px, typeRampMinus1FontSize=11px,
+           typeRampMinus1LineHeight=16px, fontFamily
+   ================================================================ */
+.vsc-tag {
+    display: inline-block;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 16px;
+}
+.vsc-tag .control {
+    background-color: #4d4d4d;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    color: #ffffff;
+    padding: 2px 4px;
+    text-transform: uppercase;
+}
+/* ============ END TAG ============ */
+
+
+/* ================================================================
+   COMPONENT: DIVIDER  <vscode-divider>
+   SRC: src/divider/divider.styles.ts
+   TOKENS: borderWidth=1, dividerBackground=#454545, designUnit=4
+   ================================================================ */
+.vsc-divider {
+    display: block;
+    border: none;
+    border-top: 1px solid #454545;
+    box-sizing: content-box;
+    height: 0;
+    margin: 4px 0;
+    width: 100%;
+}
+/* ============ END DIVIDER ============ */
+
+
+/* ================================================================
+   COMPONENT: DATA GRID  <vscode-data-grid> <vscode-data-grid-row> <vscode-data-grid-cell>
+   SRC: src/data-grid/data-grid.styles.ts + data-grid-row.styles.ts + data-grid-cell.styles.ts
+   TOKENS: foreground=#cccccc, fontFamily, typeRampBaseFontSize=13px,
+           typeRampBaseLineHeight=normal, designUnit=4, borderWidth=1,
+           cornerRadius=0, focusBorder=#007fd4,
+           listActiveSelectionBackground=#094771,
+           listActiveSelectionForeground=#ffffff,
+           background=#1e1e1e, contrastActiveBorder=#f38518,
+           listHoverBackground=#2a2d2e
+   ================================================================ */
+.vsc-data-grid {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid #3c3c3c;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.vsc-data-grid-row {
+    display: grid;
+    padding: 1px 0;
+    box-sizing: border-box;
+    width: 100%;
+    background: transparent;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.vsc-data-grid-row.header {
+    background: #1e1e1e;
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid #3c3c3c;
+}
+.vsc-data-grid-row:hover {
+    background: #2a2d2e;
+    outline: 1px dotted #f38518;
+    outline-offset: -1px;
+}
+
+.vsc-data-grid-cell {
+    padding: 4px 12px;
+    color: #cccccc;
+    opacity: 1;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: normal;
+    font-weight: 400;
+    border: 1px solid transparent;
+    border-radius: 0;
+    white-space: wrap;
+    overflow-wrap: anywhere;
+    border-right: 1px solid #2d2d2d;
+}
+.vsc-data-grid-cell:last-child {
+    border-right: none;
+}
+.vsc-data-grid-cell.header {
+    font-weight: 600;
+    background: #2d2d2d;
+}
+.vsc-data-grid-cell:focus,
+.vsc-data-grid-cell:focus-visible,
+.vsc-data-grid-cell:active {
+    background: #094771;
+    border: 1px solid #007fd4;
+    color: #ffffff;
+    outline: none;
+}
+.vsc-data-grid-cell:focus *,
+.vsc-data-grid-cell:focus-visible *,
+.vsc-data-grid-cell:active * {
+    color: #ffffff !important;
+}
+/* ============ END DATA GRID ============ */
+
+
+/* ================================================================
+   COMPONENT: PANELS  <vscode-panels> <vscode-panel-tab> <vscode-panel-view>
+   SRC: src/panels/panels.styles.ts + panel-tab.styles.ts + panel-view.styles.ts
+   TOKENS: fontFamily, typeRampBaseFontSize=13px,
+           typeRampBaseLineHeight=normal, designUnit=4, cornerRadius=0,
+           panelTabForeground=#e7e7e799, panelTabActiveForeground=#e7e7e7,
+           panelTabActiveBorder=#e7e7e7,
+           panelViewBackground=#1e1e1e, panelViewBorder=#80808059,
+           foreground=#cccccc, borderWidth=1
+   ================================================================ */
+.vsc-panels {
+    display: grid;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: normal;
+    color: #cccccc;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto 1fr;
+    overflow-x: auto;
+    border: 1px solid #80808059;
+    border-radius: 4px;
+}
+.vsc-panels .tablist {
+    display: flex;
+    gap: 0;
+    position: relative;
+    width: 100%;
+    align-self: end;
+    padding: 4px 4px 0;
+    box-sizing: border-box;
+    grid-column: 1 / -1;
+    border-bottom: 1px solid #3c3c3c;
+}
+
+.vsc-panel-tab {
+    display: inline-flex;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: normal;
+    height: 28px;
+    padding: 4px 0;
+    color: #e7e7e799;
+    fill: currentcolor;
+    border-radius: 0;
+    border: solid 1px transparent;
+    align-items: center;
+    justify-content: center;
+    grid-row: 1;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    margin-bottom: -1px;
+}
+.vsc-panel-tab:active {
+    color: #e7e7e7;
+}
+.vsc-panel-tab:focus-visible,
+.vsc-panel-tab:focus {
+    outline: none;
+    border: solid 1px #e7e7e7;
+}
+.vsc-panel-tab ::slotted(vscode-badge) {
+    margin-inline-start: 8px;
+}
+.vsc-panel-tab:hover {
+    color: #e7e7e7;
+}
+.vsc-panel-tab.active {
+    background: transparent;
+    color: #e7e7e7;
+    border-bottom: 1px solid #e7e7e7;
+}
+.vsc-panel-tab.active:hover {
+    background: transparent;
+    color: #e7e7e7;
+}
+.vsc-panel-tab.activeIndicator {
+    grid-row: 2;
+    width: 100%;
+    height: 1px;
+    background: #e7e7e7;
+    margin: 0;
+    border-radius: 2px;
+}
+
+.vsc-panel-view {
+    display: flex;
+    color: inherit;
+    background-color: transparent;
+    border: solid 1px transparent;
+    box-sizing: border-box;
+    font-size: 13px;
+    line-height: normal;
+    padding: 10px 6px;
+    min-height: 80px;
+    grid-column: 1 / -1;
+}
+.vsc-panel-view.hidden {
+    display: none;
+}
+/* ============ END PANELS ============ */
+
+
+/* ================================================================
+   COMPONENT: PROGRESS RING  <vscode-progress-ring>
+   SRC: src/progress-ring/progress-ring.styles.ts
+   TOKENS: designUnit=4, progressBackground=#0e70c0
+   ================================================================ */
+.vsc-progress-ring {
+    display: flex;
+    align-items: center;
+    outline: none;
+    height: 28px;
+    width: 28px;
+    margin: 0;
+}
+.vsc-progress-ring svg {
+    height: 100%;
+    width: 100%;
+}
+.vsc-progress-ring .bg {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 2px;
+}
+.vsc-progress-ring .indicator {
+    fill: none;
+    stroke: #0e70c0;
+    stroke-width: 2px;
+    stroke-linecap: square;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+    transition: all 0.2s ease-in-out;
+    animation: spin-infinite 2s linear infinite;
+}
+@keyframes spin-infinite {
+    0% {
+        stroke-dasharray: 0.01px 43.97px;
+        transform: rotate(0deg);
+    }
+    50% {
+        stroke-dasharray: 21.99px 21.99px;
+        transform: rotate(450deg);
+    }
+    100% {
+        stroke-dasharray: 0.01px 43.97px;
+        transform: rotate(1080deg);
+    }
+}
+/* ============ END PROGRESS RING ============ */

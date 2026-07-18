@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, JsonView } from "NexaJS";
+import { View, Text, StyleSheet, JsonView } from "Nxdom";
 
 const Halaman = ({ route }) => {
   return (

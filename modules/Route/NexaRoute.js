@@ -4,6 +4,12 @@
  * Hanya berisi fungsi routing inti tanpa dependensi spesifik
  */
 
+import {
+    resolveHistoryRoute,
+    resolveHistorySegment,
+    resolveWorkspaceHistoryRoute,
+} from '../history-route-guard.js';
+
 /** Escape teks untuk ditampilkan di &lt;pre&gt; error (debug). */
 function nexaEscapeHtmlRouteError(s) {
     return String(s)
@@ -211,33 +217,28 @@ export class NexaRoute {
      * @param {string} url
      * @param {object} [meta] - opsional: parentId, actionId, label, actionName, baseRoute, title
      */
+    _isHistoryIndexRoute(route, meta = null) {
+        const r = String(route || '').trim().toLowerCase();
+        if (!r || r === 'beranda') return true;
+        const last = r.split('/').filter(Boolean).pop() || '';
+        if (last === 'welcome' || last === 'history' || last === 'home') return true;
+        if (r === 'history' || r.endsWith('/history')) return true;
+        const actionId = meta && meta.actionId != null ? String(meta.actionId).trim().toLowerCase() : '';
+        if (actionId === 'welcome' || actionId === 'history') return true;
+        return false;
+    }
+
     async _appendHistory(ref, route, url, meta = null) {
         try {
+            if (this._isHistoryIndexRoute(route, meta)) return;
+
+            const resolved = await resolveHistoryRoute(route, ref);
+            if (resolved === null) return;
+            const routeForHistory = resolved;
+
             const now = new Date().toISOString();
             const existing = await ref.get('bucketsStore', 'history');
             const entries = Array.isArray(existing?.entries) ? existing.entries : [];
-
-            let routeForHistory = route;
-            // Untuk route model dinamis, simpan appname (human-readable) sebagai segmen terakhir, bukan token.
-            if (typeof route === 'string' && route) {
-                const segs = route.split('/').filter(Boolean);
-                const modelIdx = segs.lastIndexOf('model');
-                const lastSeg = segs.at(-1);
-                const hasModelToken = modelIdx >= 0 && lastSeg && modelIdx < segs.length - 1;
-                if (hasModelToken && typeof ref?.nexaStore === 'function') {
-                    const token = String(lastSeg).trim();
-                    try {
-                        const row = await ref.nexaStore(token).get();
-                        const appName = String(row?.appname || '').trim();
-                        if (appName) {
-                            segs[segs.length - 1] = appName;
-                            routeForHistory = segs.join('/');
-                        }
-                    } catch (e) {
-                        // fallback: tetap gunakan route asli bila token tidak valid / data tidak ditemukan
-                    }
-                }
-            }
 
             const entry = {
                 route: routeForHistory,
@@ -246,9 +247,14 @@ export class NexaRoute {
                 timestamp: now,
             };
             if (meta && typeof meta === 'object') {
-                const keys = ['parentId', 'actionId', 'actionName', 'label', 'baseRoute'];
+                const keys = ['parentId', 'actionName', 'label', 'baseRoute', 'appName'];
                 for (const k of keys) {
                     if (meta[k] != null && String(meta[k]).trim() !== '') entry[k] = meta[k];
+                }
+                const appHint = String(meta.appName || meta.appname || '').trim();
+                if (meta.actionId != null && String(meta.actionId).trim() !== '') {
+                    const resolvedAction = await resolveHistorySegment(meta.actionId, ref, appHint);
+                    if (resolvedAction !== null) entry.actionId = resolvedAction;
                 }
             }
 
@@ -304,11 +310,16 @@ export class NexaRoute {
                 ? `${parentId.charAt(0).toUpperCase() + parentId.slice(1)} · ${label}`
                 : (label || routeKey);
 
-        await this._appendHistory(ref, routeKey, url, {
+        const appName = String(detail.appName || detail.appname || '').trim();
+        const historyRoute = await resolveWorkspaceHistoryRoute(routeKey, detail, ref);
+        if (historyRoute === null) return;
+
+        await this._appendHistory(ref, historyRoute, url, {
             parentId,
             actionId,
             actionName,
             label,
+            appName,
             baseRoute: 'workspace',
             title: prettyTitle,
         });
@@ -1719,6 +1730,11 @@ export class NexaRoute {
             // Cek apakah target adalah link atau di dalam link
             const link = e.target.closest('a');
             if (!link) return;
+
+            /* Zona markdown (doc/chat) — ditangani markdownCore.mjs, bukan SPA */
+            if (link.closest('[data-nx-markdown-preview], [data-nx-markdown-chat]')) {
+                return;
+            }
 
                 // Electron: tautan bertanda + preload IPC → jendela baru di main.
                 if (

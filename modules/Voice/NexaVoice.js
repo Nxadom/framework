@@ -85,7 +85,7 @@ class NexaVoice {
     
     // Silent mode - only log if Indonesian voice not found and ResponsiveVoice not available
     if (!this.hasIndonesianVoice && this.useResponsiveVoice && typeof window.responsiveVoice === 'undefined') {
-      console.warn('⚠️ NexaVoice: No Indonesian voices found and ResponsiveVoice not loaded');
+      //console.warn('⚠️ NexaVoice: No Indonesian voices found and ResponsiveVoice not loaded');
     }
   }
 

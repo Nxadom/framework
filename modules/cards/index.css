@@ -18,6 +18,8 @@
   border: 1px solid var(--nx-card-border-color);
   /*  border-radius: var(--nx-card-border-radius);*/
   /*  margin-bottom: 1rem;*/
+  /* Pastikan card tidak menghalangi scroll di body */
+  min-height: 0;
 }
 
 .nx-card-header {
@@ -76,6 +78,40 @@
 .nx-card-body {
   padding: var(--nx-card-spacing);
   flex: 1 1 auto;
+}
+
+/* Scroll-enabled card body - musi memiliki height untuk scroll berfungsi */
+.nx-card-body.nx-scroll {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  position: relative;
+  /* Pastikan wheel scroll bekerja di area content */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Pastikan elemen di dalam card body tidak menghalangi scroll events */
+.nx-card-body.nx-scroll * {
+  pointer-events: auto;
+}
+
+/* Card title sebagai drag handle - biarkan cursor move hanya di title, bukan body */
+.nx-card-title {
+  cursor: grab;
+  user-select: none;
+}
+
+.nx-card-title:active {
+  cursor: grabbing;
+}
+
+/* Card body dan children-nya TIDAK boleh grab cursor (hanya scroll) */
+.nx-card-body {
+  cursor: default !important;
+}
+
+.nx-card-body *:not(a, a *, button, button *, [role="button"], [role="button"] *, [class*="drag-handle"], [style*="cursor"]) {
+  cursor: auto !important;
 }
 
 .nx-card-footer {
@@ -1017,7 +1053,7 @@ body.dark-mode-grid .nx-card-grid .nx-card-title {
   font-size: 16px;
   font-weight: bold;
   line-height: 1;
-  font-family: "Montserrat", Arial, sans-serif;
+  
 }
 
 .nx-card-minimize:hover {
@@ -1052,7 +1088,7 @@ body.dark-mode-grid .nx-card-grid .nx-card-title {
   font-size: 16px;
   font-weight: bold;
   line-height: 1;
-  font-family: "Montserrat", Arial, sans-serif;
+  
 }
 
 .nx-card-close:hover {
@@ -1104,7 +1140,7 @@ body.dark-mode-grid .nx-card-grid .nx-card-title {
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  font-family: "Montserrat", Arial, sans-serif;
+  
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: auto;

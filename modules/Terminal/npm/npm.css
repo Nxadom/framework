@@ -1,0 +1,318 @@
+/* ===================================================
+   NexaNpm Styles — overrides app.min.css global rules
+   =================================================== */
+
+/* --- Reset font global dari app.min.css untuk npm progress ---
+   app.min.css memaksa monospace 13px pada .command-entry dengan !important.
+   Selector berikut meniru breadth selector app.min.css agar override menang. */
+
+.command-line .command-row .command-entry .nexa-npm-progress,
+.command-line .command-row .command-entry .nexa-npm-progress *,
+.command-line .command-row .command-entry .nexa-npm-loader-container,
+.command-line .command-row .command-entry .nexa-npm-loader-container * {
+  font-family: "Cascadia Mono", "Cascadia Code", Consolas, "Courier New", monospace !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+}
+
+/* --- Container utama progress bar --- */
+.nexa-npm-progress {
+  color: #fff !important;
+  font-size: 13px !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  white-space: normal !important;
+  gap: 2px !important;
+}
+
+/* --- Loader container (progress bar + titik-titik) --- */
+.nexa-npm-loader-container {
+  width: auto !important;
+  min-width: auto !important;
+  max-width: none !important;
+  overflow: visible !important;
+  position: relative !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  margin-left: 4px !important;
+  margin-right: 2px !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  word-break: normal !important;
+}
+
+/* --- Titik-titik loader ([ . . . . . ]) --- */
+#nexa-npm-loader-points,
+.nexa-npm-instal .nexa-npm-instal-loader-points,
+.nexa-npm-npm-install .nexa-npm-npm-install-loader-points,
+.nexa-npm-term-wait .nexa-npm-term-wait-loader-points {
+  white-space: nowrap !important;
+  display: inline-block !important;
+  position: relative !important;
+  z-index: 10 !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+/* --- Progress bar animasi (garis putih) --- */
+#nexa-npm-loader,
+.nexa-npm-instal .nexa-npm-instal-loader,
+.nexa-npm-npm-install .nexa-npm-npm-install-loader,
+.nexa-npm-term-wait .nexa-npm-term-wait-loader {
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  transform: translateY(-50%);
+  width: 0px;
+  height: 13px;
+  background: #fff;
+  z-index: 0;
+  -webkit-animation: nexa-npm-width 50s steps(1, end) infinite;
+          animation: nexa-npm-width 50s steps(1, end) infinite;
+}
+
+@-webkit-keyframes nexa-npm-width {
+  0% { width: 0%; }
+  5% { width: 15%; }
+  9% { width: 20%; }
+  10% { width: 23%; }
+  15% { width: 27%; }
+  19% { width: 30%; }
+  25% { width: 35%; }
+  31% { width: 40%; }
+  32% { width: 45%; }
+  36% { width: 49%; }
+  39% { width: 57%; }
+  45% { width: 62%; }
+  50% { width: 69%; }
+  54% { width: 73%; }
+  60% { width: 78%; }
+  63% { width: 81%; }
+  90% { width: 88%; }
+}
+
+@keyframes nexa-npm-width {
+  0% { width: 0%; }
+  5% { width: 15%; }
+  9% { width: 20%; }
+  10% { width: 23%; }
+  15% { width: 27%; }
+  19% { width: 30%; }
+  25% { width: 35%; }
+  31% { width: 40%; }
+  32% { width: 45%; }
+  36% { width: 49%; }
+  39% { width: 57%; }
+  45% { width: 62%; }
+  50% { width: 69%; }
+  54% { width: 73%; }
+  60% { width: 78%; }
+  63% { width: 81%; }
+  90% { width: 88%; }
+}
+
+/* --- Spinner karakter (| / - \) --- */
+#nexa-npm-spinner,
+.nexa-npm-instal .nexa-npm-instal-spinner,
+.nexa-npm-npm-install .nexa-npm-npm-install-spinner,
+.nexa-npm-term-wait .nexa-npm-term-wait-spinner {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 8px !important;
+  display: inline-block !important;
+  word-break: normal !important;
+  white-space: nowrap !important;
+}
+
+/* --- Verb status (fetch, resolve, dll) --- */
+#nexa-npm-verb,
+.nexa-npm-instal .nexa-npm-instal-verb,
+.nexa-npm-npm-install .nexa-npm-npm-install-verb,
+.nexa-npm-term-wait .nexa-npm-term-wait-verb {
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  word-break: normal !important;
+  white-space: nowrap !important;
+}
+
+/* --- Scope / mapToRegistry --- */
+#nexa-npm-mapToRegistry,
+.nexa-npm-instal .nexa-npm-instal-scope,
+.nexa-npm-npm-install .nexa-npm-npm-install-scope,
+.nexa-npm-term-wait .nexa-npm-term-wait-scope {
+  color: purple !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  word-break: normal !important;
+  white-space: nowrap !important;
+}
+
+/* --- URI --- */
+#nexa-npm-uri {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  word-break: normal !important;
+  white-space: nowrap !important;
+}
+
+.nexa-npm-instal .nexa-npm-instal-uri,
+.nexa-npm-npm-install .nexa-npm-npm-install-uri,
+.nexa-npm-term-wait .nexa-npm-term-wait-uri {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  word-break: normal !important;
+  white-space: nowrap !important;
+  max-width: 55vw !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  vertical-align: bottom !important;
+}
+
+/* --- Span lain di dalam .nexa-npm-progress --- */
+.nexa-npm-progress > span:not(#nexa-npm-spinner):not(#nexa-npm-verb):not(#nexa-npm-mapToRegistry):not(#nexa-npm-uri) {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  word-break: normal !important;
+  white-space: nowrap !important;
+}
+
+/* ============================================
+   Override command-entry app.min.css
+   app.min.css memaksa:
+     .command-entry { white-space: pre-wrap; word-break: break-all; display: inline }
+   Kita override untuk npm progress.
+   ============================================ */
+
+/* Selector dengan specificity tinggi menyamai app.min.css */
+.command-line .command-row .command-entry .nexa-npm-progress,
+.command-line .command-row .command-entry.nexa-npm-progress,
+.command-line .command-row .command-entry .nexa-npm-instal,
+.command-line .command-row .command-entry .nexa-npm-npm-install,
+.command-line .command-row .command-entry .nexa-npm-term-wait {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+
+/* .block + npm progress — kill parent line-height space */
+.command-line .command-row .command-entry.block.nexa-npm-progress,
+.command-line .command-row .command-entry.block .nexa-npm-progress {
+  display: flex !important;
+}
+.command-line .command-row .command-entry.block:has(.nexa-npm-progress) {
+  font-size: 0 !important;
+  line-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.command-line .command-row .command-entry.block:has(.nexa-npm-progress) .nexa-npm-progress,
+.command-line .command-row .command-entry.block:has(.nexa-npm-progress) .nexa-npm-progress * {
+  font-size: 13px !important;
+  line-height: 1 !important;
+}
+
+/* Semua child di dalam nexa-npm-progress */
+.command-line .command-row .command-entry .nexa-npm-progress * {
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  white-space: nowrap !important;
+}
+
+/* --- Prefix (instal:, npm:, start:, stop:) --- */
+.nexa-npm-instal .nexa-npm-instal-prefix,
+.nexa-npm-npm-install .nexa-npm-npm-install-prefix,
+.nexa-npm-term-wait .nexa-npm-term-wait-prefix {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #ccc !important;
+  display: inline-block !important;
+}
+
+.nexa-npm-instal .nexa-npm-instal-uri,
+.nexa-npm-npm-install .nexa-npm-npm-install-uri,
+.nexa-npm-term-wait .nexa-npm-term-wait-uri {
+  white-space: nowrap !important;
+}
+
+/* ============================================
+   Mode Terang (.command-line.light)
+   ============================================ */
+
+/* Reset font untuk light mode juga */
+.command-line.light .command-row .command-entry .nexa-npm-progress,
+.command-line.light .command-row .command-entry .nexa-npm-progress *,
+.command-line.light .command-row .command-entry .nexa-npm-loader-container,
+.command-line.light .command-row .command-entry .nexa-npm-loader-container * {
+  font-family: "Cascadia Mono", "Cascadia Code", Consolas, "Courier New", monospace !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+}
+
+.command-line.light .nexa-npm-progress {
+  color: #1e40af !important;
+}
+
+.command-line.light #nexa-npm-loader-points,
+.command-line.light .nexa-npm-instal .nexa-npm-instal-loader-points,
+.command-line.light .nexa-npm-npm-install .nexa-npm-npm-install-loader-points,
+.command-line.light .nexa-npm-term-wait .nexa-npm-term-wait-loader-points {
+  color: #1e40af !important;
+}
+
+.command-line.light #nexa-npm-loader,
+.command-line.light .nexa-npm-instal .nexa-npm-instal-loader,
+.command-line.light .nexa-npm-npm-install .nexa-npm-npm-install-loader,
+.command-line.light .nexa-npm-term-wait .nexa-npm-term-wait-loader {
+  background: #2563eb;
+}
+
+.command-line.light #nexa-npm-mapToRegistry,
+.command-line.light .nexa-npm-instal .nexa-npm-instal-scope,
+.command-line.light .nexa-npm-npm-install .nexa-npm-npm-install-scope,
+.command-line.light .nexa-npm-term-wait .nexa-npm-term-wait-scope {
+  color: #7c3aed !important;
+}
+
+.command-line.light .nexa-npm-instal .nexa-npm-instal-prefix,
+.command-line.light .nexa-npm-npm-install .nexa-npm-npm-install-prefix,
+.command-line.light .nexa-npm-term-wait .nexa-npm-term-wait-prefix {
+  color: #374151 !important;
+}
+
+.command-line.light .nexa-npm-progress > span:not(#nexa-npm-spinner):not(#nexa-npm-verb):not(#nexa-npm-mapToRegistry):not(#nexa-npm-uri) {
+  color: #1e40af !important;
+}
+
+/* Tabel output (TabelRaw) — putih di mode gelap, hitam di mode terang */
+.command-line .command-entry pre {
+  color: #fff !important;
+}
+
+.command-line.light .command-entry pre {
+  color: #000 !important;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkbox — VS Code UI Toolkit</title>
+    <link rel="stylesheet" href="vs.css">
+    <style>
+        h2 { color: #007acc; font-size: 18px; margin-bottom: 20px; }
+        .demo { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; background: #252526; border: 1px solid #3c3c3c; border-radius: 6px; padding: 20px; }
+    </style>
+</head>
+<body>
+    <h2>vscode-checkbox</h2>
+    <p style="font-size:12px;color:#888;margin-bottom:12px;">Klik untuk toggle</p>
+    <div class="demo">
+        <label class="vsc-checkbox checked" onclick="this.classList.toggle('checked')">
+            <span class="control"><svg class="check-icon" viewBox="0 0 16 16"><path d="M6.5 11.5L3 8l1-1 2.5 2.5L12 4l1 1z"/></svg></span>
+            <span class="label">Auto-save</span>
+        </label>
+        <label class="vsc-checkbox" onclick="this.classList.toggle('checked')">
+            <span class="control"><svg class="check-icon" viewBox="0 0 16 16"><path d="M6.5 11.5L3 8l1-1 2.5 2.5L12 4l1 1z"/></svg></span>
+            <span class="label">Format on save</span>
+        </label>
+        <label class="vsc-checkbox disabled">
+            <span class="control"><svg class="check-icon" viewBox="0 0 16 16"><path d="M6.5 11.5L3 8l1-1 2.5 2.5L12 4l1 1z"/></svg></span>
+            <span class="label">Disabled</span>
+        </label>
+    </div>
+</body>
+</html>
