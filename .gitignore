@@ -10,6 +10,9 @@ command.md
 # Dependencies
 node_modules/
 vendor/
+# Firebase SDK lokal (bukan Composer) — harus ikut repo
+!modules/Firebase/vendor/
+!modules/Firebase/vendor/**
 .npm/
 .pnpm-store/
 .yarn/cache/
