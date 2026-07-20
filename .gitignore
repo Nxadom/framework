@@ -44,6 +44,7 @@ out/
 /modules/Mobile/nxdom-register.ps1
 
 # Lokal / jangan commit
+/push.ps1
 /modules/Kit/NexaKit.bat
 /backend/system/log/
 /backend/system/log/**
