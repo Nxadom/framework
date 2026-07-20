@@ -1,4 +1,4 @@
-// ===========================================
+﻿// ===========================================
 // NEXAUI GLOBAL INITIALIZATION
 // ===========================================
 // Entry point untuk membuat NXUI tersedia secara global
@@ -7,14 +7,14 @@
 // ===========================================
 // DYNAMIC MODULE LOADER (hanya modul terinstal)
 // ===========================================
-// Baca modules.json ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ import HANYA folder yang terdaftar.
+// Baca modules.json — import HANYA folder yang terdaftar.
 // Modul belum terinstal: tidak di-fetch (hindari 404 massal di console).
 
 const _nxSkipped = [];
 let _nxInstalled = null; // Set<string> lowercase | null = coba semua
 
 async function _nxLoadInstalledSet() {
-  // 1) Manifest ESM dari CLI (andalkan ini ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â jalan di file:// & http)
+  // 1) Manifest ESM dari CLI (andalkan ini — jalan di file:// & http)
   try {
     const mod = await import("./modules.installed.js");
     const names = mod.installed || mod.default || [];
@@ -43,7 +43,7 @@ async function _nxLoadInstalledSet() {
 
 _nxInstalled = await _nxLoadInstalledSet();
 
-/** Folder modul dari specifier `./Folder/...` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â null jika di luar tree modules. */
+/** Folder modul dari specifier `./Folder/...` — null jika di luar tree modules. */
 function _nxFolderFromSpecifier(specifier) {
   const m = String(specifier || "").match(/^\.\/([^/'"]+)/);
   return m ? m[1] : null;
@@ -66,7 +66,7 @@ async function _nxSafeImport(specifier) {
 
 /**
  * Import hanya jika folder ada di modules.json.
- * Tanpa modules.json ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ fallback safe-import semua (mode bootstrap penuh).
+ * Tanpa modules.json — fallback safe-import semua (mode bootstrap penuh).
  */
 async function _nxImport(specifier) {
   const folder = _nxFolderFromSpecifier(specifier);
@@ -89,11 +89,26 @@ function _nxDefault(mod, fallback = undefined) {
   return mod.default !== undefined ? mod.default : fallback;
 }
 
-if (typeof console !== "undefined" && _nxInstalled) {
-  console.info(
-    `[nxdom] modul terinstal (${_nxInstalled.size}): ` +
-      [..._nxInstalled].sort().join(", "),
-  );
+/**
+ * Daftar modul terinstal — panggil di console: `nxdomModules()` atau `NXUI.modules()`.
+ * Tidak di-log otomatis saat load (instal parsial = normal).
+ * @param {boolean} [log=true] — jika true, cetak ke console.info
+ * @returns {string[]|null}
+ */
+function nxdomModules(log = true) {
+  const list = _nxInstalled ? [..._nxInstalled].sort() : null;
+  if (log && typeof console !== "undefined") {
+    if (!list) {
+      console.info("[nxdom] tidak ada manifest instal (mode bootstrap penuh)");
+    } else {
+      console.info(`[nxdom] modul terinstal (${list.length}):`, list);
+    }
+  }
+  return list;
+}
+
+if (typeof window !== "undefined") {
+  window.nxdomModules = nxdomModules;
 }
 
 const [
@@ -180,6 +195,8 @@ const [
   _mTree,
   _mValidation,
   _mVscode,
+  _mChat,
+  _mFluent,
   // @nxdom-register:vars-end
 ] = await Promise.all([
   _nxImport("./Route/NexaRoute.js"),
@@ -265,10 +282,12 @@ const [
   _nxImport("./tree/NexaTree.js"),
   _nxImport("./validation/NexaValidation.js"),
   _nxImport("./vscode/main.js"),
+  _nxImport("./chat/index.js"),
+  _nxImport("./fluent/NexaFluent.js"),
   // @nxdom-register:imports-end
 ]);
 
-// Side-effect scripts ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â hanya jika foldernya terinstal
+// Side-effect scripts — hanya jika foldernya terinstal
 await Promise.all([
   _nxImport("./utilities/jquery.js"),
   _nxImport("./chart/chart.umd.min.js"),
@@ -277,8 +296,9 @@ await Promise.all([
 ]);
 
 if (typeof window !== "undefined") {
-  window.__NXDOM_INSTALLED__ = _nxInstalled ? [..._nxInstalled] : null;
+  window.__NXDOM_INSTALLED__ = _nxInstalled ? [..._nxInstalled].sort() : null;
   window.__NXDOM_SKIPPED__ = _nxSkipped.slice();
+  window.nxdomModules = nxdomModules;
 }
 
 const NexaRoute = _nxPick(_mRoute, "NexaRoute");
@@ -411,9 +431,11 @@ const FacebookReactions = _nxDefault(_mReactions);
 const NexaTree = _nxPick(_mTree, "NexaTree");
 const Validation = _nxPick(_mValidation, "Validation");
 const Vscode = _nxDefault(_mVscode);
+const NexaChat = _nxPick(_mChat, "NexaChat");
+const defineFluent = _nxPick(_mFluent, "defineFluent");
 // @nxdom-register:binds-end
 
-/** Setara `new NXUI.Page(config)` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â dipanggil lewat `new NXUI.Tatiye(config).run()`. */
+/** Setara `new NXUI.Page(config)` — dipanggil lewat `new NXUI.Tatiye(config).run()`. */
 class NexaTatiye {
   constructor(config = {}) {
     this._config = config;
@@ -446,7 +468,7 @@ export class Screen {
     wizard: _nxScreenHandler(NexaWizardScreen),
     datatable: _nxScreenHandler(NexaTabelScreen),
     native: _nxScreenHandler(NexaNativeScreen),
-    /** Alias bahasa Indonesia / singkat ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â sama dengan `datatable`. */
+    /** Alias bahasa Indonesia / singkat — sama dengan `datatable`. */
     tabel: _nxScreenHandler(NexaTabelScreen),
   };
 
@@ -532,7 +554,7 @@ const isPubDateInput = (v) => {
   return !isNaN(t);
 };
 
-/** { y, m, d } untuk path `yyyy/mm/dd` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â atau null jika tidak valid. */
+/** { y, m, d } untuk path `yyyy/mm/dd` — atau null jika tidak valid. */
 const ymdFromPubdate = (pubdate) => {
   if (pubdate == null || pubdate === '') return null;
   const dt = pubdate instanceof Date ? pubdate : new Date(pubdate);
@@ -558,8 +580,8 @@ const ymdFromPubdate = (pubdate) => {
 /**
  * Membuat slug untuk URL.
  * - Bentuk lama: createSlug(text, id?, prefix?)
- * - Bentuk dengan tanggal: createSlug(pubdate, text, id?, prefix?) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ `yyyy/mm/dd/slug-judul`
- *   (gabungkan dengan href seperti `guides/${slug}` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ /guides/2025/07/15/judul-...)
+ * - Bentuk dengan tanggal: createSlug(pubdate, text, id?, prefix?) — `yyyy/mm/dd/slug-judul`
+ *   (gabungkan dengan href seperti `guides/${slug}` — /guides/2025/07/15/judul-...)
  *   Jika `id` ada: tidak ditambahkan ke string URL; disimpan lewat setSlugId (session + local)
  *   agar getSlugId tetap bisa resolve. Sufiks `--id` opsional lewat URL lama masih didukung.
  */
@@ -575,7 +597,7 @@ const createSlug = (...args) => {
   let prefix = 'slug';
   let pubdate = null;
 
-  // Empat argumen: (pubdate, title, id, prefix). Jika pubdate kosong/invalid ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ pakai title, id, prefix (b, c, d).
+  // Empat argumen: (pubdate, title, id, prefix). Jika pubdate kosong/invalid — pakai title, id, prefix (b, c, d).
   if (n >= 4 && isPubDateInput(a)) {
     pubdate = a;
     text = b;
@@ -651,7 +673,7 @@ const setSlugId = (slug, id, prefix = 'slug') => {
     try {
       localStorage.setItem(key, v);
     } catch (e2) {
-      // Quota / private mode ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â abaikan
+      // Quota / private mode — abaikan
     }
     return true;
   } catch (e) {
@@ -676,7 +698,7 @@ const getSlugId = (slug, prefix = 'slug') => {
 };
 
 // ===========================================
-// NEXA WINDOW ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â deteksi state jendela Electron
+// NEXA WINDOW — deteksi state jendela Electron
 // ===========================================
 
 /**
@@ -786,8 +808,8 @@ const NexaWindow = {
   /**
    * Helper untuk parameter `dimensi: [sub, unit]` di NexaRoute.Layer.
    *
-   * PENTING ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â semantik `dimensi` di NexaDimensi.height(selector, sub, unit):
-   *   `result = (#selector.height - sub) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ di-convert ke unit`
+   * PENTING — semantik `dimensi` di NexaDimensi.height(selector, sub, unit):
+   *   `result = (#selector.height - sub) — di-convert ke unit`
    *   `sub` SELALU dalam **pixel**, dan `unit` hanya format output.
    *
    * Karena `vh` sudah responsive otomatis terhadap tinggi viewport,
@@ -819,13 +841,13 @@ const NexaWindow = {
 export function initSelect2(selector, options = {}) {
   // Check if jQuery and Select2 are available
   if (typeof $ === "undefined") {
-    console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ jQuery is not available for Select2 initialization");
+    console.error("— jQuery is not available for Select2 initialization");
     return null;
   }
 
   if (typeof $.fn.select2 === "undefined") {
     console.error(
-      "ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Select2 is not available. Make sure select2.min.js is loaded"
+      "— Select2 is not available. Make sure select2.min.js is loaded"
     );
     return null;
   }
@@ -841,7 +863,7 @@ export function initSelect2(selector, options = {}) {
   try {
     return $(selector).select2(mergedOptions);
   } catch (error) {
-    console.error("ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€¦Ã¢â‚¬â„¢ Error initializing Select2:", error);
+    console.error("— Error initializing Select2:", error);
     return null;
   }
 }
@@ -945,7 +967,7 @@ export function highlightPrismBlocks(containerSelectorOrElement = document) {
 
 
 
-/** Path relatif root `templates/` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â mis. `/dashboard/x.css` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ `/templates/dashboard/x.css`. */
+/** Path relatif root `templates/` — mis. `/dashboard/x.css` — `/templates/dashboard/x.css`. */
 function resolveTemplatesCssHref(href) {
   const h = String(href || "").trim();
   if (!h) return h;
@@ -979,17 +1001,19 @@ export function Css(hrefOrList) {
 // GLOBAL INITIALIZATION
 // ===========================================
 
-/** Stub aman bila konstruktor modul belum terinstal (instal parsial). */
+/** Stub aman bila konstruktor modul belum terinstal (instal parsial). Tanpa console noise. */
 function _nxSoftNew(Ctor, label) {
   if (typeof Ctor === "function") {
     try {
       return new Ctor();
     } catch (err) {
-      console.warn(`[nxdom] gagal new ${label}:`, err?.message || err);
+      // Hanya error runtime nyata (modul ada tapi gagal init)
+      if (typeof console !== "undefined") {
+        console.warn(`[nxdom] gagal new ${label}:`, err?.message || err);
+      }
     }
-  } else {
-    console.warn(`[nxdom] skip new ${label} ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â modul belum terinstal`);
   }
+  // Ctor undefined = modul sengaja belum diinstal — diam (user install sesuai kebutuhan)
   const stub = new Proxy(function () {}, {
     apply() {
       return stub;
@@ -1106,7 +1130,7 @@ if (typeof window !== "undefined") {
     return normalizeUrl('/' + allParts.join('/'));
   };
 
-  /** NEXA.apiBase: prioritas argumen urlApi ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ window.nexaPage.urlApi (dari NXUI.Page) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ url + /api */
+  /** NEXA.apiBase: prioritas argumen urlApi — window.nexaPage.urlApi (dari NXUI.Page) — url + /api */
   const resolveNexaApiBase = (baseAppUrl, explicitUrlApi) => {
     if (typeof explicitUrlApi === 'string' && explicitUrlApi.trim() !== '') {
       return normalizeUrl(explicitUrlApi.trim());
@@ -1217,7 +1241,7 @@ if (typeof window !== "undefined") {
     Tatiye: NexaTatiye,
     /** Memperbarui title dan meta di head setelah navigasi SPA */
     setPageMeta,
-    /** Endpoint multi-API dari NXUI.Page ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ NEXA.endpoint + mirror ke NEXA (mis. typicode) */
+    /** Endpoint multi-API dari NXUI.Page — NEXA.endpoint + mirror ke NEXA (mis. typicode) */
     syncNexaEndpoints,
     // Storage function untuk IndexedDB access
     NexaDb: NexaDb,
@@ -1233,7 +1257,7 @@ if (typeof window !== "undefined") {
     resolveDevUserId, 
 
     /**
-     * Render `<json-viewer>` ke container (alias 3 arg ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â sama dengan `NX.Json({ ...opts, payload, container })`).
+     * Render `<json-viewer>` ke container (alias 3 arg — sama dengan `NX.Json({ ...opts, payload, container })`).
      * @param {HTMLElement|null} container
      * @param {*} payload
      * @param {{ theme?: "light"|"dark", expandAll?: boolean, fallbackClass?: string }} [options]
@@ -1244,6 +1268,8 @@ if (typeof window !== "undefined") {
     Models: NexaModels,
     Await: NexaAwait,
     getDb,
+    /** Daftar modul terinstal — di console: `NXUI.modules()` atau `nxdomModules()` */
+    modules: nxdomModules,
     LinkDefault,
     NexaLink,
     Link: NexaLinkUI,
@@ -1291,8 +1317,8 @@ if (typeof window !== "undefined") {
       return new NexaVoice(options);
     },
     /**
-     * `list.map(fn).join(joiner)` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â helper string HTML dari array (bukan ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“renderÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â virtual DOM / bukan opsi `render` di `Refresh.partial`).
-     * @param {Iterable<*>|ArrayLike<*>|null|undefined} list ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `null`/`undefined` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ array kosong.
+     * `list.map(fn).join(joiner)` — helper string HTML dari array (bukan "render" virtual DOM / bukan opsi `render` di `Refresh.partial`).
+     * @param {Iterable<*>|ArrayLike<*>|null|undefined} list — `null`/`undefined` — array kosong.
      * @param {(item: *, index: number, array: Array<*>) => string} fn
      * @param {string} [joiner='']
      * @returns {string}
@@ -1314,12 +1340,12 @@ if (typeof window !== "undefined") {
       }
       return arr.map(fn).join(joiner);
     },
-    /** Alias `mapJoin` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â nama lama; perilaku sama. */
+    /** Alias `mapJoin` — nama lama; perilaku sama. */
     render: function render(list, fn, joiner = "") {
       return NXUI.mapJoin(list, fn, joiner);
     },
     /**
-     * `map` + `join` secara async ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â gunakan **`await NXUI.map(...)`** di fungsi `async` agar urutan jelas dan `fn` boleh async (dijalankan paralel dengan `Promise.all`).
+     * `map` + `join` secara async — gunakan **`await NXUI.map(...)`** di fungsi `async` agar urutan jelas dan `fn` boleh async (dijalankan paralel dengan `Promise.all`).
      * @param {Iterable<*>|ArrayLike<*>|null|undefined} list
      * @param {(item: *, index: number, array: Array<*>) => string|Promise<string>} fn
      * @param {string} [joiner='']
@@ -1346,13 +1372,13 @@ if (typeof window !== "undefined") {
     },
 
     /**
-     * NXUI.Worker ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â HTML builder di Web Worker thread agar tidak memblok UI.
+     * NXUI.Worker — HTML builder di Web Worker thread agar tidak memblok UI.
      *
      * Worker menggunakan NexaBuilderWorker.js dengan NX spec builder
      * (API identik NXUI tapi pure string, tanpa DOM).
      *
      * @example
-     * // map besar ke worker ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â fn menerima (item, index, NX)
+     * // map besar ke worker — fn menerima (item, index, NX)
      * const html = await NXUI.Worker.buildMap(components, (item, i, NX) =>
      *   NX.div().class('card').container()
      *     .p().view(item.label)
@@ -1375,12 +1401,14 @@ if (typeof window !== "undefined") {
         if (_client) return _client;
         if (_initTried) return null;
         _initTried = true;
-        if (typeof Worker === 'undefined') return null;
+        // Modul Worker belum terinstal → silent no-op
+        if (typeof createNexaWorkerClient !== "function") return null;
+        if (typeof Worker === "undefined") return null;
         try {
-          const url = new URL('./Worker/NexaBuilderWorker.js', import.meta.url).href;
+          const url = new URL("./Worker/NexaBuilderWorker.js", import.meta.url).href;
           _client = createNexaWorkerClient(url);
         } catch (e) {
-          console.warn('[NXUI.Worker] init failed:', e);
+          console.warn("[NXUI.Worker] init failed:", e);
           _client = null;
         }
         return _client;
@@ -1389,7 +1417,7 @@ if (typeof window !== "undefined") {
       return {
         /**
          * Build HTML dari spec tree di worker.
-         * @param {Object} spec ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â { tag, a, s, c, t }
+         * @param {Object} spec — { tag, a, s, c, t }
          * @returns {Promise<string>}
          */
         async build(spec) {
@@ -1399,13 +1427,13 @@ if (typeof window !== "undefined") {
         },
 
         /**
-         * Map array di worker ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â fn adalah fungsi yang HARUS menggunakan NX builder
+         * Map array di worker — fn adalah fungsi yang HARUS menggunakan NX builder
          * (bukan NXUI) karena berjalan di worker context.
          *
-         * fn(item, index, NX) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ NX.div()... atau string
+         * fn(item, index, NX) — NX.div()... atau string
          *
          * @param {Array}    data
-         * @param {Function} fn ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â (item, index, NX) => NX builder | string
+         * @param {Function} fn — (item, index, NX) => NX builder | string
          * @returns {Promise<string>}
          * @example
          * const html = await NXUI.Worker.buildMap(products, (item, i, NX) =>
@@ -1439,10 +1467,10 @@ if (typeof window !== "undefined") {
     // DOM
     NexaDom: NexaDomClass,
     Dom: NexaDomClass,
-    /** NexaDom `storage: { model, select?, query?(builder) }` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `Storage().model()` + hook where/join */
+    /** NexaDom `storage: { model, select?, query?(builder) }` — `Storage().model()` + hook where/join */
     StorageModelData,
 
-    /** Inline edit `.editable` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â disarankan: `new NXUI.Field()` */
+    /** Inline edit `.editable` — disarankan: `new NXUI.Field()` */
     Field: NexaField,
     NexaChild: NexaField,
     NexaField,
@@ -1452,7 +1480,7 @@ if (typeof window !== "undefined") {
     Prind:NexaPrind,
     NexaEditor,
     Editor:NexaEditor,
-    /** RAW ESC/POS byte builder ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â NXUI.Escpos / NexaEscpos */
+    /** RAW ESC/POS byte builder — NXUI.Escpos / NexaEscpos */
     NexaEscpos,
     Escpos: NexaEscpos,
     NexaTags,
@@ -1470,11 +1498,11 @@ if (typeof window !== "undefined") {
     Payload:NexaPayload,
     Chart: (opts) => NexaChart.create(opts),
 
-    /** Checkbox + radio ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â disarankan: `new NXUI.Checkable()` */
+    /** Checkbox + radio — disarankan: `new NXUI.Checkable()` */
     Checkable: NexaCheckable,
 
     NexaCheckable,
-    /** @deprecated alias ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â sama dengan NexaCheckable */
+    /** @deprecated alias — sama dengan NexaCheckable */
     NexaCheckbox: NexaCheckable,
     Checkbox: NexaCheckable,
     
@@ -1490,7 +1518,7 @@ if (typeof window !== "undefined") {
     Click:NexaClick,
     NexaMode,
     Mode:NexaMode,
-    /** Modul tipe file / ikon preview ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `NXUI.NexaType.fileType` */
+    /** Modul tipe file / ikon preview — `NXUI.NexaType.fileType` */
     NexaType,
     Type: NexaType,
     NexaEvent: NexaEvent,
@@ -1498,9 +1526,9 @@ if (typeof window !== "undefined") {
     fileType,
     NexaKit,
     UIKit: NexaKit,
-    // ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ Fluent Element Builder ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬
+    // — Fluent Element Builder —
     // NXUI.div().id('box').class('card').style({ color: 'red' }).html('Hello')
-    // ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ '<div id="box" class="card" style="color: red;">Hello</div>'
+    // — '<div id="box" class="card" style="color: red;">Hello</div>'
     tag:        (tagName, c) => nexaKitInstance.tag(tagName, c),
     div:        (c) => nexaKitInstance.div(c),
     span:       (c) => nexaKitInstance.span(c),
@@ -1548,7 +1576,7 @@ if (typeof window !== "undefined") {
     table:      (c) => nexaKitInstance.table(c),
     details:    (c) => nexaKitInstance.details(c),
     summary:    (c) => nexaKitInstance.summary(c),
-    // ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬
+    // —
     NexaDimensi,
     Dimensi: NexaDimensi,
     NexaWindow,
@@ -1560,7 +1588,7 @@ if (typeof window !== "undefined") {
     NexaRebit,
     DBRebit:NexaRebit,
     BuildQuery:NexaBuildQuery,
-    /** Muat skrip ES / classic ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `Dom`, `NexaUi`, `modules` (alias `NexaUi`, relatif ke folder `assets/modules`) */
+    /** Muat skrip ES / classic — `Dom`, `NexaUi`, `modules` (alias `NexaUi`, relatif ke folder `assets/modules`) */
     NexaScript,
     Script: NexaScript,
     // Dropdown component
@@ -1587,6 +1615,10 @@ if (typeof window !== "undefined") {
     Validation: Validation,
     Vscode,
     Vscode: Vscode,
+    NexaChat,
+    Chat: NexaChat,
+    defineFluent,
+    defineFluent: defineFluent,
     // @nxdom-register:nxui-end
     // Sidebar component
     NexaSidebar: NexaSidebar,
@@ -1595,7 +1627,7 @@ if (typeof window !== "undefined") {
     initSidebar: initSidebar,
     getSidebarInstance: getSidebarInstance,
     updateSidebarPath: updateSidebarPath,
-    // Spinner (`Dom/NexaSpinner.js`) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `NXUI.spinner(opts)`; dipakai `NexaLinkUI.load()` bila `spinner` di opsi konstruktor
+    // Spinner (`Dom/NexaSpinner.js`) — `NXUI.spinner(opts)`; dipakai `NexaLinkUI.load()` bila `spinner` di opsi konstruktor
     spinner: spinner,
     // Grid component
     NexaGrid: NexaGrid,
@@ -1607,7 +1639,7 @@ if (typeof window !== "undefined") {
     Tables: NexaTables,
     ensureTableStylesheet,
     rowsFromStorageResponse,
-    /** Form bertahap (step-by-step) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â kelas `NexaWizard` dari `Form/NexaWizard.js` */
+    /** Form bertahap (step-by-step) — kelas `NexaWizard` dari `Form/NexaWizard.js` */
     NexaWizard,
     FormWizard: NexaWizard,
     NexaCmirror,
@@ -1615,7 +1647,7 @@ if (typeof window !== "undefined") {
     Grid: NexaGrid,
     // Grid instance for direct usage
     grid: nexaGridInstance,
-    // Modal ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `Modal(data)` = DOM dinamis; `Modal.open` / `Modal.close` = delegasi `nexaModal`; kelas: `NexaModal`
+    // Modal — `Modal(data)` = DOM dinamis; `Modal.open` / `Modal.close` = delegasi `nexaModal`; kelas: `NexaModal`
     NexaModal: NexaModal,
     Modal: modalHTML,
     nexaModal: nexaModal,
@@ -1623,7 +1655,7 @@ if (typeof window !== "undefined") {
     ensureModalStylesheet,
     /**
      * Refresh view SPA: muat ulang route aktif tanpa klik (delegasi ke `window.nexaRoute.refresh`).
-     * @param {{ route?: string, pushState?: boolean, hard?: boolean }} [options] ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `hard: true` = reload browser penuh.
+     * @param {{ route?: string, pushState?: boolean, hard?: boolean }} [options] — `hard: true` = reload browser penuh.
      * @example await NXUI.Refresh.refresh();
      * @example await NXUI.Refresh.refresh({ route: 'contact/data' });
      *
@@ -1640,7 +1672,7 @@ if (typeof window !== "undefined") {
           return window.nexaRoute.refresh(options);
         }
         if (typeof console !== 'undefined' && console.warn) {
-          console.warn('[NXUI.Refresh] nexaRoute belum siap ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â pastikan NexaRoute sudah diinisialisasi.');
+          console.warn('[NXUI.Refresh] nexaRoute belum siap — pastikan NexaRoute sudah diinisialisasi.');
         }
       },
       partial: async function (options) {
@@ -1756,10 +1788,10 @@ if (typeof window !== "undefined") {
       },
     },
     /**
-     * Navigasi programatik ke route terdaftar di `App.js` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â delegasi ke `window.nexaRoute.navigate`.
+     * Navigasi programatik ke route terdaftar di `App.js` — delegasi ke `window.nexaRoute.navigate`.
      * Setara klik tautan `/blog`, `/ds/data`, atau sub-route `guides/foo`.
-     * @param {string} route ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â path tanpa slash depan, mis. `'blog'`, `'ds/data'`, `'markdown'`
-     * @param {boolean|{ pushState?: boolean }} [pushStateOrOptions] ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â default `true` (tambah history); `false` atau `{ pushState: false }` untuk replace
+     * @param {string} route — path tanpa slash depan, mis. `'blog'`, `'ds/data'`, `'markdown'`
+     * @param {boolean|{ pushState?: boolean }} [pushStateOrOptions] — default `true` (tambah history); `false` atau `{ pushState: false }` untuk replace
      * @returns {Promise<void>}
      * @example await NXUI.load('blog');
      * @example await NXUI.load('contact/data', false);
@@ -1791,14 +1823,14 @@ if (typeof window !== "undefined") {
       }
       if (typeof console !== "undefined" && console.warn) {
         console.warn(
-          "[NXUI.load] nexaRoute belum siap ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â pastikan NXUI.Page (App.js) sudah diinisialisasi."
+          "[NXUI.load] nexaRoute belum siap — pastikan NXUI.Page (App.js) sudah diinisialisasi."
         );
       }
     },
     // Add NexaGlobal features
     global: nexaGlobalInstance,
     Svg,
-    /** Objek koleksi string SVG (`forgot`, `nexa`, `qr`, ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â sama isinya dengan `svgContent.js` */
+    /** Objek koleksi string SVG (`forgot`, `nexa`, `qr`, — sama isinya dengan `svgContent.js` */
     svgContent,
     htmlDecode,
     Secure: NexaEncrypt,
@@ -1806,14 +1838,14 @@ if (typeof window !== "undefined") {
     Notifikasi:NexaNotif,
     applications,
     appBuckets,
-    /** Factory `html()` (GET fragmen `.html`) / `Markdown()` (GET `.md` + render di klien) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â panggil tanpa `new` */
+    /** Factory `html()` (GET fragmen `.html`) / `Markdown()` (GET `.md` + render di klien) — panggil tanpa `new` */
     NexaHtml: NexaHtml,
     /**
      * Muat fragmen HTML statis lewat GET (`{template}/{row}.html` di origin halaman). Bukan eventload.
      * Opsional: `options.templateOrigin` untuk basis URL selain `location.origin`.
      * @param {string} row nama file tanpa ekstensi, mis. "exam"
      * @param {object} endpoints variabel untuk substitusi `{kunci}` di HTML (hanya key yang ada di object)
-     * @param {string} [template] folder relatif ke origin ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â jika dihilangkan, pakai `nexaPage.appRoot` (App.js `appRoot`)
+     * @param {string} [template] folder relatif ke origin — jika dihilangkan, pakai `nexaPage.appRoot` (App.js `appRoot`)
      * Respons sukses menyertakan `hydrate(root, lists)` untuk `NexaForge.hydrate` (list `{user.nama}` dll.).
      */
     html: async function (row, endpoints, template, options = {}) {
@@ -1822,11 +1854,11 @@ if (typeof window !== "undefined") {
     Markdown: async function (fileOrContent, variables, template, options = {}) {
       return NexaHtml().Markdown(fileOrContent, variables, template, options);
     },
-    /** Class dari NexaForge.js (view/DOM) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `new NXUI.NexaForgeView(...)`; static `hydrate` untuk list template */
+    /** Class dari NexaForge.js (view/DOM) — `new NXUI.NexaForgeView(...)`; static `hydrate` untuk list template */
     NexaForgeView: NexaForge,
-    /** @deprecated gunakan `NexaForgeView` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â alias ke kelas yang sama */
+    /** @deprecated gunakan `NexaForgeView` — alias ke kelas yang sama */
     NexaHtmlView: NexaForge,
-    /** Bridge ke NexaWebWorker ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â diisi lewat initNexaWorker */
+    /** Bridge ke NexaWebWorker — diisi lewat initNexaWorker */
     nexaWorker: null,
     /**
      * Sinkronkan `NEXA.userId` dari oauth/credential (userid atau userId).
@@ -1892,7 +1924,7 @@ if (typeof window !== "undefined") {
       };
     },
     /**
-     * Validasi lisensi ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â panggil di awal setiap halaman yang dilindungi.
+     * Validasi lisensi — panggil di awal setiap halaman yang dilindungi.
      * Otomatis redirect ke 'licenses' jika tidak valid / expired.
      * @returns {object|null} credential jika valid, null jika redirect
      *
@@ -1924,7 +1956,7 @@ if (typeof window !== "undefined") {
             }
             return { ...red, device_id, app_id };
           }
-        } catch (e) { /* network error ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â fallback ke licenses */ }
+        } catch (e) { /* network error — fallback ke licenses */ }
         await window.NXUI.ref.delete("bucketsStore", "credential");
         window.NXUI.load("licenses");
         return null;
@@ -1935,7 +1967,7 @@ if (typeof window !== "undefined") {
      * Aktifkan Web Worker untuk fetch API (Storage().package / example().method).
      * @param {{ enabled?: boolean, storage?: boolean, workerUrl?: string, debug?: boolean }} workerConfig
      * Setelah sukses: window.NEXA.worker.ready === true, event "nexaWorkerReady".
-     * Verifikasi: ?nexaWorkerDebug=1 atau webWorker.debug: true ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ log konsol + log tiap Storage lewat worker.
+     * Verifikasi: ?nexaWorkerDebug=1 atau webWorker.debug: true — log konsol + log tiap Storage lewat worker.
      */
     initNexaWorker: function (workerConfig = {}) {
       const cfg = { ...workerConfig };
@@ -1955,6 +1987,11 @@ if (typeof window !== "undefined") {
         }
       };
 
+      if (typeof createNexaWorkerClient !== "function") {
+        this.nexaWorker = null;
+        setNexaWorkerInfo({ ready: false, reason: "modul Worker belum terinstal" });
+        return null;
+      }
       if (typeof Worker === "undefined") {
         this.nexaWorker = null;
         setNexaWorkerInfo({ ready: false, reason: "Worker API tidak tersedia" });
@@ -1987,7 +2024,7 @@ if (typeof window !== "undefined") {
           );
         }
         if (cfg.debug) {
-          console.info("[NexaWorker] siap ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â fetch Storage lewat thread terpisah:", scriptUrl);
+          console.info("[NexaWorker] siap — fetch Storage lewat thread terpisah:", scriptUrl);
         }
         return this.nexaWorker;
       } catch (e) {
@@ -2004,7 +2041,7 @@ if (typeof window !== "undefined") {
         return null;
       }
     },
-    /** Registrasi Service Worker (bukan Web Worker) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â cache/BG sync terpisah */
+    /** Registrasi Service Worker (bukan Web Worker) — cache/BG sync terpisah */
     nexaServiceWorkerRegistration: null,
     /**
      * @param {{ enabled?: boolean, scriptUrl?: string, scope?: string, backgroundSync?: boolean, debug?: boolean }} swConfig
@@ -2020,7 +2057,7 @@ if (typeof window !== "undefined") {
       return unregisterNexaServiceWorkerModule(swConfig);
     },
     /**
-     * Background Sync ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â panggil saat request gagal/offline; tag default nexa-background-sync.
+     * Background Sync — panggil saat request gagal/offline; tag default nexa-background-sync.
      * @param {string} [tag]
      */
     registerNexaBackgroundSync: function (tag) {
@@ -2110,7 +2147,7 @@ if (typeof window !== "undefined") {
       // Jika parameter kedua adalah object, treat as attributes
       return nexaKitInstance.createElement(tagName, attributesOrContent);
     },
-    /** Get/set innerHTML via selector (bukan template eventload ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â itu `NXUI.html(file, vars, template)`) */
+    /** Get/set innerHTML via selector (bukan template eventload — itu `NXUI.html(file, vars, template)`) */
     uiHtml: (selector, value) => {
       if (value !== undefined) {
         return nexaKitInstance.selector(selector).html(value);
@@ -2120,9 +2157,9 @@ if (typeof window !== "undefined") {
     addID: (selector, additionalId) =>
       nexaKitInstance.selector(selector).addID(additionalId),
 
-    // ===== ELEMENT FACTORY ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â fluent HTML builder =====
+    // ===== ELEMENT FACTORY — fluent HTML builder =====
     // Usage: NXUI.div().id('x').class('y').style({ color: 'red' }).html('Hello')
-    //        ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ '<div id="x" class="y" style="color: red;">Hello</div>'
+    //        — '<div id="x" class="y" style="color: red;">Hello</div>'
     tag:        (tagName, c) => nexaKitInstance.tag(tagName, c),
     div:        (c) => nexaKitInstance.div(c),
     span:       (c) => nexaKitInstance.span(c),
@@ -2315,9 +2352,9 @@ if (typeof window !== "undefined") {
   // NexaUI(): alias global untuk kompatibilitas modul Reactive yang memanggil NexaUI()
   window.NexaUI = function () { return window.NXUI; };
 
-  // Hubungkan NexaKit builder ke NXUI.Worker sehingga .worker() terminal bekerja
+  // Hubungkan NexaKit builder ke NXUI.Worker hanya jika modul Worker terinstal & siap
   // Contoh: const html = await NXUI.div().id('box').container().p().view('hi').worker();
-  if (window.NXUI.Worker?.ready !== false) {
+  if (typeof createNexaWorkerClient === "function" && window.NXUI.Worker?.ready) {
     _nxSetWorker(window.NXUI.Worker);
   }
 
@@ -2779,7 +2816,7 @@ export function NexaHtml() {
   /**
    * Base untuk eventload / eventMarkdownload.
    * Prioritas `nexaPage.urlApi` (endpoint.urlApi di App.js) agar POST ke server PHP/API, bukan origin yang hanya mengembalikan index.html SPA.
-   * Tanpa urlApi ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ NEXA.url.
+   * Tanpa urlApi — NEXA.url.
    */
   function resolveNexaBaseForEvents(currentNEXA) {
     if (
@@ -2793,7 +2830,7 @@ export function NexaHtml() {
     return normalizeUrl(currentNEXA.url || window.location.origin || "");
   }
 
-  /** NexaFetch bisa mengembalikan string (text/html) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ubah ke bentuk error yang jelas */
+  /** NexaFetch bisa mengembalikan string (text/html) — ubah ke bentuk error yang jelas */
   function normalizeJsonApiResponse(data) {
     if (data == null) return data;
     if (typeof data === "string") {
@@ -2852,7 +2889,7 @@ export function NexaHtml() {
   }
 
   /**
-   * Tambah id pada h1ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œh6 (slug GFM/GitHub) agar tautan [teks](#slug) di daftar isi bisa scroll.
+   * Tambah id pada h1—œh6 (slug GFM/GitHub) agar tautan [teks](#slug) di daftar isi bisa scroll.
    */
   async function applyHeadingAnchorIds(html) {
     if (typeof document === "undefined" || !html || typeof DOMParser === "undefined") {
@@ -2884,7 +2921,7 @@ export function NexaHtml() {
   /**
    * `<base href="/">` membuat `href="#slug"` ter-resolve ke `/#slug` (path aktif hilang).
    * Ubah jadi `{pathname}#slug` agar cocok dengan route SPA (mis. /markdown#slug).
-   * @param {string} [explicitPath] ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â opsi; default `window.location.pathname`
+   * @param {string} [explicitPath] — opsi; default `window.location.pathname`
    */
   function rewriteMarkdownHashOnlyAnchors(html, explicitPath) {
     if (typeof window === "undefined" || !html || typeof html !== "string") {
@@ -2903,7 +2940,7 @@ export function NexaHtml() {
   }
 
   /**
-   * Markdown teks ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ HTML (marked lewat esm.sh). Tanpa jaringan: fallback escape + &lt;br&gt;.
+   * Markdown teks — HTML (marked lewat esm.sh). Tanpa jaringan: fallback escape + &lt;br&gt;.
    */
   async function renderMarkdownToHtml(markdown) {
     if (markdown == null) return "";
@@ -2966,7 +3003,7 @@ export function NexaHtml() {
               : String(raw ?? "");
 
         if (endpoints && typeof endpoints === "object") {
-          // `{{kunci}}` (opsional, lama); `{kunci}` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â `(?<!\{)` agar tidak memotong `{{kunci}}`
+          // `{{kunci}}` (opsional, lama); `{kunci}` — `(?<!\{)` agar tidak memotong `{{kunci}}`
           html = html
             .replace(/\{\{(\w+)\}\}/g, (_, key) =>
               Object.prototype.hasOwnProperty.call(endpoints, key)
@@ -2983,7 +3020,7 @@ export function NexaHtml() {
         return {
           success: true,
           content: html,
-          /** Pasang setelah `innerHTML`: `result.hydrate(container, { user: [...] })` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â pakai `NexaForge.hydrate` */
+          /** Pasang setelah `innerHTML`: `result.hydrate(container, { user: [...] })` — pakai `NexaForge.hydrate` */
           hydrate: (root, lists) => NexaForge.hydrate(root, lists),
         };
       } catch (error) {
@@ -2997,10 +3034,10 @@ export function NexaHtml() {
     },
     /**
      * Muat `.md` seperti `html()` memuat `.html`: GET `{appRoot}/{row}.md` dari origin (bukan POST API).
-     * Substitusi `{kunci}` / `{{kunci}}` sama seperti `html`. MD ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ HTML via `marked` (esm.sh), lalu Prism.
+     * Substitusi `{kunci}` / `{{kunci}}` sama seperti `html`. MD — HTML via `marked` (esm.sh), lalu Prism.
      * @param {{ fromString?: boolean, anchorPath?: string }} options
-     * @param {boolean} [options.fromString] ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â jika true, `fileOrContent` adalah teks Markdown mentah (tanpa GET).
-     * @param {string} [options.anchorPath] ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â path untuk tautan `#anchor` (default: `location.pathname`; untuk `<base href="/">`).
+     * @param {boolean} [options.fromString] — jika true, `fileOrContent` adalah teks Markdown mentah (tanpa GET).
+     * @param {string} [options.anchorPath] — path untuk tautan `#anchor` (default: `location.pathname`; untuk `<base href="/">`).
      */
     Markdown: async function (fileOrContent, variables = {}, template, options = {}) {
       const currentNEXA = getNEXA();
@@ -3033,7 +3070,7 @@ export function NexaHtml() {
           let raw = await fetchInstance.get(primaryUrl, options);
           mdText = textFromFetchRaw(raw);
 
-          /* Dev server SPA sering mengembalikan index.html untuk GET /templates/*.md ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â coba assets/markdown/ */
+          /* Dev server SPA sering mengembalikan index.html untuk GET /templates/*.md — coba assets/markdown/ */
           if (responseTextLooksLikeHtmlDocument(mdText)) {
             const assetFallback = normalizeUrl(
               joinUrl(baseOrigin, "assets", "markdown", baseName + ".md")
@@ -3188,7 +3225,7 @@ export function NexaHtml() {
   };
 }
 
-/** Alias modul: `import { NexaDom } from "./Nexa.js"` ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â sama dengan NexaHtml() */
+/** Alias modul: `import { NexaDom } from "./Nexa.js"` — sama dengan NexaHtml() */
 export function NexaDom() {
   return NexaHtml();
 }
@@ -3196,7 +3233,7 @@ export function NexaDom() {
 /**
  * Get database reference (ref) untuk akses IndexedDB
  * Menginisialisasi NexaDb dan mengembalikan ref
- * Menunggu NEXA.url (dari NexaPage) atau fallback ke origin ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â jangan panggil new NexaDb sebelum url ada.
+ * Menunggu NEXA.url (dari NexaPage) atau fallback ke origin — jangan panggil new NexaDb sebelum url ada.
  */
 let _dbInitPromise = null;
 export async function getDb() {
@@ -3270,7 +3307,7 @@ if (typeof NexaClick === "function" && typeof document !== "undefined") {
     clickSound.init();
   }
 }
-// Jangan await getDb() di sini ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â modul ini load sebelum App.js mengisi NEXA.url; inisialisasi lewat getDb() + IIFE di atas.
+// Jangan await getDb() di sini — modul ini load sebelum App.js mengisi NEXA.url; inisialisasi lewat getDb() + IIFE di atas.
 // Export for ES6 modules
 export {
   NexaDb,

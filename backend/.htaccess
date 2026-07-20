@@ -56,17 +56,65 @@ RewriteCond %{REQUEST_URI} ^/modules/(.+)$ [NC]
 RewriteCond %{DOCUMENT_ROOT}/assets/modules/%1 -f
 RewriteRule ^modules/(.+)$ assets/modules/$1 [L]
 
-# /assets/* → templates/theme/assets/* (dokumentasi theme)
+# ── /assets/* — resolusi template aktif langsung di server, meniru urutan   ────
+# ── fallback TemplateController::assets() (cookie nexa_template → UA → theme) ──
+# Semua RewriteCond blok ini dibatasi hanya untuk request /assets/* (REQUEST_URI)
+
+# Deteksi template aktif dari cookie nexa_template (di-set PHP saat render halaman)
+RewriteCond %{REQUEST_URI} ^/assets/ [NC]
+RewriteCond %{HTTP_COOKIE} nexa_template=(theme|mobile|tablet|dashboard) [NC]
+RewriteRule ^ - [E=NEXA_TPL:%1]
+
+# Tanpa cookie valid: deteksi ringan dari User-Agent (tablet dulu, lalu mobile)
+RewriteCond %{REQUEST_URI} ^/assets/ [NC]
+RewriteCond %{HTTP_COOKIE} !nexa_template=(theme|mobile|tablet|dashboard) [NC]
+RewriteCond %{HTTP_USER_AGENT} tablet|ipad|playbook|silk|kindle [NC]
+RewriteRule ^ - [E=NEXA_TPL:tablet]
+
+RewriteCond %{REQUEST_URI} ^/assets/ [NC]
+RewriteCond %{HTTP_COOKIE} !nexa_template=(theme|mobile|tablet|dashboard) [NC]
+RewriteCond %{HTTP_USER_AGENT} !tablet|ipad|playbook|silk|kindle [NC]
+RewriteCond %{HTTP_USER_AGENT} Mobile|Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera\ Mini [NC]
+RewriteRule ^ - [E=NEXA_TPL:mobile]
+
+# Default (tidak ada cookie, UA desktop): theme
+RewriteCond %{REQUEST_URI} ^/assets/ [NC]
+RewriteCond %{HTTP_COOKIE} !nexa_template=(theme|mobile|tablet|dashboard) [NC]
+RewriteCond %{HTTP_USER_AGENT} !tablet|ipad|playbook|silk|kindle [NC]
+RewriteCond %{HTTP_USER_AGENT} !(Mobile|Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera\ Mini) [NC]
+RewriteRule ^ - [E=NEXA_TPL:theme]
+
+# 1) templates/{template-aktif}/assets/*
+RewriteCond %{REQUEST_URI} ^/assets/(.+)$ [NC]
+RewriteCond %{DOCUMENT_ROOT}/templates/%{ENV:NEXA_TPL}/assets/%1 -f
+RewriteRule ^assets/(.+)$ templates/%{ENV:NEXA_TPL}/assets/$1 [L]
+
+# 2) fallback: templates/theme/assets/* (theme = default project-wide)
 RewriteCond %{REQUEST_URI} ^/assets/(.+)$ [NC]
 RewriteCond %{DOCUMENT_ROOT}/templates/theme/assets/%1 -f
 RewriteRule ^assets/(.+)$ templates/theme/assets/$1 [L]
 
-# /assets/* → assets/* di root proyek (gambar global, dll.)
+# 3) fallback: templates/mobile/assets/*
+RewriteCond %{REQUEST_URI} ^/assets/(.+)$ [NC]
+RewriteCond %{DOCUMENT_ROOT}/templates/mobile/assets/%1 -f
+RewriteRule ^assets/(.+)$ templates/mobile/assets/$1 [L]
+
+# 4) fallback: templates/tablet/assets/*
+RewriteCond %{REQUEST_URI} ^/assets/(.+)$ [NC]
+RewriteCond %{DOCUMENT_ROOT}/templates/tablet/assets/%1 -f
+RewriteRule ^assets/(.+)$ templates/tablet/assets/$1 [L]
+
+# 5) fallback: templates/dashboard/assets/*
+RewriteCond %{REQUEST_URI} ^/assets/(.+)$ [NC]
+RewriteCond %{DOCUMENT_ROOT}/templates/dashboard/assets/%1 -f
+RewriteRule ^assets/(.+)$ templates/dashboard/assets/$1 [L]
+
+# 6) fallback terakhir: assets/* di root proyek (gambar global, dll.)
 RewriteCond %{REQUEST_URI} ^/assets/(.+)$ [NC]
 RewriteCond %{DOCUMENT_ROOT}/assets/%1 -f
 RewriteRule ^assets/(.+)$ assets/$1 [L]
 
-# Hanya jika file tidak ada di atas: resolusi template aktif via PHP
+# Tidak ditemukan di manapun secara fisik: serahkan ke PHP (TemplateController::assets)
 RewriteRule ^assets/(.*)$ index.php [QSA,L]
 
 # Jika file atau direktori yang diminta ada (EXCEPT /drive and /images routes)

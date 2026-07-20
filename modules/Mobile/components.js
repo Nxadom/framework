@@ -148,7 +148,7 @@ const components = [
       "AppNavigator.js"
     ],
     "status": true,
-    "import": true,
+    "import": false,
     "created_at": "2026-07-17"
   },
   {
@@ -310,3 +310,4 @@ const components = [
 ];
 
 export default components;
+

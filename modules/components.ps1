@@ -71,8 +71,8 @@ function Md-Code {
 # 1. Baca registrasi dari components.js
 # ==========================================================================
 
-Write-Section "1. Membaca registrasi components.js"
-Md-Section "1. Membaca registrasi components.js"
+Write-Section "1. Registrasi components.js"
+Md-Section "1. Registrasi components.js"
 
 if (-not (Test-Path $ComponentsJs)) {
     Write-Warn "components.js tidak ditemukan"
@@ -99,8 +99,8 @@ if (-not (Test-Path $ComponentsJs)) {
 # 2. Pindai folder di disk
 # ==========================================================================
 
-Write-Section "2. Memindai direktori modul di disk"
-Md-Section "2. Memindai direktori modul di disk"
+Write-Section "2. Folder modul di disk"
+Md-Section "2. Folder modul di disk"
 
 $diskFolders = Get-ChildItem -Path $ModulesDir -Directory |
     Where-Object { $_.Name -notin @('node_modules', '.git', '.svn', 'Mobile') } |
@@ -129,8 +129,8 @@ Md-Append ("**" + $diskFolders.Count + "** folder ditemukan di disk.")
 # 2b. Baca import dari nxdom.js
 # ==========================================================================
 
-Write-Section "2b. Memindai import di nxdom.js"
-Md-Section "2b. Memindai import di nxdom.js"
+Write-Section "2b. Import di nxdom.js"
+Md-Section "2b. Import di nxdom.js"
 
 $importedFolders = [ordered]@{}
 
@@ -160,8 +160,8 @@ if (Test-Path $NxDomJs) {
 # 3. Daftar lengkap semua modul (tabel)
 # ==========================================================================
 
-Write-Section "3. Daftar lengkap modul (disk vs registry vs import)"
-Md-Section "3. Daftar lengkap modul (disk vs registry vs import)"
+Write-Section "3. Daftar modul"
+Md-Section "3. Daftar modul"
 
 Write-Host ("{0,-4} {1,-24} {2,-8} {3,-6} {4,-8} {5,-8} {6}" -f "NO", "NAMA MODUL", "REG-ID", "FILE", "README", "IMPORT", "STATUS") -ForegroundColor White
 Md-TableHeader @("No", "Modul", "ID", "File", "README", "Import", "Status")
@@ -422,8 +422,8 @@ if ($registered.Count -eq 0) {
 # 7. Buat README.md untuk folder yang belum punya
 # ==========================================================================
 
-Write-Section "7. Membuat README.md untuk folder yang belum punya"
-Md-Section "7. Membuat README.md untuk folder yang belum punya"
+Write-Section "7. README.md yang belum ada"
+Md-Section "7. README.md yang belum ada"
 
 $foldersWithoutReadme = $onDisk.Values | Where-Object { -not $_.hasReadme } | Sort-Object name
 $readmeCreated = 0
@@ -460,7 +460,7 @@ if ($foldersWithoutReadme.Count -eq 0) {
         $readmeContent += [Environment]::NewLine + [Environment]::NewLine
         $readmeContent += "---"
         $readmeContent += [Environment]::NewLine + [Environment]::NewLine
-        $readmeContent += "_README dibuat otomatis oleh components.ps1 pada " + $nowStr + "._"
+        $readmeContent += "_Stub README — lengkapi deskripsi modul secara manual._"
         $readmeContent | Out-File -FilePath $readmePath -Encoding utf8
         $readmeCreated++
 
@@ -469,9 +469,9 @@ if ($foldersWithoutReadme.Count -eq 0) {
         }
     }
 
-    Write-Ok ("$readmeCreated README.md berhasil dibuat.")
+    Write-Ok ("$readmeCreated README.md stub ditambah.")
     Md-Append ""
-    Md-Append ("**$readmeCreated** README.md berhasil dibuat.")
+    Md-Append ("**$readmeCreated** README.md stub ditambah (bukan dokumentasi final).")
 }
 
 # ==========================================================================
@@ -489,7 +489,7 @@ $totalMiss = $missingModulesList.Count
 Write-Host "   Modul terdaftar di components.js : $totalReg"
 Write-Host "   Folder ditemukan di disk          : $totalDisk"
 if ($readmeCreated -gt 0) {
-    Write-Add ("README.md dibuat otomatis          : " + $readmeCreated)
+    Write-Add ("README.md stub ditambah               : " + $readmeCreated)
 }
 Write-Host ""
 
@@ -498,7 +498,7 @@ Md-TableHeader @("Metrik", "Jumlah")
 Md-TableRow @("Modul terdaftar di components.js", $totalReg.ToString())
 Md-TableRow @("Folder ditemukan di disk", $totalDisk.ToString())
 if ($readmeCreated -gt 0) {
-    Md-TableRow @("README.md dibuat otomatis", $readmeCreated.ToString())
+    Md-TableRow @("README.md stub ditambah", $readmeCreated.ToString())
 }
 
 if ($totalNew  -gt 0) {
@@ -539,7 +539,7 @@ Write-Host ("-" * 60) -ForegroundColor DarkGray
 Md-Append ""
 Md-Append "---"
 Md-Append ""
-Md-Append ("_Laporan dihasilkan pada: " + $Timestamp + "_")
+Md-Append ("_Laporan audit maintainer — " + $Timestamp + ". Bukan halaman dokumentasi user._")
 
 $mdContent = $mdLines -join [Environment]::NewLine
 $mdContent | Out-File -FilePath $ComponentsMd -Encoding utf8
