@@ -1,3 +1,266 @@
-.nxchat{
-  font: 12px
+/* Container Utama — mengikuti ukuran wadah (#nxchat) */
+.nxchat-container {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Bagian Header */
+.nxchat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+}
+
+.nxchat-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1a1a1a;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.nxchat-sparkle-icon {
+    color: #4c82f4;
+    font-variation-settings: 'FILL' 1;
+}
+
+.nxchat-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #5f6368;
+}
+
+.nxchat-header-icon {
+    cursor: pointer;
+    font-size: 20px;
+    user-select: none;
+}
+
+.nxchat-header-icon:hover {
+    color: #1a1a1a;
+}
+
+/* Area Konten Tengah */
+.nxchat-content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nxchat-content-area.nxchat-empty {
+    justify-content: center;
+}
+
+.nxchat-disclaimer-text {
+    color: #9aa0a6;
+    font-size: 12px;
+    text-align: center;
+    max-width: 80%;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* Bubble pesan */
+.nxchat-msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    line-height: 1.4;
+    font-size: 13px;
+    word-break: break-word;
+    align-self: flex-start;
+    margin-bottom: 4px;
+}
+
+.nxchat-msg-user {
+    align-self: flex-end;
+    background-color: #4c82f4;
+    color: #ffffff;
+}
+
+.nxchat-msg-assistant {
+    align-self: flex-start;
+    background-color: #f1f3f4;
+    color: #1a1a1a;
+}
+
+/* Konten Markdown di bubble assistant (../markdown/, mode "chat") */
+.nxchat-msg-assistant .nexa-markdown-chat > *:first-child {
+    margin-top: 0;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat > *:last-child {
+    margin-bottom: 0;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat p {
+    margin: 0 0 8px;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat ul,
+.nxchat-msg-assistant .nexa-markdown-chat ol {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat li {
+    margin-bottom: 2px;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat a {
+    color: #4c82f4;
+    word-break: break-word;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat code {
+    background-color: rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 12px;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat pre {
+    background-color: #282c34;
+    border-radius: 8px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    margin: 0 0 8px;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat pre code {
+    background-color: transparent;
+    padding: 0;
+    color: #abb2bf;
+    font-size: 12px;
+}
+
+.nxchat-msg-assistant .nexa-markdown-chat h1,
+.nxchat-msg-assistant .nexa-markdown-chat h2,
+.nxchat-msg-assistant .nexa-markdown-chat h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Typing indicator — bubble sementara selagi menunggu balasan assistant */
+.nxchat-typing {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background-color: #f1f3f4;
+    margin-bottom: 4px;
+}
+
+.nxchat-typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #9aa0a6;
+    animation: nxchat-typing-bounce 1.2s infinite ease-in-out;
+}
+
+.nxchat-typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.nxchat-typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes nxchat-typing-bounce {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    30% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+}
+
+/* Input & tombol kirim nonaktif selagi menunggu balasan */
+.nxchat-input-field:disabled,
+.nxchat-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Bagian Input Bawah */
+.nxchat-input-area {
+    background-color: #ffffff;
+}
+
+.nxchat-input-box-container {
+    border: 1px solid #dadce0;
+    border-radius: 24px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #ffffff;
+}
+
+.nxchat-input-field {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: transparent;
+}
+
+.nxchat-input-field::placeholder {
+    color: #70757a;
+}
+
+.nxchat-input-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nxchat-attachment-btn {
+    color: #5f6368;
+    cursor: pointer;
+    font-size: 20px;
+    user-select: none;
+}
+
+.nxchat-attachment-btn:hover {
+    color: #1a1a1a;
+}
+
+.nxchat-send-btn {
+    background-color: #c2d7ff;
+    color: #444746;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.nxchat-send-btn span {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.nxchat-send-btn:hover {
+    background-color: #b0cbff;
 }

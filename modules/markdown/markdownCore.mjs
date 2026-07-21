@@ -23,11 +23,11 @@ function previewOrigin() {
 	}
 }
 
-/** URL paket npm yang di-serve dari project root (/node_modules/…). */
+/** URL paket vendor, di-serve langsung dari folder modul ini (assets/modules/markdown/…), bukan node_modules/ root. */
 export function nodeModulesUrl(relPath) {
 	const rel = String(relPath || '').replace(/^\/+/, '');
 	const o = previewOrigin();
-	return o && rel ? `${o}/node_modules/${rel}` : '';
+	return o && rel ? `${o}/assets/modules/markdown/${rel}` : '';
 }
 
 export function isPreviewDarkMode() {
