@@ -697,6 +697,36 @@ const getSlugId = (slug, prefix = 'slug') => {
   }
 };
 
+/**
+ * Cari item dalam list berdasarkan URL slug (kebalikan dari createSlug).
+ * @param {Array} list - Array item dari API / Storage
+ * @param {string} subRoute - Slug dari URL (mis. "2026/02/07/judul-artikel")
+ * @param {{ pubdate?: string, prefix?: string, titleKey?: string, idKey?: string }} opts
+ * @returns {object|null}
+ */
+const findBySlug = (list, subRoute, opts = {}) => {
+  if (!list || !Array.isArray(list) || !subRoute) return null;
+
+  const { pubdate, prefix = 'slug', titleKey = 'title', idKey = 'id' } = opts;
+
+  for (const item of list) {
+    const slug = createSlug(pubdate || '', item[titleKey], item[idKey], prefix);
+    if (slug === subRoute) return item;
+  }
+
+  const slugParts = subRoute.split('/');
+  const titleSlug = slugParts[slugParts.length - 1];
+  const match = list.find(item => slugifyText(item[titleKey]) === titleSlug);
+  if (match) return match;
+
+  const resolvedId = getSlugId(subRoute, prefix);
+  if (resolvedId) {
+    return list.find(item => String(item[idKey]) === resolvedId) || null;
+  }
+
+  return null;
+};
+
 // ===========================================
 // NEXA WINDOW — deteksi state jendela Electron
 // ===========================================
@@ -1287,6 +1317,7 @@ if (typeof window !== "undefined") {
 
     // Utility function untuk membuat slug
     createSlug: createSlug,
+    findBySlug: findBySlug,
     parseSlug: parseSlug,
     extractIdFromSlug: extractIdFromSlug,
     setSlugId: setSlugId,
@@ -3333,6 +3364,7 @@ export {
   ensureTableStylesheet,
   rowsFromStorageResponse,
   createSlug,
+  findBySlug,
   parseSlug,
   extractIdFromSlug,
   setSlugId,
@@ -3373,6 +3405,7 @@ export default {
   ensureTableStylesheet,
   rowsFromStorageResponse,
   createSlug,
+  findBySlug,
   parseSlug,
   extractIdFromSlug,
   setSlugId,
